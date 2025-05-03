@@ -8,69 +8,37 @@ const isProd = process.argv.includes('prod');
 const isFirefox = process.argv.includes('firefox');
 
 // Setup output directories
-const buildDir = 'extension/build';
 const outputDir = 'extension/output';
 const chromeDir = 'extension/chrome';
 const firefoxDir = 'extension/firefox';
-
-const outdir = isProd ? outputDir : buildDir;
-const targetBrowserDir = isFirefox ? firefoxDir : chromeDir;
+const targetDir = isFirefox ? firefoxDir : chromeDir;
 
 // Make sure the output directory exists
-if (!fs.existsSync(outdir)) {
-  fs.mkdirSync(outdir, { recursive: true });
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Create the manifest.json
-function createManifest() {
-  const manifest = {
-    manifest_version: 3,
-    name: "Bookmarkstr",
-    version: "1.0.0",
-    description: "A Nostr-based bookmarks viewer extension",
-    permissions: [
-      "storage",
-      "activeTab"
-    ],
-    action: {
-      default_popup: "popup.html"
-    },
-    content_scripts: [
-      {
-        matches: ["<all_urls>"],
-        js: ["content-script.js"]
-      }
-    ]
-  };
-
-  // Browser-specific configurations
-  if (isFirefox) {
-    manifest.background = {
-      scripts: ["background.js"],
-      type: "module"
-    };
-  } else {
-    manifest.background = {
-      service_worker: "background.js",
-      type: "module"
-    };
-  }
-
-  fs.writeFileSync(path.join(outdir, 'manifest.json'), JSON.stringify(manifest, null, 2));
-  console.log('Created manifest.json for', isFirefox ? 'Firefox' : 'Chrome');
+// Copy manifest from browser-specific directory
+function copyManifest() {
+  fs.copyFileSync(
+    path.join(targetDir, 'manifest.json'), 
+    path.join(outputDir, 'manifest.json')
+  );
+  console.log('Copied manifest.json from', isFirefox ? 'Firefox' : 'Chrome');
 }
 
 // Copy static files
 function copyFiles() {
-  // Copy popup.html and adjust paths if needed
-  const popupHtml = fs.readFileSync('extension/popup.html', 'utf8')
-    .replace('popup/popup.js', 'popup.js');
-  fs.writeFileSync(path.join(outdir, 'popup.html'), popupHtml);
-
+  // Copy popup.html
+  fs.copyFileSync('extension/popup.html', path.join(outputDir, 'popup.html'));
+  
   // Copy CSS
   if (fs.existsSync('extension/style.css')) {
-    fs.copyFileSync('extension/style.css', path.join(outdir, 'style.css'));
+    fs.copyFileSync('extension/style.css', path.join(outputDir, 'style.css'));
   }
+  
+  // Copy nostr-provider.js
+  fs.copyFileSync('extension/nostr-provider.js', path.join(outputDir, 'nostr-provider.js'));
   
   console.log('Copied static files');
 }
@@ -85,7 +53,7 @@ async function buildJs() {
         'content-script': 'extension/content-script.ts'
       },
       bundle: true,
-      outdir: outdir,
+      outdir: outputDir,
       platform: 'browser',
       target: 'es2020',
       format: 'esm',
@@ -98,6 +66,25 @@ async function buildJs() {
     console.error('Build failed:', err);
     process.exit(1);
   }
+}
+
+// Copy files to browser-specific directory for development
+function copyToBrowserDir() {
+  if (isProd) return; // Only needed for development
+
+  // Copy built JS files
+  fs.copyFileSync(path.join(outputDir, 'background.js'), path.join(targetDir, 'background.build.js'));
+  fs.copyFileSync(path.join(outputDir, 'content-script.js'), path.join(targetDir, 'content-script.build.js'));
+  fs.copyFileSync(path.join(outputDir, 'popup.js'), path.join(targetDir, 'popup.js'));
+  
+  // Copy static files
+  fs.copyFileSync('extension/popup.html', path.join(targetDir, 'popup.html'));
+  if (fs.existsSync('extension/style.css')) {
+    fs.copyFileSync('extension/style.css', path.join(targetDir, 'style.css'));
+  }
+  fs.copyFileSync('extension/nostr-provider.js', path.join(targetDir, 'nostr-provider.js'));
+  
+  console.log(`Copied files to ${targetDir} for development`);
 }
 
 // Watch for changes and rebuild
@@ -119,19 +106,29 @@ function watchChanges() {
     fs.watch(dir, { recursive: true }, (eventType, filename) => {
       if (filename && (filename.endsWith('.ts') || filename.endsWith('.tsx'))) {
         console.log(`File changed: ${filename}`);
-        buildJs().catch(err => {
+        buildJs().then(() => {
+          copyToBrowserDir(); // Copy files after rebuild
+        }).catch(err => {
           console.error('Error during rebuild:', err);
         });
       }
     });
   });
   
-  // Also watch manifest and popup.html
+  // Also watch core files
   fs.watch('extension', (eventType, filename) => {
-    if (filename === 'manifest.json' || filename === 'popup.html') {
+    if (filename === 'popup.html' || filename === 'style.css' || filename === 'nostr-provider.js') {
       console.log(`File changed: ${filename}`);
-      createManifest();
       copyFiles();
+      copyToBrowserDir(); // Copy to browser dir too
+    }
+  });
+  
+  // Watch manifest files
+  fs.watch(targetDir, (eventType, filename) => {
+    if (filename === 'manifest.json') {
+      console.log(`Manifest changed`);
+      copyManifest();
     }
   });
 }
@@ -140,8 +137,8 @@ function watchChanges() {
 async function build() {
   console.log(`Building for ${isFirefox ? 'Firefox' : 'Chrome'} in ${isProd ? 'production' : 'development'} mode`);
   
-  // Create manifest first
-  createManifest();
+  // Copy manifest
+  copyManifest();
   
   // Copy static files
   copyFiles();
@@ -149,7 +146,7 @@ async function build() {
   // Build JavaScript
   await buildJs();
   
-  // Copy files to browser-specific directory
+  // Copy to browser-specific directory for development
   copyToBrowserDir();
   
   console.log('Build completed successfully!');
@@ -158,36 +155,6 @@ async function build() {
   if (!isProd) {
     watchChanges();
   }
-}
-
-// Copy built files to browser-specific directory
-function copyToBrowserDir() {
-  // Make sure the browser directory exists
-  if (!fs.existsSync(targetBrowserDir)) {
-    fs.mkdirSync(targetBrowserDir, { recursive: true });
-  }
-  
-  // Copy the built js files with correct names
-  fs.copyFileSync(path.join(outdir, 'background.js'), path.join(targetBrowserDir, 'background.build.js'));
-  fs.copyFileSync(path.join(outdir, 'content-script.js'), path.join(targetBrowserDir, 'content-script.build.js'));
-  
-  // Copy the HTML and CSS files
-  fs.copyFileSync(path.join(outdir, 'popup.html'), path.join(targetBrowserDir, 'popup.html'));
-  if (fs.existsSync(path.join(outdir, 'style.css'))) {
-    fs.copyFileSync(path.join(outdir, 'style.css'), path.join(targetBrowserDir, 'style.css'));
-  }
-  
-  // Copy popup.js
-  fs.copyFileSync(path.join(outdir, 'popup.js'), path.join(targetBrowserDir, 'popup.js'));
-  
-  // Create or copy nostr-provider.js
-  const nostrProviderPath = path.join(targetBrowserDir, 'nostr-provider.js');
-  if (!fs.existsSync(nostrProviderPath)) {
-    fs.writeFileSync(nostrProviderPath, '// Nostr provider script\nconsole.log("Nostr provider loaded");');
-    console.log('Created nostr-provider.js');
-  }
-  
-  console.log(`Copied files to ${targetBrowserDir}`);
 }
 
 build(); 
