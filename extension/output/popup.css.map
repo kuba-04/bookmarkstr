@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../popup/popup.css"],
+  "sourcesContent": ["@tailwind base;\n@tailwind components;\n@tailwind utilities; "],
+  "mappings": ";AAAA,UAAU;AACV,UAAU;AACV,UAAU;",
+  "names": []
+}

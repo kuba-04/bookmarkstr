@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
+import './popup.css';
 import { AuthService } from './services/auth.service';
 import { Login } from './components/Login';
 import { RelayManager } from './components/RelayManager';
@@ -124,46 +125,65 @@ const Popup: React.FC = () => {
 
   if (isAuthLoading) {
     return (
-      <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center">
-        <p>Loading Session...</p>
+      <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="text-gray-600">Loading Session...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <ErrorBoundary>
-      <div className="min-w-[400px] min-h-[500px] p-4 flex flex-col">
-        <h1 className="text-2xl font-bold mb-4 text-center">Nostr Bookmarks</h1>
+      <div className="min-w-[400px] min-h-[500px] flex flex-col bg-gray-50">
+        <header className="bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
+          <h1 className="text-2xl font-bold text-gray-800 text-center">Nostr Bookmarks</h1>
+        </header>
+        
         {renderError()}
+        
         {publicKey ? (
-          <div className="flex-grow flex flex-col">
-            <div className="mb-4 pb-4 border-b border-gray-200">
-              <p className="text-sm text-gray-600 mb-1">Logged in as:</p>
-              <p className="text-xs font-mono break-all mb-3">{publicKey}</p>
-              <button
-                onClick={handleLogout}
-                className="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              >
-                Logout
-              </button>
+          <div className="flex-grow flex flex-col p-4 space-y-4">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-600">Logged in as:</p>
+                  <p className="text-xs font-mono break-all text-gray-500">{publicKey}</p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="ml-4 px-3 py-1.5 border border-red-200 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
             
-            <div className="mb-4">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <RelayManager />
             </div>
 
-            <div className="flex-grow overflow-auto">
-              <h2 className="text-lg font-semibold mb-2">My Bookmarks</h2>
-              <BookmarkList 
-                bookmarks={bookmarks} 
-                isLoading={isBookmarksLoading} 
-                error={bookmarksError}
-              />
+            <div className="flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-semibold text-gray-800">My Bookmarks</h2>
+                {isBookmarksLoading && (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                )}
+              </div>
+              <div className="flex-grow overflow-auto -mx-4 px-4">
+                <BookmarkList 
+                  bookmarks={bookmarks} 
+                  isLoading={isBookmarksLoading} 
+                  error={bookmarksError}
+                />
+              </div>
             </div>
-
           </div>
         ) : (
-          <Login onLoginSuccess={handleLoginSuccess} />
+          <div className="flex-grow p-4">
+            <Login onLoginSuccess={handleLoginSuccess} />
+          </div>
         )}
       </div>
     </ErrorBoundary>
