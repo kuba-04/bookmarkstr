@@ -1302,7 +1302,7 @@ var require_react_dom_development = __commonJS({
         return dispatcher;
       }
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-      var React5 = require_react(), Internals = {
+      var React7 = require_react(), Internals = {
         d: {
           f: noop,
           r: function() {
@@ -1320,7 +1320,7 @@ var require_react_dom_development = __commonJS({
         },
         p: 0,
         findDOMNode: null
-      }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React5.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+      }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React7.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
       "function" === typeof Map && null != Map.prototype && "function" === typeof Map.prototype.forEach && "function" === typeof Set && null != Set.prototype && "function" === typeof Set.prototype.clear && "function" === typeof Set.prototype.forEach || console.error(
         "React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills"
       );
@@ -2862,7 +2862,7 @@ var require_react_dom_client_development = __commonJS({
         "number" === type && getActiveElement(node.ownerDocument) === node || node.defaultValue === "" + value || (node.defaultValue = "" + value);
       }
       function validateOptionProps(element, props) {
-        null == props.value && ("object" === typeof props.children && null !== props.children ? React5.Children.forEach(props.children, function(child) {
+        null == props.value && ("object" === typeof props.children && null !== props.children ? React7.Children.forEach(props.children, function(child) {
           null == child || "string" === typeof child || "number" === typeof child || "bigint" === typeof child || didWarnInvalidChild || (didWarnInvalidChild = true, console.error(
             "Cannot infer the option value of complex children. Pass a `value` prop or use a plain string as children to <option>."
           ));
@@ -16444,14 +16444,14 @@ var require_react_dom_client_development = __commonJS({
         ));
       }
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-      var Scheduler = require_scheduler(), React5 = require_react(), ReactDOM = require_react_dom(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_PROVIDER_TYPE = Symbol.for("react.provider"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
+      var Scheduler = require_scheduler(), React7 = require_react(), ReactDOM = require_react_dom(), assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_PROVIDER_TYPE = Symbol.for("react.provider"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
       Symbol.for("react.scope");
       var REACT_ACTIVITY_TYPE = Symbol.for("react.activity");
       Symbol.for("react.legacy_hidden");
       Symbol.for("react.tracing_marker");
       var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel");
       Symbol.for("react.view_transition");
-      var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React5.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ReactDOMSharedInternals = ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, NotPending = Object.freeze({
+      var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React7.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ReactDOMSharedInternals = ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, NotPending = Object.freeze({
         pending: false,
         data: null,
         method: null,
@@ -19165,7 +19165,7 @@ var require_react_dom_client_development = __commonJS({
         }
       };
       (function() {
-        var isomorphicReactPackageVersion = React5.version;
+        var isomorphicReactPackageVersion = React7.version;
         if ("19.1.0" !== isomorphicReactPackageVersion)
           throw Error(
             'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.1.0\nLearn more: https://react.dev/warnings/version-mismatch")
@@ -19306,7 +19306,7 @@ var require_client = __commonJS({
 });
 
 // extension/popup/popup.tsx
-var import_react4 = __toESM(require_react());
+var import_react6 = __toESM(require_react());
 var import_client = __toESM(require_client());
 
 // node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/_assert.js
@@ -26361,27 +26361,160 @@ var Mutex = class {
 // extension/popup/services/relay.service.ts
 var RelayService = class _RelayService {
   constructor() {
+    this.pool = new SimplePool();
     this.targetRelays = /* @__PURE__ */ new Set();
     this.relayStatuses = /* @__PURE__ */ new Map();
     this.connectionMutex = new Mutex();
     this.listeners = [];
-    this.defaultRelays = [
+    this.subscriptions = /* @__PURE__ */ new Map();
+    this.reconnectTimeouts = /* @__PURE__ */ new Map();
+    this.CONNECTION_TIMEOUT = 3e4;
+    // Increased to 30 seconds
+    this.RECONNECT_DELAY = 5e3;
+    // 5 seconds
+    // Fallback relays in case we can't fetch user's relays or for initial discovery
+    this.fallbackRelays = [
       "wss://relay.damus.io",
-      "wss://relay.primal.net",
-      "wss://nos.lol"
+      "wss://nos.lol",
+      "wss://nostr.land",
+      "wss://relay.primal.net"
+      // 'wss://relay.nostr.band', // Old fallback
+      // 'wss://relay.current.fyi'  // Old fallback
     ];
-    this.pool = new SimplePool();
-    this.defaultRelays.forEach((url) => {
-      if (!this.relayStatuses.has(url)) {
-        this.relayStatuses.set(url, { url, status: "disconnected" });
-      }
-    });
+    console.log("[RelayService] Constructor called");
+    try {
+      console.log("[RelayService] SimplePool created successfully");
+      console.log("[RelayService] Configured fallback relays:", this.fallbackRelays);
+    } catch (error) {
+      console.error("[RelayService] Error in RelayService constructor:", error);
+    }
   }
   static getInstance() {
     if (!_RelayService.instance) {
       _RelayService.instance = new _RelayService();
     }
     return _RelayService.instance;
+  }
+  /**
+   * Fetches user's relay list from kind:3 events (or kind:10002)
+   */
+  async fetchUserRelays(pubkey) {
+    console.log(`[RelayService] fetchUserRelays called for pubkey: ${pubkey}`);
+    const discoveryRelays = this.fallbackRelays;
+    console.log(`[RelayService] Using discovery relays: ${discoveryRelays.join(", ")}`);
+    return new Promise((resolve) => {
+      const filter = {
+        kinds: [3],
+        // Using Kind 3 as per original code, might need change to 10002 based on NIP-65
+        authors: [pubkey],
+        limit: 1
+      };
+      console.log(`[RelayService] Subscribing to discovery relays for filter:`, filter);
+      let eventReceived = false;
+      const sub = this.pool.subscribe(discoveryRelays, filter, {
+        onevent: (event) => {
+          eventReceived = true;
+          console.log(`[RelayService] Received kind:3 event for relays:`, event);
+          try {
+            const relays = JSON.parse(event.content);
+            if (typeof relays !== "object" || relays === null) {
+              throw new Error("Parsed content is not an object");
+            }
+            const relayList = Object.entries(relays).map(([url, settings]) => ({
+              url,
+              // Default to true if read/write properties are missing or not explicitly false
+              read: settings?.read !== false,
+              write: settings?.write !== false
+            })).filter((item) => item.url.startsWith("wss://"));
+            console.log(`[RelayService] Parsed relay list from event:`, relayList);
+            sub.close();
+            resolve(relayList);
+          } catch (e) {
+            console.error("[RelayService] Failed to parse relay list from event content:", e, "Event content:", event.content);
+            sub.close();
+            resolve([]);
+          }
+        },
+        onclose: (reason) => {
+          console.log(`[RelayService] Subscription to discovery relays closed. Reason: ${reason}`);
+          if (!eventReceived) {
+            console.log("[RelayService] Subscription closed without receiving event, resolving empty.");
+            resolve([]);
+          }
+        }
+        // Add EOSE handling? Might not be necessary if limit: 1 works reliably.
+      });
+      const timeoutDuration = 5e3;
+      console.log(`[RelayService] Setting timeout for relay discovery: ${timeoutDuration}ms`);
+      setTimeout(() => {
+        if (!eventReceived) {
+          console.log("[RelayService] Relay discovery timed out.");
+          sub.close();
+        }
+      }, timeoutDuration);
+    });
+  }
+  /**
+   * Initializes relay connections for a user
+   */
+  async initializeForUser(pubkey) {
+    console.log(`[RelayService] Initializing relays for user: ${pubkey}`);
+    let relayList = [];
+    let relaysToConnect = [];
+    try {
+      relayList = await this.fetchUserRelays(pubkey);
+      console.log(`[RelayService] Fetched relay list result:`, relayList);
+      if (relayList && relayList.length > 0) {
+        console.log("[RelayService] Using relays found in user profile.");
+        relaysToConnect = relayList.map((r) => r.url);
+      } else {
+        console.log("[RelayService] No relays found in profile or fetch failed/timed out. Using fallback relays.");
+        relaysToConnect = this.fallbackRelays;
+      }
+      console.log(`[RelayService] Relays determined for connection: ${relaysToConnect.join(", ")}`);
+      if (relaysToConnect.length === 0) {
+        console.error("[RelayService] No relays to connect to (neither user nor fallback worked).");
+        throw new Error("No relays available to connect.");
+      }
+      await this.connectToRelays(relaysToConnect);
+      console.log("[RelayService] Initial connection attempt finished. Checking connection status...");
+      const maxWaitTime = 15e3;
+      const startTime = Date.now();
+      while (Date.now() - startTime < maxWaitTime) {
+        const connectedRelays = this.getConnectedRelays();
+        if (connectedRelays.length > 0) {
+          console.log(`[RelayService] Successfully connected to initial relays: ${connectedRelays.join(", ")}`);
+          return;
+        }
+        console.log(`[RelayService] Waiting for connection... (${(Date.now() - startTime) / 1e3}s / ${maxWaitTime / 1e3}s)`);
+        await new Promise((resolve) => setTimeout(resolve, 1e3));
+      }
+      console.error("[RelayService] Timed out waiting for any relay connection after initial attempt.");
+      throw new Error("Timed out waiting for relay connections");
+    } catch (error) {
+      console.error(`[RelayService] Error during initializeForUser for ${pubkey}:`, error);
+      const triedFallbacks = relaysToConnect.every((url) => this.fallbackRelays.includes(url));
+      if (!triedFallbacks && this.getConnectedRelays().length === 0) {
+        console.warn("[RelayService] Initial connection failed, attempting connection to fallback relays as a last resort.");
+        try {
+          await this.connectToRelays(this.fallbackRelays);
+          const connectedFallbacks = this.getConnectedRelays();
+          if (connectedFallbacks.length > 0) {
+            console.log(`[RelayService] Successfully connected to fallback relays: ${connectedFallbacks.join(", ")}`);
+            return;
+          } else {
+            console.error("[RelayService] Failed to connect even to fallback relays.");
+            throw new Error("Failed to connect to initial relays and fallback relays.");
+          }
+        } catch (fallbackError) {
+          console.error("[RelayService] Error connecting to fallback relays:", fallbackError);
+          throw new Error("Failed to connect to initial relays. Error during fallback connection attempt.");
+        }
+      } else if (this.getConnectedRelays().length === 0) {
+        console.error("[RelayService] Initialization failed. No relays connected.");
+        throw new Error("Failed to connect to initial relays. No relays configured or connected.");
+      }
+    }
   }
   updateRelayStatus(url, status, error) {
     const current = this.relayStatuses.get(url);
@@ -26391,6 +26524,27 @@ var RelayService = class _RelayService {
     console.log(`Updating status for ${url}: ${status} ${error ? `(${error})` : ""}`);
     this.relayStatuses.set(url, { url, status, error });
     this.notifyListeners();
+    if (status === "error" && this.targetRelays.has(url)) {
+      this.scheduleReconnect(url);
+    }
+  }
+  scheduleReconnect(url) {
+    const existingTimeout = this.reconnectTimeouts.get(url);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
+    }
+    const timeout = setTimeout(async () => {
+      console.log(`Attempting to reconnect to ${url}`);
+      try {
+        await this.connectToRelays([url]);
+      } catch (error) {
+        console.error(`Reconnection attempt to ${url} failed:`, error);
+        if (this.targetRelays.has(url)) {
+          this.scheduleReconnect(url);
+        }
+      }
+    }, this.RECONNECT_DELAY);
+    this.reconnectTimeouts.set(url, timeout);
   }
   notifyListeners() {
     this.listeners.forEach((listener) => listener(this.getRelayStatuses()));
@@ -26405,30 +26559,67 @@ var RelayService = class _RelayService {
   getRelayStatuses() {
     return Array.from(this.relayStatuses.values());
   }
-  async connectToRelays(relayUrls = this.defaultRelays) {
+  async connectToRelays(relayUrls) {
+    console.log(`[RelayService] ENTERING connectToRelays with URLs: ${JSON.stringify(relayUrls)}`);
+    if (!Array.isArray(relayUrls)) {
+      const errorMsg = `[RelayService] connectToRelays called with invalid argument (expected array): ${relayUrls}`;
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
     const release = await this.connectionMutex.acquire();
     try {
-      console.log("Connecting to relays:", relayUrls);
+      console.log(`[RelayService] Connecting to relays: ${relayUrls.join(", ")}`);
       const promises = relayUrls.map(async (url) => {
         const currentStatus = this.relayStatuses.get(url)?.status;
         if (currentStatus === "connected" || currentStatus === "connecting") {
-          console.log(`Skipping connection attempt for ${url} (status: ${currentStatus})`);
+          console.log(`[RelayService] Skipping connection attempt for ${url} (already ${currentStatus})`);
           return;
         }
         this.targetRelays.add(url);
         this.updateRelayStatus(url, "connecting");
         try {
-          await this.pool.ensureRelay(url);
+          console.log(`[RelayService] Attempting pool.ensureRelay(${url})`);
+          await this.pool.ensureRelay(url, {
+            connectionTimeout: this.CONNECTION_TIMEOUT
+          });
+          console.log(`[RelayService] ensureRelay(${url}) succeeded.`);
           this.updateRelayStatus(url, "connected");
         } catch (error) {
-          console.error(`Failed to connect to relay ${url}:`, error);
+          console.error(`[RelayService] Failed to connect to relay ${url}:`, error);
           this.updateRelayStatus(url, "error", error instanceof Error ? error.message : "Connection failed");
           this.targetRelays.delete(url);
         }
       });
-      await Promise.allSettled(promises);
-      this.notifyListeners();
+      console.log("[RelayService] Waiting for all connection promises...");
+      const results = await Promise.allSettled(promises);
+      console.log("[RelayService] All connection promises settled.");
+      results.forEach((result, index) => {
+        const url = relayUrls[index];
+        if (result.status === "fulfilled") {
+          if (this.relayStatuses.get(url)?.status === "connected") {
+            console.log(`[RelayService] Connection attempt for ${url} successful.`);
+          } else {
+            console.warn(`[RelayService] ensureRelay promise for ${url} fulfilled, but final status is: ${this.relayStatuses.get(url)?.status}`);
+          }
+        } else {
+          console.error(`[RelayService] Connection attempt for ${url} rejected:`, result.reason);
+          if (this.relayStatuses.get(url)?.status !== "error") {
+            this.updateRelayStatus(url, "error", result.reason instanceof Error ? result.reason.message : String(result.reason));
+          }
+        }
+      });
+      const successfulConnections = this.getConnectedRelays().length;
+      console.log(`[RelayService] Final connected count: ${successfulConnections} out of ${relayUrls.length}`);
+      if (successfulConnections === 0 && relayUrls.length > 0) {
+        console.error("[RelayService] Failed to connect to ANY target relays after attempts.");
+        throw new Error("Failed to connect to any relays");
+      }
+    } catch (error) {
+      console.error("[RelayService] Error in connectToRelays outer block:", error);
+      throw error;
     } finally {
+      console.log("[RelayService] Releasing connection mutex.");
+      this.notifyListeners();
       release();
     }
   }
@@ -26442,9 +26633,16 @@ var RelayService = class _RelayService {
         }
         return;
       }
+      const reconnectTimeout = this.reconnectTimeouts.get(url);
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        this.reconnectTimeouts.delete(url);
+      }
       this.targetRelays.delete(url);
       this.updateRelayStatus(url, "disconnecting");
       try {
+        const subsToClose = Array.from(this.subscriptions.keys());
+        subsToClose.forEach((id) => this.unsubscribe(id));
         this.pool.close([url]);
         console.log(`Closed connection to ${url} via SimplePool.`);
         this.updateRelayStatus(url, "disconnected");
@@ -26457,7 +26655,6 @@ var RelayService = class _RelayService {
       release();
     }
   }
-  // Disconnect from all targeted relays
   async disconnectAllRelays() {
     const urlsToDisconnect = Array.from(this.targetRelays);
     console.log("Disconnecting from all target relays:", urlsToDisconnect);
@@ -26465,8 +26662,55 @@ var RelayService = class _RelayService {
     await Promise.allSettled(promises);
     console.log("Finished disconnecting all relays.");
   }
+  subscribe(filters, callback) {
+    const connectedRelays = Array.from(this.relayStatuses.values()).filter((status) => status.status === "connected").map((status) => status.url);
+    if (connectedRelays.length === 0) {
+      throw new Error("No connected relays available");
+    }
+    const mergedFilter = {
+      kinds: filters.flatMap((f) => f.kinds || []),
+      authors: filters.flatMap((f) => f.authors || []),
+      ids: filters.flatMap((f) => f.ids || []),
+      "#e": filters.flatMap((f) => f["#e"] || []),
+      "#p": filters.flatMap((f) => f["#p"] || []),
+      since: Math.min(...filters.map((f) => f.since || Infinity)),
+      until: Math.max(...filters.map((f) => f.until || 0)),
+      limit: Math.max(...filters.map((f) => f.limit || 0))
+    };
+    const sub = this.pool.subscribe(connectedRelays, mergedFilter, {
+      onevent: callback
+    });
+    const subId = Math.random().toString(36).substring(7);
+    const subscription = { unsub: () => sub.close() };
+    this.subscriptions.set(subId, subscription);
+    return subscription;
+  }
+  unsubscribe(subId) {
+    const subscription = this.subscriptions.get(subId);
+    if (subscription) {
+      subscription.unsub();
+      this.subscriptions.delete(subId);
+    }
+  }
+  async publish(event) {
+    const connectedRelays = Array.from(this.relayStatuses.values()).filter((status) => status.status === "connected").map((status) => status.url);
+    if (connectedRelays.length === 0) {
+      throw new Error("No connected relays available");
+    }
+    await this.pool.publish(connectedRelays, event);
+  }
+  getConnectedRelays() {
+    return Array.from(this.relayStatuses.entries()).filter(([_, status]) => status.status === "connected").map(([url, _]) => url);
+  }
   getPool() {
     return this.pool;
+  }
+  cleanup() {
+    this.reconnectTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this.reconnectTimeouts.clear();
+    this.subscriptions.forEach((sub) => sub.unsub());
+    this.subscriptions.clear();
+    this.disconnectAllRelays();
   }
 };
 
@@ -26615,62 +26859,529 @@ var ErrorBoundary = class extends import_react3.Component {
 };
 var ErrorBoundary_default = ErrorBoundary;
 
-// extension/popup/popup.tsx
-var Popup = () => {
-  const [publicKey, setPublicKey] = (0, import_react4.useState)(null);
-  const [isLoading, setIsLoading] = (0, import_react4.useState)(true);
-  const authService = AuthService.getInstance();
-  (0, import_react4.useEffect)(() => {
-    const checkAuth = async () => {
-      setIsLoading(true);
-      try {
-        const userPk = await authService.getLoggedInUser();
-        setPublicKey(userPk);
-      } catch (error) {
-        console.error("Error checking auth status:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    checkAuth();
-  }, []);
-  const handleLoginSuccess = (pk) => {
-    setPublicKey(pk);
-    setIsLoading(false);
-  };
-  const handleLogout = async () => {
-    setIsLoading(true);
+// extension/popup/services/bookmark.service.ts
+var BookmarkService = class {
+  constructor(relayService) {
+    // Well-known public relays to try as fallback
+    this.fallbackRelays = [
+      "wss://nos.lol",
+      "wss://relay.nostr.band",
+      "wss://relay.damus.io",
+      "wss://relay.current.fyi",
+      "wss://nostr.land",
+      "wss://relay.primal.net"
+    ];
+    this.relayService = relayService;
+  }
+  /**
+   * Attempts to fetch a single note from multiple public relays as a fallback.
+   * @param eventId The ID of the note to fetch
+   * @returns The note content if found, or null if not found
+   */
+  async fetchNoteFallback(eventId) {
+    console.log(`[BookmarkService] Using fallback method to fetch note: ${eventId}`);
+    const pool = this.relayService.getPool();
+    let relaysToTry = this.relayService.getConnectedRelays();
+    if (relaysToTry.length === 0) {
+      console.log(`[BookmarkService] No connected relays. Using fallback relays.`);
+      relaysToTry = this.fallbackRelays;
+    } else {
+      console.log(`[BookmarkService] Using ${relaysToTry.length} connected relays first.`);
+    }
     try {
-      await authService.logout();
-      setPublicKey(null);
+      const filter = {
+        ids: [eventId],
+        kinds: [1]
+      };
+      console.log(`[BookmarkService] Attempting direct fetch of note ${eventId} from relays: ${relaysToTry.join(", ")}`);
+      const event = await pool.get(relaysToTry, filter);
+      if (event) {
+        console.log(`[BookmarkService] Successfully fetched note ${eventId}`);
+        return event.content;
+      } else {
+        if (JSON.stringify(relaysToTry) !== JSON.stringify(this.fallbackRelays)) {
+          console.log(`[BookmarkService] Note not found in connected relays. Trying fallback relays.`);
+          const fallbackEvent = await pool.get(this.fallbackRelays, filter);
+          if (fallbackEvent) {
+            console.log(`[BookmarkService] Successfully fetched note ${eventId} from fallback relays`);
+            return fallbackEvent.content;
+          }
+        }
+        console.log(`[BookmarkService] Note ${eventId} not found in any relay`);
+        return null;
+      }
     } catch (error) {
-      console.error("Error logging out:", error);
-    } finally {
-      setIsLoading(false);
+      console.error(`[BookmarkService] Error during fallback fetch:`, error);
+      return null;
+    }
+  }
+  /**
+   * Fetches the user's latest bookmark list event (kind 10003)
+   * and parses its tags into an array of ProcessedBookmark objects.
+   * @param publicKey The user's public key (hex format).
+   * @returns A promise that resolves to an array of ProcessedBookmark objects, sorted newest first.
+   */
+  async fetchBookmarks(publicKey) {
+    console.log(`[BookmarkService] Fetching bookmark list for pubkey: ${publicKey}`);
+    const filter = {
+      authors: [publicKey],
+      kinds: [10003],
+      limit: 1
+    };
+    const connectedRelayUrls = this.relayService.getConnectedRelays();
+    if (connectedRelayUrls.length === 0) {
+      console.warn("[BookmarkService] No connected relays to fetch bookmark list from.");
+      return [];
+    }
+    try {
+      const bookmarkListEvent = await this.relayService.getPool().get(connectedRelayUrls, filter);
+      if (!bookmarkListEvent) {
+        console.log(`[BookmarkService] No kind:10003 event found for pubkey ${publicKey}.`);
+        return [];
+      }
+      console.log(`[BookmarkService] Found kind:10003 event:`, bookmarkListEvent.id);
+      let bookmarks = this.parseBookmarkEvent(bookmarkListEvent);
+      const updatedBookmarks = await Promise.all(
+        bookmarks.map(async (bookmark) => {
+          if (bookmark.type === "note") {
+            try {
+              const noteContent = await this.fetchNoteFallback(bookmark.eventId);
+              if (noteContent) {
+                return {
+                  ...bookmark,
+                  content: noteContent
+                };
+              }
+            } catch (e) {
+              console.error(`[BookmarkService] Error fetching content for note ${bookmark.eventId}:`, e);
+            }
+          }
+          return bookmark;
+        })
+      );
+      console.log(`[BookmarkService] Returning ${updatedBookmarks.length} bookmarks with fetched note content.`);
+      return updatedBookmarks;
+    } catch (error) {
+      console.error("[BookmarkService] Error fetching bookmarks:", error);
+      return [];
+    }
+  }
+  /**
+   * Fetches content for 'note' type bookmarks using their event IDs.
+   * @param bookmarks Initial list of parsed bookmarks.
+   * @param relayUrls Relays to query.
+   * @returns The list of bookmarks, updated with note content where available.
+   */
+  async fetchNoteContentsForBookmarks(bookmarks, relayUrlsUsedForList) {
+    const noteBookmarks = bookmarks.filter((b) => b.type === "note");
+    if (noteBookmarks.length === 0) {
+      return bookmarks;
+    }
+    const eventIdsToFetch = noteBookmarks.map((b) => b.eventId);
+    console.log(`[BookmarkService] Fetching content for ${eventIdsToFetch.length} note events...`);
+    const noteFilter = {
+      ids: eventIdsToFetch,
+      kinds: [1]
+    };
+    const noteEvents = [];
+    const pool = this.relayService.getPool();
+    const currentConnectedRelays = this.relayService.getConnectedRelays();
+    console.log(`[BookmarkService] Relays used for kind:1 fetch (via getConnectedRelays): ${JSON.stringify(currentConnectedRelays)}`);
+    return new Promise((resolve, reject) => {
+      let sub = null;
+      const queryTimeout = 1e4;
+      let eoseReceivedCount = 0;
+      const expectedEoseCount = currentConnectedRelays.length;
+      let timeoutHit = false;
+      if (expectedEoseCount === 0) {
+        console.warn("[BookmarkService] No connected relays to fetch note content from. Skipping fetch.");
+        resolve(bookmarks);
+        return;
+      }
+      const completeSubscription = () => {
+        if (sub) {
+          sub.close();
+          sub = null;
+          console.log(`[BookmarkService] Fetched ${noteEvents.length} kind:1 events in total.`);
+          const noteContentMap = /* @__PURE__ */ new Map();
+          noteEvents.forEach((event) => {
+            if (!noteContentMap.has(event.id)) {
+              noteContentMap.set(event.id, event.content);
+            }
+          });
+          const updatedBookmarks = bookmarks.map((bookmark) => {
+            if (bookmark.type === "note" && noteContentMap.has(bookmark.eventId)) {
+              return {
+                ...bookmark,
+                content: noteContentMap.get(bookmark.eventId)
+              };
+            }
+            return bookmark;
+          });
+          resolve(updatedBookmarks);
+        } else {
+          console.warn("[BookmarkService] completeSubscription called but subscription already closed.");
+        }
+      };
+      const timer = setTimeout(() => {
+        console.warn(`[BookmarkService] Timeout hit after ${queryTimeout}ms waiting for note events/EOSE from ${expectedEoseCount} relays.`);
+        timeoutHit = true;
+        completeSubscription();
+      }, queryTimeout);
+      try {
+        const filtersToSubscribe = [noteFilter];
+        console.log(`[BookmarkService] Subscribing for notes on relays: ${JSON.stringify(currentConnectedRelays)}`);
+        sub = pool.subscribe(currentConnectedRelays, filtersToSubscribe, {
+          onevent: (event) => {
+            noteEvents.push(event);
+          },
+          oneose: () => {
+            eoseReceivedCount++;
+            console.log(`[BookmarkService] Received EOSE from ${currentConnectedRelays.length} relays (${eoseReceivedCount}/${expectedEoseCount}).`);
+            if (eoseReceivedCount >= expectedEoseCount && !timeoutHit) {
+              clearTimeout(timer);
+              completeSubscription();
+            }
+          },
+          onclose: (reason) => {
+            console.log(`[BookmarkService] Note subscription closed prematurely. Reason: ${reason}`);
+            if (!timeoutHit && sub) {
+              clearTimeout(timer);
+              completeSubscription();
+            }
+          }
+        });
+      } catch (error) {
+        console.error("[BookmarkService] Error subscribing to fetch note contents:", error);
+        clearTimeout(timer);
+        resolve(bookmarks);
+      }
+    });
+  }
+  /**
+   * Parses the tags of a kind 10003 event into ProcessedBookmark objects.
+   * @param event The kind 10003 Nostr event.
+   * @returns An array of ProcessedBookmark objects, sorted newest first.
+   */
+  parseBookmarkEvent(event) {
+    const bookmarks = [];
+    const eventCreatedAt = event.created_at;
+    event.tags.forEach((tag, index) => {
+      const itemCreatedAt = eventCreatedAt;
+      const tagType = tag[0];
+      const tagValue = tag[1];
+      const relayHint = tag[2];
+      if (!tagValue) return;
+      try {
+        switch (tagType) {
+          case "r":
+            if (this.isValidUrl(tagValue)) {
+              bookmarks.push({
+                type: "url",
+                url: tagValue,
+                id: `url-${tagValue}-${itemCreatedAt}`,
+                // Ensure unique ID
+                created_at: itemCreatedAt
+              });
+            } else {
+              console.warn(`[BookmarkService] Skipping invalid URL bookmark: ${tagValue}`);
+            }
+            break;
+          case "e":
+            bookmarks.push({
+              type: "note",
+              eventId: tagValue,
+              relayHint,
+              id: `note-${tagValue}`,
+              // Event ID is unique enough
+              created_at: itemCreatedAt
+            });
+            break;
+          case "a":
+            const parts = tagValue.split(":");
+            if (parts.length >= 3) {
+              bookmarks.push({
+                type: "article",
+                // Assuming 'a' tags are primarily for articles per NIP-51 spec for kind 10003
+                naddr: tagValue,
+                relayHint,
+                id: `article-${tagValue}`,
+                // naddr should be unique
+                created_at: itemCreatedAt
+              });
+            } else {
+              console.warn(`[BookmarkService] Skipping invalid 'a' tag bookmark: ${tagValue}`);
+            }
+            break;
+          case "t":
+            bookmarks.push({
+              type: "hashtag",
+              hashtag: tagValue,
+              id: `hashtag-${tagValue}-${itemCreatedAt}`,
+              // Ensure unique ID
+              created_at: itemCreatedAt
+            });
+            break;
+          // Add other tag types if necessary based on NIP-51 or future updates
+          default:
+            break;
+        }
+      } catch (e) {
+        console.error(`[BookmarkService] Error processing tag:`, tag, e);
+      }
+    });
+    bookmarks.reverse();
+    console.log(`[BookmarkService] Parsed ${bookmarks.length} initial bookmarks from event ${event.id}.`);
+    return bookmarks;
+  }
+  // Keep isValidUrl as a private helper method
+  isValidUrl(urlString) {
+    try {
+      const url = new URL(urlString);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch (_) {
+      return false;
+    }
+  }
+  // Remove fetchBookmarksFromRelay and mapEventToBookmark
+};
+
+// extension/popup/components/BookmarkList.tsx
+var import_react5 = __toESM(require_react());
+
+// extension/popup/components/BookmarkItem.tsx
+var import_react4 = __toESM(require_react());
+var formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp * 1e3);
+  return date.toLocaleString();
+};
+var renderMetadata = (bookmark) => /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-500 ml-2" }, "(", formatTimestamp(bookmark.created_at), ")");
+var findImageUrls = (content) => {
+  const imagePattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi;
+  return content.match(imagePattern) || [];
+};
+var imageContainerStyle = {
+  maxWidth: "100%",
+  display: "flex",
+  justifyContent: "left",
+  margin: "4px 0"
+};
+var imageStyle = {
+  maxHeight: "100px",
+  maxWidth: "100%",
+  height: "auto",
+  objectFit: "contain",
+  boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+  border: "1px solid #e5e7eb",
+  borderRadius: "4px"
+};
+var BookmarkItem = ({ bookmark }) => {
+  const renderBookmarkContent = () => {
+    switch (bookmark.type) {
+      case "url": {
+        const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
+        if (isImage) {
+          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full" }, /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
+            "a",
+            {
+              href: bookmark.url,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "hover:opacity-90 transition-opacity"
+            },
+            /* @__PURE__ */ import_react4.default.createElement(
+              "img",
+              {
+                src: bookmark.url,
+                alt: "Bookmarked image",
+                style: imageStyle
+              }
+            )
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center w-full" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-500 overflow-hidden text-ellipsis break-all mr-2" }, bookmark.url.length > 50 ? `${bookmark.url.substring(0, 47)}...` : bookmark.url), renderMetadata(bookmark)));
+        }
+        return /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, /* @__PURE__ */ import_react4.default.createElement(
+          "a",
+          {
+            href: bookmark.url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: "text-blue-600 hover:underline break-all",
+            title: bookmark.url
+          },
+          bookmark.url.length > 50 ? `${bookmark.url.substring(0, 47)}...` : bookmark.url
+        ), renderMetadata(bookmark));
+      }
+      case "note": {
+        const imageUrls = bookmark.content ? findImageUrls(bookmark.content) : [];
+        const textContent = bookmark.content || `Note ID: ${bookmark.eventId}`;
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm mb-2 whitespace-pre-wrap break-words" }, textContent), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full" }, imageUrls.map((url, index) => /* @__PURE__ */ import_react4.default.createElement("div", { key: index, style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
+          "a",
+          {
+            href: url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: "hover:opacity-90 transition-opacity"
+          },
+          /* @__PURE__ */ import_react4.default.createElement(
+            "img",
+            {
+              src: url,
+              alt: `Image ${index + 1}`,
+              style: imageStyle
+            }
+          )
+        )))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center w-full mt-1 justify-end" }, renderMetadata(bookmark)));
+      }
+      case "article":
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "font-mono text-sm break-all mb-1", title: `Article Naddr: ${bookmark.naddr}` }, `Article: ${bookmark.naddr.substring(0, 15)}...`), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center w-full" }, bookmark.relayHint && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400", title: `Relay Hint: ${bookmark.relayHint}` }, " (Relay)"), /* @__PURE__ */ import_react4.default.createElement("span", { className: "flex-grow" }), renderMetadata(bookmark)));
+      case "hashtag":
+        return /* @__PURE__ */ import_react4.default.createElement(import_react4.default.Fragment, null, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-purple-600" }, "#", bookmark.hashtag), renderMetadata(bookmark));
+      default:
+        console.warn("Unknown bookmark type:", bookmark);
+        return /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-red-500" }, "Unknown Bookmark Type");
     }
   };
-  if (isLoading && publicKey === null) {
-    return /* @__PURE__ */ import_react4.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center" }, /* @__PURE__ */ import_react4.default.createElement("p", null, "Loading..."), " ");
+  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "py-2 px-3 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors duration-150 ease-in-out" }, renderBookmarkContent());
+};
+var BookmarkItem_default = BookmarkItem;
+
+// extension/popup/components/BookmarkList.tsx
+var BookmarkList2 = ({ bookmarks, isLoading, error }) => {
+  if (isLoading) {
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "p-4 text-center text-gray-500" }, "Loading bookmarks...");
   }
-  return /* @__PURE__ */ import_react4.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react4.default.createElement("div", { className: "min-w-[400px] min-h-[500px]" }, publicKey ? (
-    // Logged-in view
-    /* @__PURE__ */ import_react4.default.createElement("div", { className: "p-4" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-between items-center mb-4" }, /* @__PURE__ */ import_react4.default.createElement("h1", { className: "text-2xl font-bold" }, "Bookmarkstr"), /* @__PURE__ */ import_react4.default.createElement(
-      "button",
-      {
-        onClick: handleLogout,
-        className: "px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",
-        disabled: isLoading
-      },
-      "Logout"
-    )), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm mb-1" }, "Welcome back!"), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-xs break-all mb-4" }, "Public Key: ", publicKey), /* @__PURE__ */ import_react4.default.createElement(RelayManager, null))
-  ) : (
-    // Login view
-    /* @__PURE__ */ import_react4.default.createElement(Login, { onLoginSuccess: handleLoginSuccess })
-  )));
+  if (error) {
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "p-4 text-center text-red-500" }, "Error: ", error);
+  }
+  if (bookmarks.length === 0) {
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "p-4 text-center text-gray-500" }, "No bookmarks found.");
+  }
+  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "divide-y divide-gray-200 border border-gray-200 rounded-md shadow-sm overflow-hidden" }, bookmarks.map((bookmark) => /* @__PURE__ */ import_react5.default.createElement(BookmarkItem_default, { key: bookmark.id, bookmark })));
+};
+var BookmarkList_default = BookmarkList2;
+
+// extension/popup/popup.tsx
+var Popup = () => {
+  const [publicKey, setPublicKey] = (0, import_react6.useState)(null);
+  const [isAuthLoading, setIsAuthLoading] = (0, import_react6.useState)(true);
+  const [initializationError, setInitializationError] = (0, import_react6.useState)(null);
+  const [bookmarks, setBookmarks] = (0, import_react6.useState)([]);
+  const [isBookmarksLoading, setIsBookmarksLoading] = (0, import_react6.useState)(false);
+  const [bookmarksError, setBookmarksError] = (0, import_react6.useState)(null);
+  const authService = AuthService.getInstance();
+  const relayService = RelayService.getInstance();
+  const bookmarkService = (0, import_react6.useMemo)(() => new BookmarkService(relayService), [relayService]);
+  (0, import_react6.useEffect)(() => {
+    const checkAuthAndInitRelays = async () => {
+      console.log("[Popup] Checking auth status...");
+      setIsAuthLoading(true);
+      setInitializationError(null);
+      setBookmarksError(null);
+      let userPk = null;
+      try {
+        userPk = await authService.getLoggedInUser();
+        setPublicKey(userPk);
+        if (userPk) {
+          console.log(`[Popup] User ${userPk} is logged in. Initializing relays...`);
+          await relayService.initializeForUser(userPk);
+          console.log(`[Popup] Relay initialization attempt finished for ${userPk}.`);
+          fetchAndSetBookmarks(userPk);
+        } else {
+          console.log("[Popup] No user logged in.");
+        }
+      } catch (error) {
+        console.error("[Popup] Error during initial auth check or relay init:", error);
+        setInitializationError(error instanceof Error ? error.message : "Failed to initialize session");
+        if (userPk) setPublicKey(userPk);
+      } finally {
+        setIsAuthLoading(false);
+      }
+    };
+    checkAuthAndInitRelays();
+    return () => {
+    };
+  }, []);
+  const fetchAndSetBookmarks = async (pk) => {
+    if (!pk) return;
+    console.log(`[Popup] Fetching bookmarks for ${pk}...`);
+    setIsBookmarksLoading(true);
+    setBookmarksError(null);
+    try {
+      const fetchedBookmarks = await bookmarkService.fetchBookmarks(pk);
+      setBookmarks(fetchedBookmarks);
+      console.log(`[Popup] Fetched ${fetchedBookmarks.length} bookmarks.`);
+    } catch (error) {
+      console.error(`[Popup] Error fetching bookmarks for ${pk}:`, error);
+      setBookmarksError(error instanceof Error ? error.message : "Failed to fetch bookmarks");
+      setBookmarks([]);
+    } finally {
+      setIsBookmarksLoading(false);
+    }
+  };
+  const handleLoginSuccess = async (pk) => {
+    console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
+    setIsAuthLoading(true);
+    setInitializationError(null);
+    setBookmarksError(null);
+    setPublicKey(pk);
+    setBookmarks([]);
+    try {
+      await relayService.initializeForUser(pk);
+      console.log(`[Popup] Relay initialization attempt finished for ${pk}.`);
+      fetchAndSetBookmarks(pk);
+    } catch (error) {
+      console.error(`[Popup] Error initializing relays after login for ${pk}:`, error);
+      setInitializationError(error instanceof Error ? error.message : "Failed to initialize relays after login");
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+  const handleLogout = async () => {
+    console.log("[Popup] Logging out...");
+    setIsAuthLoading(true);
+    setInitializationError(null);
+    setBookmarksError(null);
+    try {
+      console.log("[Popup] Cleaning up relay connections...");
+      relayService.cleanup();
+      await authService.logout();
+      setPublicKey(null);
+      setBookmarks([]);
+      console.log("[Popup] Logout successful.");
+    } catch (error) {
+      console.error("[Popup] Error during logout or relay cleanup:", error);
+      setPublicKey(null);
+      setBookmarks([]);
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+  const renderError = () => {
+    if (!initializationError) return null;
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-4" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "font-bold" }, "Initialization Error:"), /* @__PURE__ */ import_react6.default.createElement("p", null, initializationError));
+  };
+  if (isAuthLoading) {
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center" }, /* @__PURE__ */ import_react6.default.createElement("p", null, "Loading Session..."));
+  }
+  return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold mb-4 text-center" }, "Nostr Bookmarks"), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "mb-4 pb-4 border-b border-gray-200" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm text-gray-600 mb-1" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all mb-3" }, publicKey), /* @__PURE__ */ import_react6.default.createElement(
+    "button",
+    {
+      onClick: handleLogout,
+      className: "w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+    },
+    "Logout"
+  )), /* @__PURE__ */ import_react6.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react6.default.createElement(RelayManager, null)), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto" }, /* @__PURE__ */ import_react6.default.createElement("h2", { className: "text-lg font-semibold mb-2" }, "My Bookmarks"), /* @__PURE__ */ import_react6.default.createElement(
+    BookmarkList_default,
+    {
+      bookmarks,
+      isLoading: isBookmarksLoading,
+      error: bookmarksError
+    }
+  ))) : /* @__PURE__ */ import_react6.default.createElement(Login, { onLoginSuccess: handleLoginSuccess })));
 };
 var root = (0, import_client.createRoot)(document.getElementById("root"));
 root.render(
-  /* @__PURE__ */ import_react4.default.createElement(import_react4.default.StrictMode, null, /* @__PURE__ */ import_react4.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react4.default.createElement(Popup, null)))
+  /* @__PURE__ */ import_react6.default.createElement(import_react6.default.StrictMode, null, /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement(Popup, null)))
 );
 /*! Bundled license information:
 
