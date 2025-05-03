@@ -139,7 +139,7 @@ const Popup: React.FC = () => {
     <ErrorBoundary>
       <div className="min-w-[400px] min-h-[500px] flex flex-col bg-gray-50">
         <header className="bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
-          <h1 className="text-2xl font-bold text-gray-800 text-center">Nostr Bookmarks</h1>
+          <h1 className="text-2xl font-bold text-gray-800 text-center">Bookmarkstr</h1>
         </header>
         
         {renderError()}
@@ -169,7 +169,7 @@ const Popup: React.FC = () => {
                 >
                   <span>Relay Connections</span>
                   <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
-                    {relayService.getConnectedRelays().length} connected
+                    {relayService.getRelayStatuses().filter(status => status.status === 'connected').length} connected
                   </span>
                   <svg 
                     className={`ml-2 w-5 h-5 transition-transform ${showRelayManager ? 'transform rotate-180' : ''}`} 

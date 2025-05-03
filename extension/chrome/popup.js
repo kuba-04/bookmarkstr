@@ -26723,18 +26723,7 @@ var RelayManager = () => {
   const relayService = RelayService.getInstance();
   (0, import_react2.useEffect)(() => {
     const unsubscribe = relayService.subscribeToStatusUpdates(setRelayStatuses);
-    const connectDefaults = async () => {
-      setIsLoading(true);
-      try {
-        await relayService.connectToRelays();
-      } catch (err) {
-        console.error("Error connecting to default relays:", err);
-        setError("Failed to connect to initial relays.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    connectDefaults();
+    setRelayStatuses(relayService.getRelayStatuses());
     return () => {
       unsubscribe();
     };
@@ -26753,7 +26742,8 @@ var RelayManager = () => {
     }
     setIsLoading(true);
     try {
-      await relayService.connectToRelays([urlToAdd]);
+      await relayService.disconnectFromRelay(urlToAdd);
+      await relayService.initializeForUser("dummy");
       setNewRelayUrl("");
     } catch (err) {
       console.error("Error adding relay:", err);
@@ -26770,6 +26760,18 @@ var RelayManager = () => {
     } catch (err) {
       console.error("Error disconnecting relay:", err);
       setError(err instanceof Error ? err.message : "Failed to disconnect relay.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleConnectRelay = async (url) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await relayService.initializeForUser("dummy");
+    } catch (err) {
+      console.error("Error connecting relay:", err);
+      setError(err instanceof Error ? err.message : "Failed to connect relay.");
     } finally {
       setIsLoading(false);
     }
@@ -26819,7 +26821,7 @@ var RelayManager = () => {
   ), status === "disconnected" && /* @__PURE__ */ import_react2.default.createElement(
     "button",
     {
-      onClick: () => relayService.connectToRelays([url]),
+      onClick: () => handleConnectRelay(url),
       className: `px-2 py-1 text-xs font-medium rounded border border-green-500 text-green-600 hover:bg-green-50 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
       disabled: isLoading,
       title: `Connect to ${url}`
@@ -27405,7 +27407,7 @@ var Popup = () => {
   if (isAuthLoading) {
     return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col items-center space-y-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" }), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-gray-600" }, "Loading Session...")));
   }
-  return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] flex flex-col bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("header", { className: "bg-white border-b border-gray-200 px-4 py-3 shadow-sm" }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold text-gray-800 text-center" }, "Nostr Bookmarks")), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col p-4 space-y-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm font-medium text-gray-600" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all text-gray-500" }, publicKey)), /* @__PURE__ */ import_react6.default.createElement(
+  return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] flex flex-col bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("header", { className: "bg-white border-b border-gray-200 px-4 py-3 shadow-sm" }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold text-gray-800 text-center" }, "Bookmarkstr")), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col p-4 space-y-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm font-medium text-gray-600" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all text-gray-500" }, publicKey)), /* @__PURE__ */ import_react6.default.createElement(
     "button",
     {
       onClick: handleLogout,
@@ -27419,7 +27421,7 @@ var Popup = () => {
       className: "flex items-center text-lg font-medium text-gray-800 focus:outline-none"
     },
     /* @__PURE__ */ import_react6.default.createElement("span", null, "Relay Connections"),
-    /* @__PURE__ */ import_react6.default.createElement("span", { className: "ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full" }, relayService.getConnectedRelays().length, " connected"),
+    /* @__PURE__ */ import_react6.default.createElement("span", { className: "ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full" }, relayService.getRelayStatuses().filter((status) => status.status === "connected").length, " connected"),
     /* @__PURE__ */ import_react6.default.createElement(
       "svg",
       {

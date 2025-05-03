@@ -12,25 +12,12 @@ export const RelayManager: React.FC = () => {
     // Subscribe to status updates
     const unsubscribe = relayService.subscribeToStatusUpdates(setRelayStatuses);
 
-    // Initial connection attempt to default relays when component mounts
-    const connectDefaults = async () => {
-        setIsLoading(true);
-        try {
-            await relayService.connectToRelays(); // Connect to defaults
-        } catch (err) {
-            console.error("Error connecting to default relays:", err);
-            setError("Failed to connect to initial relays.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    connectDefaults();
+    // Initial status update
+    setRelayStatuses(relayService.getRelayStatuses());
 
     // Cleanup subscription on unmount
     return () => {
       unsubscribe();
-      // Optional: Disconnect relays on popup close?
-      // relayService.disconnectAllRelays();
     };
   }, []); // Run only on mount
 
@@ -52,7 +39,8 @@ export const RelayManager: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await relayService.connectToRelays([urlToAdd]);
+      await relayService.disconnectFromRelay(urlToAdd); // First disconnect if exists
+      await relayService.initializeForUser('dummy'); // Use a method that calls connectToRelays internally
       setNewRelayUrl(''); // Clear input on success
     } catch (err) {
       console.error("Error adding relay:", err);
@@ -70,6 +58,19 @@ export const RelayManager: React.FC = () => {
     } catch (err) {
         console.error("Error disconnecting relay:", err);
         setError(err instanceof Error ? err.message : 'Failed to disconnect relay.');
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
+  const handleConnectRelay = async (url: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+        await relayService.initializeForUser('dummy'); // Use a method that calls connectToRelays internally
+    } catch (err) {
+        console.error("Error connecting relay:", err);
+        setError(err instanceof Error ? err.message : 'Failed to connect relay.');
     } finally {
         setIsLoading(false);
     }
@@ -142,7 +143,7 @@ export const RelayManager: React.FC = () => {
               )}
               {status === 'disconnected' && (
                  <button
-                  onClick={() => relayService.connectToRelays([url])} // Reconnect
+                  onClick={() => handleConnectRelay(url)}
                   className={`px-2 py-1 text-xs font-medium rounded border border-green-500 text-green-600 hover:bg-green-50 ${
                     isLoading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
