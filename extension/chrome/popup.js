@@ -27309,6 +27309,7 @@ var Popup = () => {
   const [bookmarks, setBookmarks] = (0, import_react6.useState)([]);
   const [isBookmarksLoading, setIsBookmarksLoading] = (0, import_react6.useState)(false);
   const [bookmarksError, setBookmarksError] = (0, import_react6.useState)(null);
+  const [showRelayManager, setShowRelayManager] = (0, import_react6.useState)(false);
   const authService = AuthService.getInstance();
   const relayService = RelayService.getInstance();
   const bookmarkService = (0, import_react6.useMemo)(() => new BookmarkService(relayService), [relayService]);
@@ -27411,7 +27412,26 @@ var Popup = () => {
       className: "ml-4 px-3 py-1.5 border border-red-200 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
     },
     "Logout"
-  ))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement(RelayManager, null)), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h2", { className: "text-lg font-semibold text-gray-800" }, "My Bookmarks"), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" })), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
+  ))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react6.default.createElement(
+    "button",
+    {
+      onClick: () => setShowRelayManager(!showRelayManager),
+      className: "flex items-center text-lg font-medium text-gray-800 focus:outline-none"
+    },
+    /* @__PURE__ */ import_react6.default.createElement("span", null, "Relay Connections"),
+    /* @__PURE__ */ import_react6.default.createElement("span", { className: "ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full" }, relayService.getConnectedRelays().length, " connected"),
+    /* @__PURE__ */ import_react6.default.createElement(
+      "svg",
+      {
+        className: `ml-2 w-5 h-5 transition-transform ${showRelayManager ? "transform rotate-180" : ""}`,
+        fill: "none",
+        stroke: "currentColor",
+        viewBox: "0 0 24 24",
+        xmlns: "http://www.w3.org/2000/svg"
+      },
+      /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 9l-7 7-7-7" })
+    )
+  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement(RelayManager, null)), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h2", { className: "text-lg font-semibold text-gray-800" }, "My Bookmarks"), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" })), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
     BookmarkList_default,
     {
       bookmarks,

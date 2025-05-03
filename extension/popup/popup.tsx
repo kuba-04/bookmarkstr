@@ -17,6 +17,7 @@ const Popup: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<ProcessedBookmark[]>([]);
   const [isBookmarksLoading, setIsBookmarksLoading] = useState(false);
   const [bookmarksError, setBookmarksError] = useState<string | null>(null);
+  const [showRelayManager, setShowRelayManager] = useState(false);
 
   const authService = AuthService.getInstance();
   const relayService = RelayService.getInstance();
@@ -161,7 +162,28 @@ const Popup: React.FC = () => {
             </div>
             
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <RelayManager />
+              <div className="flex items-center justify-between">
+                <button 
+                  onClick={() => setShowRelayManager(!showRelayManager)}
+                  className="flex items-center text-lg font-medium text-gray-800 focus:outline-none"
+                >
+                  <span>Relay Connections</span>
+                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                    {relayService.getConnectedRelays().length} connected
+                  </span>
+                  <svg 
+                    className={`ml-2 w-5 h-5 transition-transform ${showRelayManager ? 'transform rotate-180' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+              
+              {showRelayManager && <RelayManager />}
             </div>
 
             <div className="flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col">
