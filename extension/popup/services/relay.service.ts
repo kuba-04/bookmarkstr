@@ -1,34 +1,33 @@
-import { SimplePool, Relay } from 'nostr-tools';
+import { SimplePool } from 'nostr-tools';
 import { Mutex } from 'async-mutex';
 
 export interface RelayStatus {
   url: string;
-  status: 'connecting' | 'connected' | 'disconnected' | 'error';
+  status: 'connecting' | 'connected' | 'disconnecting' | 'disconnected' | 'error';
   error?: string;
 }
 
 export class RelayService {
   private static instance: RelayService;
   private pool: SimplePool;
-  private relays: Map<string, Relay> = new Map(); // Keep track of individual Relay objects
+  private targetRelays: Set<string> = new Set();
   private relayStatuses: Map<string, RelayStatus> = new Map();
   private connectionMutex = new Mutex();
   private listeners: ((statuses: RelayStatus[]) => void)[] = [];
 
-  // Default relays - consider making this configurable later
   private defaultRelays: string[] = [
     'wss://relay.damus.io',
     'wss://relay.primal.net',
-    'wss://nos.lol',
-    'wss://nostr.mom',
-    // Add more reliable relays here
+    'wss://nos.lol'
   ];
 
   private constructor() {
-    this.pool = new SimplePool({ eoseSubTimeout: 5000 }); // 5-second timeout for EOSE
-    // Initialize default relays with disconnected status
+    this.pool = new SimplePool();
     this.defaultRelays.forEach(url => {
-      this.relayStatuses.set(url, { url, status: 'disconnected' });
+      // Initialize status but don't add to targetRelays yet
+      if (!this.relayStatuses.has(url)) {
+         this.relayStatuses.set(url, { url, status: 'disconnected' });
+      }
     });
   }
 
@@ -39,21 +38,30 @@ export class RelayService {
     return RelayService.instance;
   }
 
+  private updateRelayStatus(url: string, status: RelayStatus['status'], error?: string) {
+    const current = this.relayStatuses.get(url);
+    if (current?.status === status && current?.error === error) {
+      return;
+    }
+    console.log(`Updating status for ${url}: ${status} ${error ? `(${error})` : ''}`);
+    this.relayStatuses.set(url, { url, status, error });
+    this.notifyListeners();
+  }
+
   private notifyListeners() {
     this.listeners.forEach(listener => listener(this.getRelayStatuses()));
   }
 
   public subscribeToStatusUpdates(listener: (statuses: RelayStatus[]) => void): () => void {
     this.listeners.push(listener);
-    // Immediately notify with current statuses
     listener(this.getRelayStatuses());
-    // Return unsubscribe function
     return () => {
       this.listeners = this.listeners.filter(l => l !== listener);
     };
   }
 
   public getRelayStatuses(): RelayStatus[] {
+    // Return the current statuses we are tracking
     return Array.from(this.relayStatuses.values());
   }
 
@@ -61,89 +69,79 @@ export class RelayService {
     const release = await this.connectionMutex.acquire();
     try {
       console.log('Connecting to relays:', relayUrls);
-      const connectPromises = relayUrls.map(async (url) => {
-        if (this.relays.has(url) && this.relays.get(url)?.status === 1 /* CONNECTED */) {
-          console.log(`Already connected to ${url}`);
-          return; // Already connected or connecting
+      const promises = relayUrls.map(async (url) => {
+        // Only attempt connection if not already connected or connecting
+        const currentStatus = this.relayStatuses.get(url)?.status;
+        if (currentStatus === 'connected' || currentStatus === 'connecting') {
+            console.log(`Skipping connection attempt for ${url} (status: ${currentStatus})`);
+            return;
         }
 
-        this.relayStatuses.set(url, { url, status: 'connecting' });
-        this.notifyListeners();
-
+        this.targetRelays.add(url);
+        this.updateRelayStatus(url, 'connecting');
         try {
-          // SimplePool's ensureRelay automatically handles connection and reuse
-          const relay = await this.pool.ensureRelay(url);
-          this.relays.set(url, relay);
-
-          // Attach listeners to the specific relay instance
-          relay.on('connect', () => {
-            console.log(`Connected to ${url}`);
-            this.relayStatuses.set(url, { url, status: 'connected' });
-            this.notifyListeners();
-          });
-
-          relay.on('disconnect', () => {
-            console.log(`Disconnected from ${url}`);
-            this.relayStatuses.set(url, { url, status: 'disconnected' });
-            // Optionally remove from active relays map? Depends on desired reconnect logic.
-            // this.relays.delete(url);
-            this.notifyListeners();
-          });
-
-          relay.on('error', (error: any) => {
-            console.error(`Error from ${url}:`, error);
-            this.relayStatuses.set(url, { url, status: 'error', error: 'Connection failed' });
-            this.notifyListeners();
-          });
-
-          // Handle initial connection state (if already connected by the time listeners are attached)
-          if (relay.status === 1 /* CONNECTED */) {
-             this.relayStatuses.set(url, { url, status: 'connected' });
-             this.notifyListeners();
-          } else if (relay.status === 2 /* CLOSING */ || relay.status === 3 /* CLOSED */) {
-            this.relayStatuses.set(url, { url, status: 'disconnected' });
-            this.notifyListeners();
-          }
-
+          // This promise resolves when the connection is established or immediately if already connected.
+          // It rejects if the connection fails.
+          await this.pool.ensureRelay(url);
+          this.updateRelayStatus(url, 'connected');
         } catch (error) {
-          console.error(`Failed to ensure connection to ${url}:`, error);
-          this.relayStatuses.set(url, { url, status: 'error', error: 'Failed to connect' });
-          this.notifyListeners();
+          console.error(`Failed to connect to relay ${url}:`, error);
+          this.updateRelayStatus(url, 'error', error instanceof Error ? error.message : 'Connection failed');
+          this.targetRelays.delete(url); // Remove from targets if connection failed
         }
       });
-      await Promise.all(connectPromises);
+      // Wait for all connection attempts to settle
+      await Promise.allSettled(promises);
+      // Notify listeners once after all attempts are done
+      this.notifyListeners();
     } finally {
       release();
     }
   }
 
   async disconnectFromRelay(url: string): Promise<void> {
-     const release = await this.connectionMutex.acquire();
-     try {
-        const relay = this.relays.get(url);
-        if (relay && relay.status === 1 /* CONNECTED */) {
-            console.log(`Disconnecting from ${url}...`);
-            await relay.close();
-            this.relays.delete(url);
-            this.relayStatuses.set(url, { url, status: 'disconnected' });
-            this.notifyListeners();
-        } else {
-            console.log(`Not connected to ${url} or already disconnected.`);
-             // Ensure status reflects disconnected if we try to disconnect a non-existent/disconnected relay
-            this.relayStatuses.set(url, { url, status: 'disconnected' });
-            this.notifyListeners();
-        }
-     } catch (error) {
-         console.error(`Error disconnecting from ${url}:`, error);
-         this.relayStatuses.set(url, { url, status: 'error', error: 'Disconnection failed' });
-         this.notifyListeners();
-     } finally {
-        release();
-     }
+    const release = await this.connectionMutex.acquire();
+    try {
+      if (!this.targetRelays.has(url)) {
+          console.log(`Relay ${url} is not a target, skipping disconnect.`);
+          // Ensure status is marked disconnected if it wasn't already
+          if (this.relayStatuses.get(url)?.status !== 'disconnected') {
+            this.updateRelayStatus(url, 'disconnected');
+          }
+          return;
+      }
+
+      this.targetRelays.delete(url);
+      this.updateRelayStatus(url, 'disconnecting');
+
+      try {
+        // Use SimplePool's close method for specific relays
+        this.pool.close([url]);
+        console.log(`Closed connection to ${url} via SimplePool.`);
+        this.updateRelayStatus(url, 'disconnected');
+      } catch (error) {
+          // Log error but still mark as disconnected as that's the intent
+         console.error(`Error closing relay ${url} via SimplePool:`, error);
+         this.updateRelayStatus(url, 'disconnected', error instanceof Error ? error.message : 'Close operation failed');
+      }
+
+    } finally {
+      // Notify regardless of errors during close attempt
+      this.notifyListeners();
+      release();
+    }
   }
 
-  // Method to get the SimplePool instance for subscribing/publishing
+  // Disconnect from all targeted relays
+  async disconnectAllRelays(): Promise<void> {
+     const urlsToDisconnect = Array.from(this.targetRelays);
+     console.log('Disconnecting from all target relays:', urlsToDisconnect);
+     const promises = urlsToDisconnect.map(url => this.disconnectFromRelay(url));
+     await Promise.allSettled(promises);
+     console.log('Finished disconnecting all relays.');
+  }
+
   getPool(): SimplePool {
     return this.pool;
   }
-} 
+}
