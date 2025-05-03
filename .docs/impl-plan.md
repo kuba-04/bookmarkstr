@@ -95,7 +95,7 @@ export class BookmarkService {
 
 ## 3. Implementation Phases
 
-### Phase 1: Core Infrastructure (Week 1)
+### Phase 1: Core Infrastructure
 
 1. Project Setup
 
@@ -108,7 +108,7 @@ export class BookmarkService {
    - Set up secure session management
    - Create login UI components
 
-### Phase 2: Relay Integration (Week 2)
+### Phase 2: Relay Integration
 
 1. Relay Management
 
@@ -121,7 +121,7 @@ export class BookmarkService {
    - Add network error recovery
    - Create user-friendly error messages
 
-### Phase 3: Bookmark Features (Week 3)
+### Phase 3: Bookmark Features
 
 1. Bookmark Loading
 
@@ -134,7 +134,7 @@ export class BookmarkService {
    - Implement link clicking behavior
    - Create link preview components
 
-### Phase 4: Polish & Testing (Week 4)
+### Phase 4: Polish & Testing
 
 1. Performance Optimization
 

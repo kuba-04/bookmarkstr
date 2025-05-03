@@ -1,0 +1,32 @@
+{
+  "name": "Bookmarkstr",
+  "description": "A Nostr-based bookmarks viewer extension",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "bookmarkstr@example.com"
+    }
+  },
+  "options_page": "popup.html",
+  "background": {
+    "scripts": ["background.build.js"]
+  },
+  "browser_action": {
+    "default_title": "Bookmarkstr",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.build.js"]
+    }
+  ],
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "web_accessible_resources": [
+    "nostr-provider.js"
+  ]
+} 
