@@ -857,10 +857,6 @@ video {
   white-space: nowrap;
 }
 
-.text-ellipsis {
-  text-overflow: ellipsis;
-}
-
 .whitespace-pre-wrap {
   white-space: pre-wrap;
 }

@@ -27160,6 +27160,42 @@ var findImageUrls = (content) => {
   const imagePattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi;
   return content.match(imagePattern) || [];
 };
+var makeUrlsClickable = (content) => {
+  if (!content) return [content];
+  const urlPattern = /(https?:\/\/\S+)/gi;
+  const matches = Array.from(content.matchAll(urlPattern));
+  if (matches.length === 0) {
+    return [content];
+  }
+  const result = [];
+  let lastIndex = 0;
+  matches.forEach((match, idx) => {
+    const url = match[0];
+    const startIndex = match.index;
+    if (startIndex > lastIndex) {
+      result.push(content.substring(lastIndex, startIndex));
+    }
+    const cleanUrl = url.replace(/[.,;:!?]$/, "");
+    result.push(
+      /* @__PURE__ */ import_react4.default.createElement(
+        "a",
+        {
+          key: `url-${idx}`,
+          href: cleanUrl,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150"
+        },
+        cleanUrl
+      )
+    );
+    lastIndex = startIndex + url.length;
+  });
+  if (lastIndex < content.length) {
+    result.push(content.substring(lastIndex));
+  }
+  return result;
+};
 var imageContainerStyle = {
   maxWidth: "100%",
   display: "flex",
@@ -27196,9 +27232,9 @@ var BookmarkItem = ({ bookmark }) => {
                 className: "hover:shadow-lg transition-shadow duration-200"
               }
             )
-          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between w-full" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-500 overflow-hidden text-ellipsis break-all" }, bookmark.url.length > 50 ? `${bookmark.url.substring(0, 47)}...` : bookmark.url), renderMetadata(bookmark)));
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
         }
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1" }, /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1 w-full" }, /* @__PURE__ */ import_react4.default.createElement(
           "a",
           {
             href: bookmark.url,
@@ -27207,41 +27243,46 @@ var BookmarkItem = ({ bookmark }) => {
             className: "text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150",
             title: bookmark.url
           },
-          bookmark.url.length > 50 ? `${bookmark.url.substring(0, 47)}...` : bookmark.url
+          bookmark.url
         ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
       }
       case "note": {
         const imageUrls = bookmark.content ? findImageUrls(bookmark.content) : [];
         const textContent = bookmark.content || `Note ID: ${bookmark.eventId}`;
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed" }, textContent), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => /* @__PURE__ */ import_react4.default.createElement("div", { key: index, className: "relative group" }, /* @__PURE__ */ import_react4.default.createElement(
-          "a",
-          {
-            href: url,
-            target: "_blank",
-            rel: "noopener noreferrer",
-            className: "block hover:opacity-95 transition-opacity"
-          },
-          /* @__PURE__ */ import_react4.default.createElement(
-            "img",
+        const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
+          const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
+          if (exactUrlCount === 1) return null;
+          return /* @__PURE__ */ import_react4.default.createElement("div", { key: index, className: "relative group" }, /* @__PURE__ */ import_react4.default.createElement(
+            "a",
             {
-              src: url,
-              alt: `Image ${index + 1}`,
-              style: imageStyle,
-              className: "hover:shadow-lg transition-shadow duration-200 w-full"
-            }
-          )
-        )))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
+              href: url,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "block hover:opacity-95 transition-opacity"
+            },
+            /* @__PURE__ */ import_react4.default.createElement(
+              "img",
+              {
+                src: url,
+                alt: `Image ${index + 1}`,
+                style: imageStyle,
+                className: "hover:shadow-lg transition-shadow duration-200 w-full"
+              }
+            )
+          ));
+        }).filter(Boolean)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
       }
       case "article":
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-start" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 text-gray-400 mr-2 mt-0.5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "font-mono text-sm break-all text-gray-600", title: `Article Naddr: ${bookmark.naddr}` }, `Article: ${bookmark.naddr.substring(0, 15)}...`)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between w-full text-xs" }, bookmark.relayHint && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-gray-400 flex items-center", title: `Relay Hint: ${bookmark.relayHint}` }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-3 h-3 mr-1", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 10V3L4 14h7v7l9-11h-7z" })), "Relay"), renderMetadata(bookmark)));
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-start" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "font-mono text-sm break-all text-gray-600 w-full", title: `Article Naddr: ${bookmark.naddr}` }, `Article: ${bookmark.naddr}`)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between w-full text-xs" }, bookmark.relayHint && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-gray-400 flex items-center", title: `Relay Hint: ${bookmark.relayHint}` }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-3 h-3 mr-1 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 10V3L4 14h7v7l9-11h-7z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "break-all" }, bookmark.relayHint)), renderMetadata(bookmark)));
       case "hashtag":
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-purple-600 font-medium hover:text-purple-700 transition-colors duration-150" }, "#", bookmark.hashtag), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-purple-600 font-medium hover:text-purple-700 transition-colors duration-150 break-all" }, "#", bookmark.hashtag), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
       default:
         console.warn("Unknown bookmark type:", bookmark);
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center text-red-500" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-2", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" })), "Unknown Bookmark Type");
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center text-red-500" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-2 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" })), "Unknown Bookmark Type");
     }
   };
-  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200" }, renderBookmarkContent());
+  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden" }, renderBookmarkContent());
 };
 var BookmarkItem_default = BookmarkItem;
 
