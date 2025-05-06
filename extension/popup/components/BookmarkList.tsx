@@ -6,9 +6,10 @@ interface BookmarkListProps {
   bookmarks: ProcessedBookmark[];
   isLoading: boolean;
   error: string | null;
+  onDeleteBookmark?: (bookmarkId: string) => Promise<void>;
 }
 
-const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading, error }) => {
+const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-8 text-gray-500">
@@ -43,9 +44,26 @@ const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading, error
 
   return (
     <ul className="space-y-2">
-      {bookmarks.map((bookmark) => (
-        <BookmarkItem key={bookmark.id} bookmark={bookmark} />
-      ))}
+      {bookmarks.map((bookmark) => {
+        console.log('Rendering bookmark:', bookmark.id);
+        const deleteHandler = onDeleteBookmark 
+          ? () => {
+              console.log('Delete handler called for bookmark:', bookmark.id);
+              return onDeleteBookmark(bookmark.id);
+            }
+          : () => {
+              console.log('Fallback delete handler called for bookmark:', bookmark.id);
+              return Promise.resolve();
+            };
+
+        return (
+          <BookmarkItem 
+            key={bookmark.id} 
+            bookmark={bookmark} 
+            onDelete={deleteHandler}
+          />
+        );
+      })}
     </ul>
   );
 };

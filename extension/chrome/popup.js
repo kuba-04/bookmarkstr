@@ -26869,7 +26869,6 @@ var BookmarkService = class {
       "wss://nos.lol",
       "wss://relay.nostr.band",
       "wss://relay.damus.io",
-      "wss://relay.current.fyi",
       "wss://nostr.land",
       "wss://relay.primal.net"
     ];
@@ -27086,9 +27085,8 @@ var BookmarkService = class {
         completeSubscription();
       }, queryTimeout);
       try {
-        const filtersToSubscribe = [noteFilter];
         console.log(`[BookmarkService] Subscribing for notes on relays: ${JSON.stringify(currentConnectedRelays)}`);
-        sub = pool.subscribe(currentConnectedRelays, filtersToSubscribe, {
+        sub = pool.subscribe(currentConnectedRelays, noteFilter, {
           onevent: (event) => {
             noteEvents.push(event);
           },
@@ -27191,6 +27189,165 @@ var BookmarkService = class {
       return false;
     }
   }
+  /**
+   * Deletes a bookmark by creating a new kind 10003 event without the specified bookmark
+   * @param bookmarkId The ID of the bookmark to delete
+   * @param publicKey The user's public key
+   * @returns A promise that resolves when the bookmark is deleted
+   */
+  async deleteBookmark(bookmarkId, publicKey) {
+    console.log(`[BookmarkService] Deleting bookmark ${bookmarkId} for user ${publicKey}`);
+    const currentBookmarks = await this.fetchBookmarks(publicKey);
+    console.log(`[BookmarkService] Current bookmarks:`, currentBookmarks);
+    const updatedBookmarks = currentBookmarks.filter((b) => b.id !== bookmarkId);
+    console.log(`[BookmarkService] Updated bookmarks:`, updatedBookmarks);
+    const tags = [];
+    updatedBookmarks.forEach((bookmark) => {
+      if (bookmark.type === "website") {
+        tags.push(["r", bookmark.url, bookmark.title]);
+      } else if (bookmark.type === "note") {
+        const tag = ["e", bookmark.eventId];
+        if (bookmark.relayHint) tag.push(bookmark.relayHint);
+        if ("title" in bookmark) tag.push(bookmark.title);
+        tags.push(tag);
+      }
+    });
+    const event = {
+      kind: 10003,
+      created_at: Math.floor(Date.now() / 1e3),
+      tags,
+      content: "",
+      pubkey: publicKey
+    };
+    try {
+      const signedEvent = await window.nostr.signEvent(event);
+      await this.publishEventToRelays(signedEvent);
+      console.log(`[BookmarkService] Successfully deleted bookmark ${bookmarkId}`);
+      return;
+    } catch (error) {
+      console.error("[BookmarkService] Error during bookmark deletion process:", error);
+      throw error;
+    }
+  }
+  /**
+   * Helper method to publish an event to relays with reconnection and fallback handling
+   * @param event The signed event to publish
+   */
+  async publishEventToRelays(event) {
+    const usableRelays = this.relayService.getConnectedRelays();
+    if (usableRelays.length > 0) {
+      console.log(`[BookmarkService] Found ${usableRelays.length} usable relays, attempting to publish`);
+      const publishResults = await this.tryPublishToRelays(usableRelays, event);
+      if (publishResults.some((result) => result)) {
+        console.log(`[BookmarkService] Successfully published to ${publishResults.filter(Boolean).length}/${usableRelays.length} relays`);
+        return true;
+      }
+      console.warn(`[BookmarkService] Failed to publish to any usable relay, will attempt reconnection`);
+    } else {
+      console.warn("[BookmarkService] No usable relays available, will attempt reconnection");
+    }
+    try {
+      const pool = this.relayService.getPool();
+      const connectionPromises = this.fallbackRelays.map(async (relay) => {
+        try {
+          return await Promise.race([
+            pool.ensureRelay(relay, { connectionTimeout: 5e3 }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Connection timeout for ${relay}`)), 5e3))
+          ]);
+        } catch (e) {
+          console.warn(`[BookmarkService] Failed to connect to fallback relay ${relay}:`, e);
+          return null;
+        }
+      });
+      await Promise.allSettled(connectionPromises);
+      const availableRelays = this.relayService.getConnectedRelays();
+      if (availableRelays.length > 0) {
+        const fallbackResults = await this.tryPublishToRelays(availableRelays, event);
+        if (fallbackResults.some((result) => result)) {
+          console.log(`[BookmarkService] Successfully published to ${fallbackResults.filter(Boolean).length}/${availableRelays.length} fallback relays`);
+          return true;
+        }
+      }
+      console.warn("[BookmarkService] Could not publish through relay service, trying direct publish method");
+      return await this.lastResortPublish(event);
+    } catch (error) {
+      console.error("[BookmarkService] Error in relay reconnection and publish attempt:", error);
+      return false;
+    }
+  }
+  /**
+   * Try to publish an event to a set of relays with individual error handling
+   */
+  async tryPublishToRelays(relays, event) {
+    if (relays.length === 0) return [];
+    const pool = this.relayService.getPool();
+    const publishPromises = relays.map(async (relay) => {
+      try {
+        await Promise.race([
+          pool.publish([relay], event),
+          new Promise((_, reject) => setTimeout(() => reject(new Error(`Publish timeout for ${relay}`)), 5e3))
+        ]);
+        return true;
+      } catch (e) {
+        console.warn(`[BookmarkService] Failed to publish to relay ${relay}:`, e);
+        return false;
+      }
+    });
+    const results = await Promise.allSettled(publishPromises);
+    return results.map((r) => r.status === "fulfilled" && r.value);
+  }
+  /**
+   * Last resort method to publish directly to relays
+   * This is a fallback when normal publish methods fail
+   */
+  async lastResortPublish(event) {
+    const tempPool = new SimplePool();
+    let success = false;
+    try {
+      const publishPromises = this.fallbackRelays.map(async (relay) => {
+        try {
+          const relayConn = tempPool.ensureRelay(relay, { connectionTimeout: 3e3 });
+          await Promise.race([
+            relayConn,
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Connection timeout`)), 3e3))
+          ]);
+          await Promise.race([
+            tempPool.publish([relay], event),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Publish timeout`)), 3e3))
+          ]);
+          console.log(`[BookmarkService] Successfully published directly to ${relay}`);
+          return true;
+        } catch (e) {
+          console.warn(`[BookmarkService] Direct publish failed for ${relay}:`, e);
+          return false;
+        }
+      });
+      const results = await Promise.allSettled(publishPromises);
+      const successes = results.filter((r) => r.status === "fulfilled" && r.value).length;
+      if (successes > 0) {
+        console.log(`[BookmarkService] Last resort publish succeeded on ${successes} relays`);
+        success = true;
+      } else {
+        console.warn("[BookmarkService] All publishing attempts failed, proceeding with local deletion only");
+      }
+    } catch (e) {
+      console.error("[BookmarkService] Error in last resort publish:", e);
+    } finally {
+      console.log("[BookmarkService] Cleaning up tempPool connections in lastResortPublish.");
+      if (this.fallbackRelays.length > 0) {
+        console.log(`[BookmarkService] tempPool will attempt to close connections related to fallback relays: ${this.fallbackRelays.join(", ")}`);
+        try {
+          await tempPool.close(this.fallbackRelays);
+          console.log("[BookmarkService] tempPool.close operation completed for fallback relays.");
+        } catch (closeError) {
+          console.warn(`[BookmarkService] CAUGHT: Error during tempPool.close operation for fallback relays. Publishing part was likely successful. Error:`, closeError);
+        }
+      } else {
+        console.log("[BookmarkService] No fallback relays configured for tempPool to attempt to close.");
+      }
+    }
+    return success;
+  }
 };
 
 // extension/popup/components/BookmarkList.tsx
@@ -27259,16 +27416,28 @@ var imageStyle = {
   objectFit: "contain",
   borderRadius: "6px"
 };
-var BookmarkItem = ({ bookmark }) => {
-  const renderBookmarkContent = () => {
-    switch (bookmark.type) {
+var BookmarkItem = ({ bookmark, onDelete }) => {
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDelete) {
+      try {
+        console.log("Deleting bookmark:", bookmark.id);
+        await onDelete();
+      } catch (error) {
+        console.error("Error deleting bookmark:", error);
+      }
+    }
+  };
+  const renderBookmarkContent = (bookmark2) => {
+    switch (bookmark2.type) {
       case "website": {
-        const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
+        const isImage = bookmark2.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
         if (isImage) {
-          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark.title)), /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
+          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title)), /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
             "a",
             {
-              href: bookmark.url,
+              href: bookmark2.url,
               target: "_blank",
               rel: "noopener noreferrer",
               className: "hover:opacity-90 transition-opacity rounded-lg overflow-hidden"
@@ -27276,33 +27445,33 @@ var BookmarkItem = ({ bookmark }) => {
             /* @__PURE__ */ import_react4.default.createElement(
               "img",
               {
-                src: bookmark.url,
-                alt: bookmark.title,
+                src: bookmark2.url,
+                alt: bookmark2.title,
                 style: imageStyle,
                 className: "hover:shadow-lg transition-shadow duration-200"
               }
             )
-          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark2)));
         }
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2 w-full" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark.title), /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2 w-full" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
           "a",
           {
-            href: bookmark.url,
+            href: bookmark2.url,
             target: "_blank",
             rel: "noopener noreferrer",
             className: "text-blue-600 hover:text-blue-700 break-all text-sm transition-colors duration-150",
-            title: bookmark.url
+            title: bookmark2.url
           },
-          bookmark.url
-        ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
+          bookmark2.url
+        ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark2)));
       }
       case "url": {
-        const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
+        const isImage = bookmark2.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
         if (isImage) {
           return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
             "a",
             {
-              href: bookmark.url,
+              href: bookmark2.url,
               target: "_blank",
               rel: "noopener noreferrer",
               className: "hover:opacity-90 transition-opacity rounded-lg overflow-hidden"
@@ -27310,32 +27479,32 @@ var BookmarkItem = ({ bookmark }) => {
             /* @__PURE__ */ import_react4.default.createElement(
               "img",
               {
-                src: bookmark.url,
+                src: bookmark2.url,
                 alt: "Bookmarked image",
                 style: imageStyle,
                 className: "hover:shadow-lg transition-shadow duration-200"
               }
             )
-          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark2)));
         }
         return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1 w-full" }, /* @__PURE__ */ import_react4.default.createElement(
           "a",
           {
-            href: bookmark.url,
+            href: bookmark2.url,
             target: "_blank",
             rel: "noopener noreferrer",
             className: "text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150",
-            title: bookmark.url
+            title: bookmark2.url
           },
-          bookmark.url
-        ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
+          bookmark2.url
+        ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark2)));
       }
       case "note": {
-        const hasTitle = "title" in bookmark;
-        const noteTitle = hasTitle ? bookmark.title : "Nostr Note";
-        const content = bookmark.content;
+        const hasTitle = "title" in bookmark2;
+        const noteTitle = hasTitle ? bookmark2.title : "Nostr Note";
+        const content = bookmark2.content;
         const imageUrls = content ? findImageUrls(content) : [];
-        const textContent = content || `Note ID: ${bookmark.eventId}`;
+        const textContent = content || `Note ID: ${bookmark2.eventId}`;
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
         return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, hasTitle && /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base mb-1" }, noteTitle), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
           const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
@@ -27358,23 +27527,31 @@ var BookmarkItem = ({ bookmark }) => {
               }
             )
           ));
-        }).filter(Boolean)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
+        }).filter(Boolean)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark2)));
       }
       case "article":
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-start" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "font-mono text-sm break-all text-gray-600 w-full", title: `Article Naddr: ${bookmark.naddr}` }, `Article: ${bookmark.naddr}`)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between w-full text-xs" }, bookmark.relayHint && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-gray-400 flex items-center", title: `Relay Hint: ${bookmark.relayHint}` }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-3 h-3 mr-1 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 10V3L4 14h7v7l9-11h-7z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "break-all" }, bookmark.relayHint)), renderMetadata(bookmark)));
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-start" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "font-mono text-sm break-all text-gray-600 w-full", title: `Article Naddr: ${bookmark2.naddr}` }, `Article: ${bookmark2.naddr}`)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between w-full text-xs" }, bookmark2.relayHint && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-gray-400 flex items-center", title: `Relay Hint: ${bookmark2.relayHint}` }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-3 h-3 mr-1 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 10V3L4 14h7v7l9-11h-7z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "break-all" }, bookmark2.relayHint)), renderMetadata(bookmark2)));
       case "hashtag":
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-purple-600 font-medium hover:text-purple-700 transition-colors duration-150 break-all" }, "#", bookmark.hashtag), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-purple-600 font-medium hover:text-purple-700 transition-colors duration-150 break-all" }, "#", bookmark2.hashtag), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark2)));
       default:
-        console.warn("Unknown bookmark type:", bookmark);
+        console.warn("Unknown bookmark type:", bookmark2);
         return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center text-red-500" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-2 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" })), "Unknown Bookmark Type");
     }
   };
-  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden" }, renderBookmarkContent());
+  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "mb-3" }, renderBookmarkContent(bookmark)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end mt-2 pt-2 border-t border-gray-100" }, /* @__PURE__ */ import_react4.default.createElement(
+    "button",
+    {
+      onClick: handleDelete,
+      className: "px-3 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-sm font-medium flex items-center"
+    },
+    /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-1", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" })),
+    "Delete"
+  ))));
 };
 var BookmarkItem_default = BookmarkItem;
 
 // extension/popup/components/BookmarkList.tsx
-var BookmarkList2 = ({ bookmarks, isLoading, error }) => {
+var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
   if (isLoading) {
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-500" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3" }), /* @__PURE__ */ import_react5.default.createElement("p", null, "Loading bookmarks..."));
   }
@@ -27384,7 +27561,24 @@ var BookmarkList2 = ({ bookmarks, isLoading, error }) => {
   if (bookmarks.length === 0) {
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-500" }, /* @__PURE__ */ import_react5.default.createElement("svg", { className: "w-12 h-12 text-gray-300 mb-3", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react5.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" })), /* @__PURE__ */ import_react5.default.createElement("p", null, "No bookmarks found"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-gray-400 mt-1" }, "Bookmarks you save will appear here"));
   }
-  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "space-y-2" }, bookmarks.map((bookmark) => /* @__PURE__ */ import_react5.default.createElement(BookmarkItem_default, { key: bookmark.id, bookmark })));
+  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "space-y-2" }, bookmarks.map((bookmark) => {
+    console.log("Rendering bookmark:", bookmark.id);
+    const deleteHandler = onDeleteBookmark ? () => {
+      console.log("Delete handler called for bookmark:", bookmark.id);
+      return onDeleteBookmark(bookmark.id);
+    } : () => {
+      console.log("Fallback delete handler called for bookmark:", bookmark.id);
+      return Promise.resolve();
+    };
+    return /* @__PURE__ */ import_react5.default.createElement(
+      BookmarkItem_default,
+      {
+        key: bookmark.id,
+        bookmark,
+        onDelete: deleteHandler
+      }
+    );
+  }));
 };
 var BookmarkList_default = BookmarkList2;
 
@@ -27497,6 +27691,46 @@ var Popup = () => {
       setIsAuthLoading(false);
     }
   };
+  const handleDeleteBookmark = async (bookmarkId) => {
+    console.log("[Popup] handleDeleteBookmark called with:", bookmarkId);
+    if (!publicKey) {
+      console.warn("[Popup] Cannot delete bookmark: no public key");
+      return;
+    }
+    const bookmarkToDelete = bookmarks.find((b) => b.id === bookmarkId);
+    if (bookmarkToDelete) {
+      setBookmarks((prev) => prev.filter((b) => b.id !== bookmarkId));
+    }
+    try {
+      const usableRelays = relayService.getConnectedRelays();
+      console.log(`[Popup] Currently have ${usableRelays.length} usable relay connections`);
+      if (usableRelays.length === 0) {
+        try {
+        } catch (error) {
+          console.warn("[Popup] Error during relay reconnection:", error);
+        }
+      }
+      await bookmarkService.deleteBookmark(bookmarkId, publicKey);
+      console.log(`[Popup] Successfully deleted bookmark ${bookmarkId}`);
+      setTimeout(() => {
+        if (publicKey) {
+          fetchAndSetBookmarks(publicKey).catch((error) => {
+            console.error("[Popup] Error refreshing bookmarks after deletion:", error);
+          });
+        }
+      }, 3e3);
+    } catch (error) {
+      console.error("[Popup] Error deleting bookmark:", error);
+      if (bookmarkToDelete) {
+        setBookmarks((prev) => [...prev, bookmarkToDelete].sort((a, b) => {
+          const timeA = "createdAt" in a ? a.createdAt : a.created_at;
+          const timeB = "createdAt" in b ? b.createdAt : b.created_at;
+          return timeB - timeA;
+        }));
+      }
+      setBookmarksError("Failed to delete bookmark. Please try again.");
+    }
+  };
   const renderError = () => {
     if (!initializationError) return null;
     return /* @__PURE__ */ import_react6.default.createElement("div", { className: "p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-4" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "font-bold" }, "Initialization Error:"), /* @__PURE__ */ import_react6.default.createElement("p", null, initializationError));
@@ -27557,7 +27791,8 @@ var Popup = () => {
     {
       bookmarks,
       isLoading: isBookmarksLoading,
-      error: bookmarksError
+      error: bookmarksError,
+      onDeleteBookmark: handleDeleteBookmark
     }
   )))) : /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow p-4" }, /* @__PURE__ */ import_react6.default.createElement(Login, { onLoginSuccess: handleLoginSuccess }))));
 };

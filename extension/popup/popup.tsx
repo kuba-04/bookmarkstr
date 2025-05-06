@@ -159,6 +159,62 @@ const Popup: React.FC = () => {
     }
   };
 
+  const handleDeleteBookmark = async (bookmarkId: string) => {
+    console.log('[Popup] handleDeleteBookmark called with:', bookmarkId);
+    if (!publicKey) {
+      console.warn('[Popup] Cannot delete bookmark: no public key');
+      return;
+    }
+    
+    // Optimistically update UI by removing the bookmark immediately
+    const bookmarkToDelete = bookmarks.find(b => b.id === bookmarkId);
+    if (bookmarkToDelete) {
+      setBookmarks(prev => prev.filter(b => b.id !== bookmarkId));
+    }
+    
+    try {
+      const usableRelays = relayService.getConnectedRelays();
+      console.log(`[Popup] Currently have ${usableRelays.length} usable relay connections`);
+      
+      if (usableRelays.length === 0) {
+        try {
+        } catch (error) {
+          console.warn('[Popup] Error during relay reconnection:', error);
+          // Continue anyway - the bookmark service will handle relay issues
+        }
+      }
+      
+      // Delete the bookmark
+      await bookmarkService.deleteBookmark(bookmarkId, publicKey);
+      console.log(`[Popup] Successfully deleted bookmark ${bookmarkId}`);
+      
+      // Refresh bookmarks list to ensure consistency with server state
+      // Use a small delay to allow relays to process the update
+      setTimeout(() => {
+        // Check if we still have the public key (user hasn't logged out)
+        if (publicKey) {
+          fetchAndSetBookmarks(publicKey).catch(error => {
+            console.error('[Popup] Error refreshing bookmarks after deletion:', error);
+          });
+        }
+      }, 3000); // Increased delay to 1.5 seconds to give more time for relay processing
+    } catch (error) {
+      console.error('[Popup] Error deleting bookmark:', error);
+      
+      // Revert the optimistic update if deletion failed
+      if (bookmarkToDelete) {
+        setBookmarks(prev => [...prev, bookmarkToDelete].sort((a, b) => {
+          // Handle both old and new bookmark formats
+          const timeA = 'createdAt' in a ? a.createdAt : a.created_at;
+          const timeB = 'createdAt' in b ? b.createdAt : b.created_at;
+          return timeB - timeA;
+        }));
+      }
+      
+      setBookmarksError('Failed to delete bookmark. Please try again.');
+    }
+  };
+
   const renderError = () => {
     if (!initializationError) return null;
     return (
@@ -272,6 +328,7 @@ const Popup: React.FC = () => {
                   bookmarks={bookmarks} 
                   isLoading={isBookmarksLoading} 
                   error={bookmarksError}
+                  onDeleteBookmark={handleDeleteBookmark}
                 />
               </div>
             </div>

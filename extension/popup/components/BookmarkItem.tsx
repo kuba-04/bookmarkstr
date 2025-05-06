@@ -3,6 +3,7 @@ import { ProcessedBookmark } from '../../common/types';
 
 interface BookmarkItemProps {
   bookmark: ProcessedBookmark;
+  onDelete?: () => Promise<void>;  // Make it optional to avoid type errors
 }
 
 // Helper function to format timestamp (you might want a more sophisticated library later)
@@ -98,8 +99,21 @@ const imageStyle = {
   borderRadius: '6px'
 };
 
-const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
-  const renderBookmarkContent = () => {
+const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDelete) {
+      try {
+        console.log('Deleting bookmark:', bookmark.id);
+        await onDelete();
+      } catch (error) {
+        console.error('Error deleting bookmark:', error);
+      }
+    }
+  };
+
+  const renderBookmarkContent = (bookmark: ProcessedBookmark) => {
     switch (bookmark.type) {
       case 'website': {
         // Check if the URL is an image
@@ -308,7 +322,24 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
 
   return (
     <li className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden">
-      {renderBookmarkContent()}
+      <div className="flex flex-col">
+        {/* Content area */}
+        <div className="mb-3">
+          {renderBookmarkContent(bookmark)}
+        </div>
+        
+        <div className="flex justify-end mt-2 pt-2 border-t border-gray-100">
+          <button
+            onClick={handleDelete}
+            className="px-3 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-sm font-medium flex items-center"
+          >
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Delete
+          </button>
+        </div>
+      </div>
     </li>
   );
 };

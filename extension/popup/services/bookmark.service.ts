@@ -1,6 +1,14 @@
-import { Event, Filter, SimplePool } from 'nostr-tools';
+import { Event, Filter, SimplePool, finalizeEvent } from 'nostr-tools';
 import { RelayService } from './relay.service';
 import { ProcessedBookmark, NostrEvent, BookmarkListEvent } from '../../common/types'; // Corrected import path
+
+declare global {
+  interface Window {
+    nostr: {
+      signEvent: (event: any) => Promise<NostrEvent>;
+    };
+  }
+}
 
 // Remove old Bookmark interface definition
 
@@ -12,7 +20,6 @@ export class BookmarkService {
     'wss://nos.lol',
     'wss://relay.nostr.band',
     'wss://relay.damus.io',
-    'wss://relay.current.fyi',
     'wss://nostr.land',
     'wss://relay.primal.net'
   ];
@@ -250,9 +257,9 @@ export class BookmarkService {
       let timeoutHit = false;
 
       if (expectedEoseCount === 0) {
-         console.warn("[BookmarkService] No connected relays to fetch note content from. Skipping fetch.");
-         resolve(bookmarks);
-         return;
+        console.warn("[BookmarkService] No connected relays to fetch note content from. Skipping fetch.");
+        resolve(bookmarks);
+        return;
       }
 
       const completeSubscription = () => {
@@ -263,7 +270,7 @@ export class BookmarkService {
           const noteContentMap = new Map<string, string>();
           noteEvents.forEach((event: Event) => {
             if (!noteContentMap.has(event.id)) {
-               noteContentMap.set(event.id, event.content);
+              noteContentMap.set(event.id, event.content);
             }
           });
 
@@ -283,41 +290,40 @@ export class BookmarkService {
       };
       
       const timer = setTimeout(() => {
-         console.warn(`[BookmarkService] Timeout hit after ${queryTimeout}ms waiting for note events/EOSE from ${expectedEoseCount} relays.`);
-         timeoutHit = true;
-         completeSubscription();
+        console.warn(`[BookmarkService] Timeout hit after ${queryTimeout}ms waiting for note events/EOSE from ${expectedEoseCount} relays.`);
+        timeoutHit = true;
+        completeSubscription();
       }, queryTimeout);
 
       try {
-         const filtersToSubscribe: Filter[] = [noteFilter];
-         console.log(`[BookmarkService] Subscribing for notes on relays: ${JSON.stringify(currentConnectedRelays)}`);
-         sub = pool.subscribe(currentConnectedRelays, filtersToSubscribe, { 
-           onevent: (event: Event) => {
-             noteEvents.push(event); 
-           },
-           oneose: () => {
-             eoseReceivedCount++;
-             console.log(`[BookmarkService] Received EOSE from ${currentConnectedRelays.length} relays (${eoseReceivedCount}/${expectedEoseCount}).`);
-             if (eoseReceivedCount >= expectedEoseCount && !timeoutHit) {
-                clearTimeout(timer);
-                completeSubscription();
-             }
-           },
-           onclose: (reason) => {
+        console.log(`[BookmarkService] Subscribing for notes on relays: ${JSON.stringify(currentConnectedRelays)}`);
+        sub = pool.subscribe(currentConnectedRelays, noteFilter, { 
+          onevent: (event: Event) => {
+            noteEvents.push(event); 
+          },
+          oneose: () => {
+            eoseReceivedCount++;
+            console.log(`[BookmarkService] Received EOSE from ${currentConnectedRelays.length} relays (${eoseReceivedCount}/${expectedEoseCount}).`);
+            if (eoseReceivedCount >= expectedEoseCount && !timeoutHit) {
+              clearTimeout(timer);
+              completeSubscription();
+            }
+          },
+          onclose: (reason) => {
             console.log(`[BookmarkService] Note subscription closed prematurely. Reason: ${reason}`);
-             if (!timeoutHit && sub) { 
-               clearTimeout(timer);
-               completeSubscription();
-             }
-           }
-         });
-       } catch (error) {
-         console.error("[BookmarkService] Error subscribing to fetch note contents:", error);
-         clearTimeout(timer);
-         resolve(bookmarks);
-       }
-     });
-   }
+            if (!timeoutHit && sub) { 
+              clearTimeout(timer);
+              completeSubscription();
+            }
+          }
+        });
+      } catch (error) {
+        console.error("[BookmarkService] Error subscribing to fetch note contents:", error);
+        clearTimeout(timer);
+        resolve(bookmarks);
+      }
+    });
+  }
 
   /**
    * Parses the tags of a kind 10003 event into ProcessedBookmark objects.
@@ -414,5 +420,222 @@ export class BookmarkService {
     } catch (e) {
       return false;
     }
+  }
+
+  /**
+   * Deletes a bookmark by creating a new kind 10003 event without the specified bookmark
+   * @param bookmarkId The ID of the bookmark to delete
+   * @param publicKey The user's public key
+   * @returns A promise that resolves when the bookmark is deleted
+   */
+  async deleteBookmark(bookmarkId: string, publicKey: string): Promise<void> {
+    console.log(`[BookmarkService] Deleting bookmark ${bookmarkId} for user ${publicKey}`);
+    
+    // Get current bookmarks
+    const currentBookmarks = await this.fetchBookmarks(publicKey);
+
+    console.log(`[BookmarkService] Current bookmarks:`, currentBookmarks);
+    
+    // Filter out the bookmark to delete
+    const updatedBookmarks = currentBookmarks.filter(b => b.id !== bookmarkId);
+
+    console.log(`[BookmarkService] Updated bookmarks:`, updatedBookmarks);
+    
+    // Create new event tags from the remaining bookmarks
+    const tags: string[][] = [];
+    updatedBookmarks.forEach(bookmark => {
+      if (bookmark.type === 'website') {
+        tags.push(['r', bookmark.url, bookmark.title]);
+      } else if (bookmark.type === 'note') {
+        const tag = ['e', bookmark.eventId];
+        if (bookmark.relayHint) tag.push(bookmark.relayHint);
+        if ('title' in bookmark) tag.push(bookmark.title);
+        tags.push(tag);
+      }
+    });
+
+    // Create the event
+    const event = {
+      kind: 10003,
+      created_at: Math.floor(Date.now() / 1000),
+      tags,
+      content: '',
+      pubkey: publicKey
+    };
+
+    try {
+      // Sign the event using the window.nostr provider
+      const signedEvent = await window.nostr.signEvent(event);
+      
+      // Try to publish to relays with better error handling and reconnection
+      await this.publishEventToRelays(signedEvent);
+      
+      console.log(`[BookmarkService] Successfully deleted bookmark ${bookmarkId}`);
+      return;
+    } catch (error) {
+      console.error('[BookmarkService] Error during bookmark deletion process:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Helper method to publish an event to relays with reconnection and fallback handling
+   * @param event The signed event to publish
+   */
+  private async publishEventToRelays(event: any): Promise<boolean> {
+    // First try to publish to connected AND USABLE relays
+    const usableRelays = this.relayService.getConnectedRelays();
+    
+    if (usableRelays.length > 0) {
+      console.log(`[BookmarkService] Found ${usableRelays.length} usable relays, attempting to publish`);
+      
+      const publishResults = await this.tryPublishToRelays(usableRelays, event);
+      
+      if (publishResults.some(result => result)) {
+        console.log(`[BookmarkService] Successfully published to ${publishResults.filter(Boolean).length}/${usableRelays.length} relays`);
+        return true;
+      }
+      
+      console.warn(`[BookmarkService] Failed to publish to any usable relay, will attempt reconnection`);
+    } else {
+      console.warn('[BookmarkService] No usable relays available, will attempt reconnection');
+    }
+  
+    
+    // If we reach here, either there were no connected relays or all publish attempts failed
+    // Try to connect to fallback relays
+    try {
+      // Create fresh connections to fallback relays
+      const pool = this.relayService.getPool();
+      
+      // Connect to fallbacks with timeouts to prevent hanging
+      const connectionPromises = this.fallbackRelays.map(async relay => {
+        try {
+          // Wrap in a timeout to prevent hanging
+          return await Promise.race([
+            pool.ensureRelay(relay, { connectionTimeout: 5000 }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Connection timeout for ${relay}`)), 5000))
+          ]);
+        } catch (e) {
+          console.warn(`[BookmarkService] Failed to connect to fallback relay ${relay}:`, e);
+          return null;
+        }
+      });
+      
+      await Promise.allSettled(connectionPromises);
+      
+      // Get newly connected relays (including any that may have been connected during the process)
+      const availableRelays = this.relayService.getConnectedRelays();
+      
+      if (availableRelays.length > 0) {
+        // Try publishing to the newly connected relays
+        const fallbackResults = await this.tryPublishToRelays(availableRelays, event);
+        
+        if (fallbackResults.some(result => result)) {
+          console.log(`[BookmarkService] Successfully published to ${fallbackResults.filter(Boolean).length}/${availableRelays.length} fallback relays`);
+          return true;
+        }
+      }
+      
+      // If we still can't publish, try one last effort with direct relay targets
+      console.warn('[BookmarkService] Could not publish through relay service, trying direct publish method');
+      return await this.lastResortPublish(event);
+    } catch (error) {
+      console.error('[BookmarkService] Error in relay reconnection and publish attempt:', error);
+      return false;
+    }
+  }
+  
+  /**
+   * Try to publish an event to a set of relays with individual error handling
+   */
+  private async tryPublishToRelays(relays: string[], event: any): Promise<boolean[]> {
+    if (relays.length === 0) return [];
+    
+    const pool = this.relayService.getPool();
+    const publishPromises = relays.map(async relay => {
+      try {
+        
+        // Use a timeout to prevent hanging
+        await Promise.race([
+          pool.publish([relay], event),
+          new Promise((_, reject) => setTimeout(() => reject(new Error(`Publish timeout for ${relay}`)), 5000))
+        ]);
+        return true;
+      } catch (e) {
+        console.warn(`[BookmarkService] Failed to publish to relay ${relay}:`, e);
+        return false;
+      }
+    });
+    
+    // Wait for all publish attempts to complete
+    const results = await Promise.allSettled(publishPromises);
+    return results.map(r => r.status === 'fulfilled' && r.value);
+  }
+  
+  /**
+   * Last resort method to publish directly to relays
+   * This is a fallback when normal publish methods fail
+   */
+  private async lastResortPublish(event: any): Promise<boolean> {
+    // Create a new pool instance to bypass any existing connection issues
+    const tempPool = new SimplePool();
+    let success = false;
+    
+    try {
+      // Try each fallback relay individually
+      const publishPromises = this.fallbackRelays.map(async relay => {
+        try {
+          // Connect, publish, and disconnect in a single operation
+          const relayConn = tempPool.ensureRelay(relay, { connectionTimeout: 3000 });
+          await Promise.race([
+            relayConn,
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Connection timeout`)), 3000))
+          ]);
+          
+          await Promise.race([
+            tempPool.publish([relay], event),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Publish timeout`)), 3000))
+          ]);
+          
+          console.log(`[BookmarkService] Successfully published directly to ${relay}`);
+          return true;
+        } catch (e) {
+          console.warn(`[BookmarkService] Direct publish failed for ${relay}:`, e);
+          return false;
+        }
+      });
+      
+      const results = await Promise.allSettled(publishPromises);
+      const successes = results.filter(r => r.status === 'fulfilled' && r.value).length;
+      
+      if (successes > 0) {
+        console.log(`[BookmarkService] Last resort publish succeeded on ${successes} relays`);
+        success = true;
+      } else {
+        console.warn('[BookmarkService] All publishing attempts failed, proceeding with local deletion only');
+      }
+    } catch (e) {
+      console.error('[BookmarkService] Error in last resort publish:', e);
+    } finally {
+      console.log('[BookmarkService] Cleaning up tempPool connections in lastResortPublish.');
+      // tempPool iterates over this.fallbackRelays to establish connections.
+      // So, we instruct it to attempt to close these same relays.
+      // SimplePool.close() will only close relays it actually has open from this list.
+      if (this.fallbackRelays.length > 0) {
+        console.log(`[BookmarkService] tempPool will attempt to close connections related to fallback relays: ${this.fallbackRelays.join(', ')}`);
+        try {
+          await tempPool.close(this.fallbackRelays);
+          console.log('[BookmarkService] tempPool.close operation completed for fallback relays.');
+        } catch (closeError) {
+          console.warn(`[BookmarkService] CAUGHT: Error during tempPool.close operation for fallback relays. Publishing part was likely successful. Error:`, closeError);
+          // Absorb this error.
+        }
+      } else {
+        console.log('[BookmarkService] No fallback relays configured for tempPool to attempt to close.');
+      }
+    }
+    
+    return success;
   }
 } 
