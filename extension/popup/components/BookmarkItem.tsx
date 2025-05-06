@@ -14,10 +14,8 @@ const formatTimestamp = (timestamp: number): string => {
 
 // Helper function to render common parts (like timestamp)
 const renderMetadata = (bookmark: ProcessedBookmark) => {
-  // Check which timestamp property is available
-  const timestamp = 'createdAt' in bookmark ? bookmark.createdAt : bookmark.created_at;
   return (
-    <span className="text-xs text-gray-400 font-medium">{formatTimestamp(timestamp)}</span>
+    <span className="text-xs text-gray-400 font-medium">{formatTimestamp(bookmark.createdAt)}</span>
   );
 };
 
@@ -166,57 +164,9 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         );
       }
       
-      case 'url': {
-        // Check if the URL is an image
-        const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
-        
-        if (isImage) {
-          return (
-            <div className="flex flex-col items-start w-full space-y-2">
-              <div style={imageContainerStyle}>
-                <a 
-                  href={bookmark.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:opacity-90 transition-opacity rounded-lg overflow-hidden"
-                >
-                  <img 
-                    src={bookmark.url} 
-                    alt="Bookmarked image" 
-                    style={imageStyle}
-                    className="hover:shadow-lg transition-shadow duration-200"
-                  />
-                </a>
-              </div>
-              <div className="flex justify-end w-full">
-                {renderMetadata(bookmark)}
-              </div>
-            </div>
-          );
-        }
-        
-        return (
-          <div className="flex flex-col space-y-1 w-full">
-            <a 
-              href={bookmark.url} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150"
-              title={bookmark.url}
-            >
-              {bookmark.url}
-            </a>
-            <div className="flex justify-end">
-              {renderMetadata(bookmark)}
-            </div>
-          </div>
-        );
-      }
-      
       case 'note': {
-        // Check if this is a new format note with title
-        const hasTitle = 'title' in bookmark;
-        const noteTitle = hasTitle ? bookmark.title : 'Nostr Note';
+        // Note content handling
+        const noteTitle = bookmark.title;
         const content = bookmark.content;
         const imageUrls = content ? findImageUrls(content) : [];
         const textContent = content || `Note ID: ${bookmark.eventId}`;
@@ -226,9 +176,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         
         return (
           <div className="flex flex-col items-start w-full space-y-3">
-            {hasTitle && (
-              <h3 className="text-gray-800 font-medium text-base mb-1">{noteTitle}</h3>
-            )}
+            <h3 className="text-gray-800 font-medium text-base mb-1">{noteTitle}</h3>
             
             <p className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
               {makeUrlsClickable(textContent)}
@@ -270,43 +218,6 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         );
       }
       
-      case 'article':
-        return (
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-start">
-              <svg className="w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-              </svg>
-              <span className="font-mono text-sm break-all text-gray-600 w-full" title={`Article Naddr: ${bookmark.naddr}`}>
-                {`Article: ${bookmark.naddr}`}
-              </span>
-            </div>
-            <div className="flex items-center justify-between w-full text-xs">
-              {bookmark.relayHint && (
-                <span className="text-gray-400 flex items-center" title={`Relay Hint: ${bookmark.relayHint}`}>
-                  <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span className="break-all">{bookmark.relayHint}</span>
-                </span>
-              )}
-              {renderMetadata(bookmark)}
-            </div>
-          </div>
-        );
-         
-      case 'hashtag':
-        return (
-          <div className="flex flex-col space-y-1">
-            <span className="text-purple-600 font-medium hover:text-purple-700 transition-colors duration-150 break-all">
-              #{bookmark.hashtag}
-            </span>
-            <div className="flex justify-end">
-              {renderMetadata(bookmark)}
-            </div>
-          </div>
-        );
-        
       default:
         console.warn('Unknown bookmark type:', bookmark);
         return (
