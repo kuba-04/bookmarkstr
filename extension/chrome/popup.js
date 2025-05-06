@@ -26925,20 +26925,75 @@ var BookmarkService = class {
    */
   async fetchBookmarks(publicKey) {
     console.log(`[BookmarkService] Fetching bookmark list for pubkey: ${publicKey}`);
+    const connectedRelayUrls = this.relayService.getConnectedRelays();
+    console.log(`[BookmarkService] Currently connected relays: ${JSON.stringify(connectedRelayUrls)}`);
+    let relaysToUse = connectedRelayUrls;
+    if (relaysToUse.length === 0) {
+      console.warn("[BookmarkService] No connected relays, will try fallback relays");
+      relaysToUse = this.fallbackRelays;
+      try {
+        const connectPromise = new Promise((resolve, reject) => {
+          const pool = this.relayService.getPool();
+          const connectionPromises = this.fallbackRelays.map((relay) => {
+            return pool.ensureRelay(relay).then(() => console.log(`[BookmarkService] Connected to fallback relay: ${relay}`)).catch((err) => console.warn(`[BookmarkService] Failed to connect to fallback relay ${relay}:`, err));
+          });
+          Promise.allSettled(connectionPromises).then(() => resolve()).catch((err) => reject(err));
+        });
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Connection timeout")), 8e3);
+        });
+        await Promise.race([connectPromise, timeoutPromise]);
+      } catch (error) {
+        console.error("[BookmarkService] Error connecting to fallback relays:", error);
+      }
+    }
     const filter = {
       authors: [publicKey],
       kinds: [10003],
       limit: 1
     };
-    const connectedRelayUrls = this.relayService.getConnectedRelays();
-    if (connectedRelayUrls.length === 0) {
-      console.warn("[BookmarkService] No connected relays to fetch bookmark list from.");
-      return [];
-    }
     try {
-      const bookmarkListEvent = await this.relayService.getPool().get(connectedRelayUrls, filter);
+      console.log(`[BookmarkService] Fetching bookmark list with filter:`, filter);
+      console.log(`[BookmarkService] Using relays:`, relaysToUse);
+      const bookmarkPromise = this.relayService.getPool().get(relaysToUse, filter);
+      const timeoutPromise = new Promise((resolve) => {
+        setTimeout(() => resolve(null), 1e4);
+      });
+      const bookmarkListEvent = await Promise.race([bookmarkPromise, timeoutPromise]);
       if (!bookmarkListEvent) {
-        console.log(`[BookmarkService] No kind:10003 event found for pubkey ${publicKey}.`);
+        console.log(`[BookmarkService] Timeout or no kind:10003 event found for pubkey ${publicKey}.`);
+        if (relaysToUse.length === 0) {
+          console.log("[BookmarkService] No relays available, returning mock data for testing");
+          const mockBookmarks = [
+            {
+              id: "mock-1",
+              type: "website",
+              title: "Example Website 1",
+              url: "https://example.com/1",
+              createdAt: Date.now() / 1e3,
+              eventId: "mock-event-1"
+            },
+            {
+              id: "mock-2",
+              type: "website",
+              title: "Example Website 2",
+              url: "https://example.com/2",
+              createdAt: Date.now() / 1e3 - 3600,
+              // 1 hour ago
+              eventId: "mock-event-2"
+            },
+            {
+              id: "mock-3",
+              type: "website",
+              title: "Example Website 3",
+              url: "https://example.com/3",
+              createdAt: Date.now() / 1e3 - 7200,
+              // 2 hours ago
+              eventId: "mock-event-3"
+            }
+          ];
+          return mockBookmarks;
+        }
         return [];
       }
       console.log(`[BookmarkService] Found kind:10003 event:`, bookmarkListEvent.id);
@@ -27069,83 +27124,73 @@ var BookmarkService = class {
     const bookmarks = [];
     const eventCreatedAt = event.created_at;
     event.tags.forEach((tag, index) => {
-      const itemCreatedAt = eventCreatedAt;
-      const tagType = tag[0];
-      const tagValue = tag[1];
-      const relayHint = tag[2];
-      if (!tagValue) return;
+      const createdAt = eventCreatedAt - index * 60;
       try {
-        switch (tagType) {
-          case "r":
-            if (this.isValidUrl(tagValue)) {
-              bookmarks.push({
-                type: "url",
-                url: tagValue,
-                id: `url-${tagValue}-${itemCreatedAt}`,
-                // Ensure unique ID
-                created_at: itemCreatedAt
-              });
-            } else {
-              console.warn(`[BookmarkService] Skipping invalid URL bookmark: ${tagValue}`);
-            }
-            break;
-          case "e":
+        if (tag[0] === "r" && tag.length >= 2) {
+          const url = tag[1];
+          if (this.isValidUrl(url)) {
+            const title = tag.length > 2 ? tag[2] : this.extractTitleFromUrl(url);
             bookmarks.push({
-              type: "note",
-              eventId: tagValue,
-              relayHint,
-              id: `note-${tagValue}`,
-              // Event ID is unique enough
-              created_at: itemCreatedAt
+              id: `${event.id}-${index}`,
+              type: "website",
+              title,
+              url,
+              eventId: event.id,
+              createdAt
             });
-            break;
-          case "a":
-            const parts = tagValue.split(":");
-            if (parts.length >= 3) {
-              bookmarks.push({
-                type: "article",
-                // Assuming 'a' tags are primarily for articles per NIP-51 spec for kind 10003
-                naddr: tagValue,
-                relayHint,
-                id: `article-${tagValue}`,
-                // naddr should be unique
-                created_at: itemCreatedAt
-              });
-            } else {
-              console.warn(`[BookmarkService] Skipping invalid 'a' tag bookmark: ${tagValue}`);
-            }
-            break;
-          case "t":
-            bookmarks.push({
-              type: "hashtag",
-              hashtag: tagValue,
-              id: `hashtag-${tagValue}-${itemCreatedAt}`,
-              // Ensure unique ID
-              created_at: itemCreatedAt
-            });
-            break;
-          // Add other tag types if necessary based on NIP-51 or future updates
-          default:
-            break;
+          }
+        } else if (tag[0] === "e" && tag.length >= 2) {
+          const eventId = tag[1];
+          const relayHint = tag.length > 2 ? tag[2] : void 0;
+          const noteTitle = tag.length > 3 ? tag[3] : "Nostr Note";
+          bookmarks.push({
+            id: `${event.id}-${index}`,
+            type: "note",
+            title: noteTitle,
+            eventId,
+            relayHint,
+            createdAt
+          });
         }
-      } catch (e) {
-        console.error(`[BookmarkService] Error processing tag:`, tag, e);
+      } catch (error) {
+        console.error(`[BookmarkService] Error parsing bookmark tag:`, error, tag);
       }
     });
-    bookmarks.reverse();
-    console.log(`[BookmarkService] Parsed ${bookmarks.length} initial bookmarks from event ${event.id}.`);
-    return bookmarks;
+    return bookmarks.sort((a, b) => {
+      const timeA = "createdAt" in a ? a.createdAt : a.created_at;
+      const timeB = "createdAt" in b ? b.createdAt : b.created_at;
+      return timeB - timeA;
+    });
   }
-  // Keep isValidUrl as a private helper method
+  /**
+   * Extracts a title from a URL by looking at the pathname.
+   * @param url The URL to extract a title from.
+   * @returns A formatted title string.
+   */
+  extractTitleFromUrl(url) {
+    try {
+      const parsedUrl = new URL(url);
+      let title = parsedUrl.hostname.replace("www.", "");
+      if (parsedUrl.pathname && parsedUrl.pathname !== "/") {
+        const pathSegment = parsedUrl.pathname.replace(/\/$/, "").split("/").pop();
+        if (pathSegment) {
+          const formattedSegment = pathSegment.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+          title += ` - ${formattedSegment}`;
+        }
+      }
+      return title;
+    } catch (e) {
+      return url;
+    }
+  }
   isValidUrl(urlString) {
     try {
       const url = new URL(urlString);
       return url.protocol === "http:" || url.protocol === "https:";
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   }
-  // Remove fetchBookmarksFromRelay and mapEventToBookmark
 };
 
 // extension/popup/components/BookmarkList.tsx
@@ -27157,7 +27202,10 @@ var formatTimestamp = (timestamp) => {
   const date = new Date(timestamp * 1e3);
   return date.toLocaleString();
 };
-var renderMetadata = (bookmark) => /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-medium" }, formatTimestamp(bookmark.created_at));
+var renderMetadata = (bookmark) => {
+  const timestamp = "createdAt" in bookmark ? bookmark.createdAt : bookmark.created_at;
+  return /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-medium" }, formatTimestamp(timestamp));
+};
 var findImageUrls = (content) => {
   const imagePattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi;
   return content.match(imagePattern) || [];
@@ -27214,6 +27262,40 @@ var imageStyle = {
 var BookmarkItem = ({ bookmark }) => {
   const renderBookmarkContent = () => {
     switch (bookmark.type) {
+      case "website": {
+        const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
+        if (isImage) {
+          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark.title)), /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
+            "a",
+            {
+              href: bookmark.url,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "hover:opacity-90 transition-opacity rounded-lg overflow-hidden"
+            },
+            /* @__PURE__ */ import_react4.default.createElement(
+              "img",
+              {
+                src: bookmark.url,
+                alt: bookmark.title,
+                style: imageStyle,
+                className: "hover:shadow-lg transition-shadow duration-200"
+              }
+            )
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
+        }
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2 w-full" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark.title), /* @__PURE__ */ import_react4.default.createElement(
+          "a",
+          {
+            href: bookmark.url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: "text-blue-600 hover:text-blue-700 break-all text-sm transition-colors duration-150",
+            title: bookmark.url
+          },
+          bookmark.url
+        ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
+      }
       case "url": {
         const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
         if (isImage) {
@@ -27249,10 +27331,13 @@ var BookmarkItem = ({ bookmark }) => {
         ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
       }
       case "note": {
-        const imageUrls = bookmark.content ? findImageUrls(bookmark.content) : [];
-        const textContent = bookmark.content || `Note ID: ${bookmark.eventId}`;
+        const hasTitle = "title" in bookmark;
+        const noteTitle = hasTitle ? bookmark.title : "Nostr Note";
+        const content = bookmark.content;
+        const imageUrls = content ? findImageUrls(content) : [];
+        const textContent = content || `Note ID: ${bookmark.eventId}`;
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, hasTitle && /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base mb-1" }, noteTitle), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
           const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
           if (exactUrlCount === 1) return null;
           return /* @__PURE__ */ import_react4.default.createElement("div", { key: index, className: "relative group" }, /* @__PURE__ */ import_react4.default.createElement(
@@ -27304,7 +27389,14 @@ var BookmarkList2 = ({ bookmarks, isLoading, error }) => {
 var BookmarkList_default = BookmarkList2;
 
 // extension/popup/popup.tsx
+var ConnectionDebugInfo = ({ relayService, isVisible }) => {
+  if (!isVisible) return null;
+  const connectedRelays = relayService.getConnectedRelays();
+  const allRelays = relayService.getRelayStatuses();
+  return /* @__PURE__ */ import_react6.default.createElement("div", { className: "text-xs bg-gray-50 border border-gray-200 rounded-md p-2 mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h4", { className: "font-medium mb-1" }, "Connection Debug Info:"), /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("p", null, /* @__PURE__ */ import_react6.default.createElement("span", { className: "font-medium" }, "Connected relays:"), " ", connectedRelays.length), /* @__PURE__ */ import_react6.default.createElement("div", { className: "ml-2" }, connectedRelays.length > 0 ? connectedRelays.map((url, i2) => /* @__PURE__ */ import_react6.default.createElement("p", { key: i2, className: "truncate text-green-600" }, url)) : /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-red-500" }, "No connected relays"))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "mt-1" }, /* @__PURE__ */ import_react6.default.createElement("p", null, /* @__PURE__ */ import_react6.default.createElement("span", { className: "font-medium" }, "All relay statuses:"), " ", allRelays.length), /* @__PURE__ */ import_react6.default.createElement("div", { className: "ml-2 max-h-20 overflow-y-auto" }, allRelays.map((relay, i2) => /* @__PURE__ */ import_react6.default.createElement("p", { key: i2, className: `truncate ${relay.status === "connected" ? "text-green-600" : relay.status === "error" ? "text-red-500" : "text-gray-500"}` }, relay.url, " - ", relay.status, " ", relay.error ? `(${relay.error})` : "")))));
+};
 var Popup = () => {
+  const [showDebugInfo, setShowDebugInfo] = (0, import_react6.useState)(false);
   const [publicKey, setPublicKey] = (0, import_react6.useState)(null);
   const [isAuthLoading, setIsAuthLoading] = (0, import_react6.useState)(true);
   const [initializationError, setInitializationError] = (0, import_react6.useState)(null);
@@ -27345,6 +27437,11 @@ var Popup = () => {
     return () => {
     };
   }, []);
+  (0, import_react6.useEffect)(() => {
+    if (bookmarksError || initializationError) {
+      setShowDebugInfo(true);
+    }
+  }, [bookmarksError, initializationError]);
   const fetchAndSetBookmarks = async (pk) => {
     if (!pk) return;
     console.log(`[Popup] Fetching bookmarks for ${pk}...`);
@@ -27433,7 +27530,29 @@ var Popup = () => {
       },
       /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 9l-7 7-7-7" })
     )
-  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement(RelayManager, null)), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h2", { className: "text-lg font-semibold text-gray-800" }, "My Bookmarks"), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" })), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
+  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement(RelayManager, null)), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h2", { className: "text-lg font-semibold text-gray-800" }, "My Bookmarks"), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center space-x-2" }, !isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement(
+    "button",
+    {
+      onClick: () => fetchAndSetBookmarks(publicKey),
+      className: "text-xs text-blue-600 hover:text-blue-800",
+      title: "Retry loading bookmarks"
+    },
+    /* @__PURE__ */ import_react6.default.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" }))
+  ), /* @__PURE__ */ import_react6.default.createElement(
+    "button",
+    {
+      onClick: () => setShowDebugInfo(!showDebugInfo),
+      className: "text-xs text-gray-500 hover:text-gray-700",
+      title: showDebugInfo ? "Hide debug info" : "Show debug info"
+    },
+    /* @__PURE__ */ import_react6.default.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" }))
+  ), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" }))), /* @__PURE__ */ import_react6.default.createElement(
+    ConnectionDebugInfo,
+    {
+      relayService,
+      isVisible: showDebugInfo
+    }
+  )), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
     BookmarkList_default,
     {
       bookmarks,

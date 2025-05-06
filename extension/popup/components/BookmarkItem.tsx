@@ -12,9 +12,13 @@ const formatTimestamp = (timestamp: number): string => {
 };
 
 // Helper function to render common parts (like timestamp)
-const renderMetadata = (bookmark: ProcessedBookmark) => (
-    <span className="text-xs text-gray-400 font-medium">{formatTimestamp(bookmark.created_at)}</span>
-);
+const renderMetadata = (bookmark: ProcessedBookmark) => {
+  // Check which timestamp property is available
+  const timestamp = 'createdAt' in bookmark ? bookmark.createdAt : bookmark.created_at;
+  return (
+    <span className="text-xs text-gray-400 font-medium">{formatTimestamp(timestamp)}</span>
+  );
+};
 
 // Function to detect image URLs in content
 const findImageUrls = (content: string): string[] => {
@@ -97,6 +101,57 @@ const imageStyle = {
 const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
   const renderBookmarkContent = () => {
     switch (bookmark.type) {
+      case 'website': {
+        // Check if the URL is an image
+        const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
+        
+        if (isImage) {
+          return (
+            <div className="flex flex-col items-start w-full space-y-2">
+              <div className="w-full mb-1">
+                <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
+              </div>
+              <div style={imageContainerStyle}>
+                <a 
+                  href={bookmark.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:opacity-90 transition-opacity rounded-lg overflow-hidden"
+                >
+                  <img 
+                    src={bookmark.url} 
+                    alt={bookmark.title} 
+                    style={imageStyle}
+                    className="hover:shadow-lg transition-shadow duration-200"
+                  />
+                </a>
+              </div>
+              <div className="flex justify-end w-full">
+                {renderMetadata(bookmark)}
+              </div>
+            </div>
+          );
+        }
+        
+        return (
+          <div className="flex flex-col space-y-2 w-full">
+            <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
+            <a 
+              href={bookmark.url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-blue-600 hover:text-blue-700 break-all text-sm transition-colors duration-150"
+              title={bookmark.url}
+            >
+              {bookmark.url}
+            </a>
+            <div className="flex justify-end">
+              {renderMetadata(bookmark)}
+            </div>
+          </div>
+        );
+      }
+      
       case 'url': {
         // Check if the URL is an image
         const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
@@ -145,14 +200,22 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
       }
       
       case 'note': {
-        const imageUrls = bookmark.content ? findImageUrls(bookmark.content) : [];
-        const textContent = bookmark.content || `Note ID: ${bookmark.eventId}`;
+        // Check if this is a new format note with title
+        const hasTitle = 'title' in bookmark;
+        const noteTitle = hasTitle ? bookmark.title : 'Nostr Note';
+        const content = bookmark.content;
+        const imageUrls = content ? findImageUrls(content) : [];
+        const textContent = content || `Note ID: ${bookmark.eventId}`;
         
         // Extract all URLs for comparison with image URLs
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
         
         return (
           <div className="flex flex-col items-start w-full space-y-3">
+            {hasTitle && (
+              <h3 className="text-gray-800 font-medium text-base mb-1">{noteTitle}</h3>
+            )}
+            
             <p className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
               {makeUrlsClickable(textContent)}
             </p>
