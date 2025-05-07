@@ -27563,7 +27563,6 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
     e.stopPropagation();
     if (onDelete) {
       try {
-        console.log("Deleting bookmark:", bookmark.id);
         await onDelete();
       } catch (error) {
         console.error("Error deleting bookmark:", error);
@@ -27579,10 +27578,10 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
             "button",
             {
               onClick: handleDelete,
-              className: "p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200",
-              title: "Delete"
+              className: "p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200",
+              title: "Delete bookmark"
             },
-            /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }))
+            /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
           )), /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
             "a",
             {
@@ -27606,10 +27605,10 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
           "button",
           {
             onClick: handleDelete,
-            className: "p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200",
-            title: "Delete"
+            className: "p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200",
+            title: "Delete bookmark"
           },
-          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }))
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
         )), /* @__PURE__ */ import_react4.default.createElement(
           "a",
           {
@@ -27628,14 +27627,14 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
         const imageUrls = content ? findImageUrls(content) : [];
         const textContent = content || `Note ID: ${bookmark2.eventId}`;
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full flex justify-between items-start mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, noteTitle), /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, noteTitle), /* @__PURE__ */ import_react4.default.createElement(
           "button",
           {
             onClick: handleDelete,
-            className: "p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200",
-            title: "Delete"
+            className: "p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200",
+            title: "Delete bookmark"
           },
-          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }))
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
         )), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
           const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
           if (exactUrlCount === 1) return null;
@@ -27701,14 +27700,7 @@ var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
 var BookmarkList_default = BookmarkList2;
 
 // extension/popup/popup.tsx
-var ConnectionDebugInfo = ({ relayService, isVisible }) => {
-  if (!isVisible) return null;
-  const connectedRelays = relayService.getConnectedRelays();
-  const allRelays = relayService.getRelayStatuses();
-  return /* @__PURE__ */ import_react6.default.createElement("div", { className: "text-xs bg-gray-50 border border-gray-200 rounded-md p-2 mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h4", { className: "font-medium mb-1" }, "Connection Debug Info:"), /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("p", null, /* @__PURE__ */ import_react6.default.createElement("span", { className: "font-medium" }, "Connected relays:"), " ", connectedRelays.length), /* @__PURE__ */ import_react6.default.createElement("div", { className: "ml-2" }, connectedRelays.length > 0 ? connectedRelays.map((url, i2) => /* @__PURE__ */ import_react6.default.createElement("p", { key: i2, className: "truncate text-green-600" }, url)) : /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-red-500" }, "No connected relays"))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "mt-1" }, /* @__PURE__ */ import_react6.default.createElement("p", null, /* @__PURE__ */ import_react6.default.createElement("span", { className: "font-medium" }, "All relay statuses:"), " ", allRelays.length), /* @__PURE__ */ import_react6.default.createElement("div", { className: "ml-2 max-h-20 overflow-y-auto" }, allRelays.map((relay, i2) => /* @__PURE__ */ import_react6.default.createElement("p", { key: i2, className: `truncate ${relay.status === "connected" ? "text-green-600" : relay.status === "error" ? "text-red-500" : "text-gray-500"}` }, relay.url, " - ", relay.status, " ", relay.error ? `(${relay.error})` : "")))));
-};
 var Popup = () => {
-  const [showDebugInfo, setShowDebugInfo] = (0, import_react6.useState)(false);
   const [publicKey, setPublicKey] = (0, import_react6.useState)(null);
   const [secretKey, setSecretKey] = (0, import_react6.useState)(null);
   const [isAuthLoading, setIsAuthLoading] = (0, import_react6.useState)(true);
@@ -27751,11 +27743,6 @@ var Popup = () => {
     return () => {
     };
   }, []);
-  (0, import_react6.useEffect)(() => {
-    if (bookmarksError || initializationError) {
-      setShowDebugInfo(true);
-    }
-  }, [bookmarksError, initializationError]);
   const fetchAndSetBookmarks = async (pk) => {
     if (!pk) return;
     console.log(`[Popup] Fetching bookmarks for ${pk}...`);
@@ -27894,21 +27881,7 @@ var Popup = () => {
       title: "Retry loading bookmarks"
     },
     /* @__PURE__ */ import_react6.default.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" }))
-  ), /* @__PURE__ */ import_react6.default.createElement(
-    "button",
-    {
-      onClick: () => setShowDebugInfo(!showDebugInfo),
-      className: "text-xs text-gray-500 hover:text-gray-700",
-      title: showDebugInfo ? "Hide debug info" : "Show debug info"
-    },
-    /* @__PURE__ */ import_react6.default.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" }))
-  ), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" }))), /* @__PURE__ */ import_react6.default.createElement(
-    ConnectionDebugInfo,
-    {
-      relayService,
-      isVisible: showDebugInfo
-    }
-  )), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
+  ), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
     BookmarkList_default,
     {
       bookmarks,
@@ -27916,7 +27889,7 @@ var Popup = () => {
       error: bookmarksError,
       onDeleteBookmark: handleDeleteBookmark
     }
-  )))) : /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow p-4" }, /* @__PURE__ */ import_react6.default.createElement(Login, { onLoginSuccess: handleLoginSuccess }))));
+  ))))) : /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow p-4" }, /* @__PURE__ */ import_react6.default.createElement(Login, { onLoginSuccess: handleLoginSuccess }))));
 };
 var root = (0, import_client.createRoot)(document.getElementById("root"));
 root.render(

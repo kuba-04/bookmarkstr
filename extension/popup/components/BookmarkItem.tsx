@@ -103,7 +103,6 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
     e.stopPropagation();
     if (onDelete) {
       try {
-        console.log('Deleting bookmark:', bookmark.id);
         await onDelete();
       } catch (error) {
         console.error('Error deleting bookmark:', error);
@@ -124,11 +123,11 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
                 <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
                 <button
                   onClick={handleDelete}
-                  className="p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200"
-                  title="Delete"
+                  className="p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200"
+                  title="Delete bookmark"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
               </div>
@@ -160,11 +159,11 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
               <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
               <button
                 onClick={handleDelete}
-                className="p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200"
-                title="Delete"
+                className="p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200"
+                title="Delete bookmark"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
             </div>
@@ -196,15 +195,15 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         
         return (
           <div className="flex flex-col items-start w-full space-y-3">
-            <div className="w-full flex justify-between items-start mb-1">
+            <div className="w-full mb-1 flex justify-between items-start">
               <h3 className="text-gray-800 font-medium text-base">{noteTitle}</h3>
               <button
                 onClick={handleDelete}
-                className="p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200"
-                title="Delete"
+                className="p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200"
+                title="Delete bookmark"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
             </div>

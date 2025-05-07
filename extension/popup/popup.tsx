@@ -10,46 +10,7 @@ import { BookmarkService } from './services/bookmark.service';
 import { ProcessedBookmark } from '../common/types';
 import BookmarkList from './components/BookmarkList';
 
-// Debug component to show connection status 
-const ConnectionDebugInfo = ({ relayService, isVisible }: { relayService: RelayService, isVisible: boolean }) => {
-  if (!isVisible) return null;
-
-  const connectedRelays = relayService.getConnectedRelays();
-  const allRelays = relayService.getRelayStatuses();
-  
-  return (
-    <div className="text-xs bg-gray-50 border border-gray-200 rounded-md p-2 mb-3">
-      <h4 className="font-medium mb-1">Connection Debug Info:</h4>
-      <div>
-        <p><span className="font-medium">Connected relays:</span> {connectedRelays.length}</p>
-        <div className="ml-2">
-          {connectedRelays.length > 0 ? (
-            connectedRelays.map((url, i) => (
-              <p key={i} className="truncate text-green-600">{url}</p>
-            ))
-          ) : (
-            <p className="text-red-500">No connected relays</p>
-          )}
-        </div>
-      </div>
-      <div className="mt-1">
-        <p><span className="font-medium">All relay statuses:</span> {allRelays.length}</p>
-        <div className="ml-2 max-h-20 overflow-y-auto">
-          {allRelays.map((relay, i) => (
-            <p key={i} className={`truncate ${relay.status === 'connected' ? 'text-green-600' : relay.status === 'error' ? 'text-red-500' : 'text-gray-500'}`}>
-              {relay.url} - {relay.status} {relay.error ? `(${relay.error})` : ''}
-            </p>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const Popup: React.FC = () => {
-  // Add a new state for debug mode
-  const [showDebugInfo, setShowDebugInfo] = useState(false);
-  
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [secretKey, setSecretKey] = useState<string | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
@@ -97,12 +58,6 @@ const Popup: React.FC = () => {
       // relayService.cleanup(); // Consider if cleanup is needed here or managed elsewhere
     };
   }, []);
-
-  useEffect(() => {
-    if (bookmarksError || initializationError) {
-      setShowDebugInfo(true);
-    }
-  }, [bookmarksError, initializationError]);
 
   const fetchAndSetBookmarks = async (pk: string) => {
     if (!pk) return;
@@ -308,33 +263,20 @@ const Popup: React.FC = () => {
                         </svg>
                       </button>
                     )}
-                    <button 
-                      onClick={() => setShowDebugInfo(!showDebugInfo)} 
-                      className="text-xs text-gray-500 hover:text-gray-700"
-                      title={showDebugInfo ? "Hide debug info" : "Show debug info"}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </button>
                     {isBookmarksLoading && (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                     )}
                   </div>
                 </div>
                 
-                <ConnectionDebugInfo 
-                  relayService={relayService} 
-                  isVisible={showDebugInfo} 
-                />
-              </div>
-              <div className="flex-grow overflow-auto -mx-4 px-4">
-                <BookmarkList 
-                  bookmarks={bookmarks} 
-                  isLoading={isBookmarksLoading} 
-                  error={bookmarksError}
-                  onDeleteBookmark={handleDeleteBookmark}
-                />
+                <div className="flex-grow overflow-auto -mx-4 px-4">
+                  <BookmarkList 
+                    bookmarks={bookmarks} 
+                    isLoading={isBookmarksLoading} 
+                    error={bookmarksError}
+                    onDeleteBookmark={handleDeleteBookmark}
+                  />
+                </div>
               </div>
             </div>
           </div>
