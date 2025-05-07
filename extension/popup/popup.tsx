@@ -235,7 +235,7 @@ const Popup: React.FC = () => {
       <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50">
         <div className="flex flex-col items-center space-y-2">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="text-gray-600">Loading Session...</p>
+          <p className="text-gray-600">Loading your bookmarks...</p>
         </div>
       </div>
     );

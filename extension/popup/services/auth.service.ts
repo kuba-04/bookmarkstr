@@ -17,7 +17,7 @@ export class AuthService {
 
   /**
    * Logs in the user using a private key (nsec or hex).
-   * Validates the key, derives the public key, and stores it in local storage.
+   * Validates the key, derives the public key, and stores it in session storage.
    * @param privateKey The private key string (nsec or hex format).
    * @returns The public key (hex format) if login is successful.
    * @throws Error if the private key is invalid.
@@ -43,12 +43,11 @@ export class AuthService {
 
       // getPublicKey expects private key Uint8Array, returns public key hex string
       const publicKeyHex = getPublicKey(pkBytes);
-
       const secretKeyHex = bytesToHex(pkBytes);
 
-      // Store the keys hex string
-      await chrome.storage.local.set({ [this.storageKey]: publicKeyHex });
-      await chrome.storage.local.set({ [this.secretKey]: secretKeyHex });
+      // Store the keys in session storage
+      await chrome.storage.session.set({ [this.storageKey]: publicKeyHex });
+      await chrome.storage.session.set({ [this.secretKey]: secretKeyHex });
 
       return { publicKey: publicKeyHex, secretKey: secretKeyHex };
     } catch (error) {
@@ -64,8 +63,8 @@ export class AuthService {
    * Logs out the current user by removing the public key from storage.
    */
   async logout(): Promise<void> {
-    await chrome.storage.local.remove([this.storageKey, this.secretKey]);
-    console.log('User logged out, public key removed from storage.');
+    await chrome.storage.session.remove([this.storageKey, this.secretKey]);
+    console.log('User logged out, public key removed from session storage.');
   }
 
   /**
@@ -73,7 +72,7 @@ export class AuthService {
    * @returns The public key (hex format) if logged in, otherwise null.
    */
   async getLoggedInUser(): Promise<{ publicKey: string | null, secretKey: string | null }> {
-    const result = await chrome.storage.local.get([this.storageKey, this.secretKey]);
+    const result = await chrome.storage.session.get([this.storageKey, this.secretKey]);
     return {
       publicKey: result[this.storageKey] || null,
       secretKey: result[this.secretKey] || null

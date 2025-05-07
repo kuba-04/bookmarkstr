@@ -26074,7 +26074,7 @@ var AuthService = class _AuthService {
   }
   /**
    * Logs in the user using a private key (nsec or hex).
-   * Validates the key, derives the public key, and stores it in local storage.
+   * Validates the key, derives the public key, and stores it in session storage.
    * @param privateKey The private key string (nsec or hex format).
    * @returns The public key (hex format) if login is successful.
    * @throws Error if the private key is invalid.
@@ -26096,8 +26096,8 @@ var AuthService = class _AuthService {
       }
       const publicKeyHex = getPublicKey(pkBytes);
       const secretKeyHex = bytesToHex3(pkBytes);
-      await chrome.storage.local.set({ [this.storageKey]: publicKeyHex });
-      await chrome.storage.local.set({ [this.secretKey]: secretKeyHex });
+      await chrome.storage.session.set({ [this.storageKey]: publicKeyHex });
+      await chrome.storage.session.set({ [this.secretKey]: secretKeyHex });
       return { publicKey: publicKeyHex, secretKey: secretKeyHex };
     } catch (error) {
       console.error("Login failed:", error);
@@ -26111,15 +26111,15 @@ var AuthService = class _AuthService {
    * Logs out the current user by removing the public key from storage.
    */
   async logout() {
-    await chrome.storage.local.remove([this.storageKey, this.secretKey]);
-    console.log("User logged out, public key removed from storage.");
+    await chrome.storage.session.remove([this.storageKey, this.secretKey]);
+    console.log("User logged out, public key removed from session storage.");
   }
   /**
    * Checks if a user is currently logged in by looking for the public key in storage.
    * @returns The public key (hex format) if logged in, otherwise null.
    */
   async getLoggedInUser() {
-    const result = await chrome.storage.local.get([this.storageKey, this.secretKey]);
+    const result = await chrome.storage.session.get([this.storageKey, this.secretKey]);
     return {
       publicKey: result[this.storageKey] || null,
       secretKey: result[this.secretKey] || null
@@ -27842,7 +27842,7 @@ var Popup = () => {
     return /* @__PURE__ */ import_react6.default.createElement("div", { className: "p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-4" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "font-bold" }, "Initialization Error:"), /* @__PURE__ */ import_react6.default.createElement("p", null, initializationError));
   };
   if (isAuthLoading) {
-    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col items-center space-y-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" }), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-gray-600" }, "Loading Session...")));
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col items-center space-y-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" }), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-gray-600" }, "Loading your bookmarks...")));
   }
   return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] flex flex-col bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("header", { className: "bg-white border-b border-gray-200 px-4 py-3 shadow-sm" }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold text-gray-800 text-center" }, "Bookmarkstr")), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col p-4 space-y-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm font-medium text-gray-600" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all text-gray-500" }, publicKey)), /* @__PURE__ */ import_react6.default.createElement(
     "button",
