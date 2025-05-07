@@ -27584,6 +27584,11 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
       }
     }
   };
+  const handleOpenInPrimal = (e, eventId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(`https://primal.net/e/${eventId}`, "_blank");
+  };
   const renderBookmarkContent = (bookmark2) => {
     switch (bookmark2.type) {
       case "website": {
@@ -27641,7 +27646,15 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
         const imageUrls = content ? findImageUrls(content) : [];
         const textContent = content || `Note ID: ${bookmark2.eventId}`;
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent))), /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement(
+          "button",
+          {
+            onClick: (e) => handleOpenInPrimal(e, bookmark2.eventId),
+            className: `p-1.5 text-indigo-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-indigo-50 flex-shrink-0`,
+            title: "Open in Primal.net"
+          },
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" }))
+        ), /* @__PURE__ */ import_react4.default.createElement(
           "button",
           {
             onClick: handleDelete,
@@ -27649,7 +27662,7 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
             title: "Delete bookmark"
           },
           /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
-        )), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
+        ))), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
           const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
           if (exactUrlCount === 1) return null;
           return /* @__PURE__ */ import_react4.default.createElement("div", { key: index, className: "relative group" }, /* @__PURE__ */ import_react4.default.createElement(

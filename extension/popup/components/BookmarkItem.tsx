@@ -28,7 +28,7 @@ const findImageUrls = (content: string): string[] => {
 };
 
 // Function to detect URLs in content and make them clickable
-const makeUrlsClickable = (content: string): React.ReactNode[] => {
+const makeUrlsClickable = (content: string | undefined) => {
   if (!content) return [content];
   
   // URL regex pattern - match non-whitespace chars to avoid capturing trailing punctuation
@@ -109,6 +109,12 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         console.error('Error deleting bookmark:', error);
       }
     }
+  };
+
+  const handleOpenInPrimal = (e: React.MouseEvent, eventId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(`https://primal.net/e/${eventId}`, '_blank');
   };
 
   const renderBookmarkContent = (bookmark: ProcessedBookmark) => {
@@ -201,15 +207,26 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
                   {makeUrlsClickable(textContent)}
                 </div>
               </div>
-              <button
-                onClick={handleDelete}
-                className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
-                title="Delete bookmark"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
+              <div className="flex flex-col space-y-2">
+                <button
+                  onClick={(e) => handleOpenInPrimal(e, bookmark.eventId)}
+                  className={`p-1.5 text-indigo-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-indigo-50 flex-shrink-0`}
+                  title="Open in Primal.net"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
+                  title="Delete bookmark"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
             
             {imageUrls.length > 0 && (
