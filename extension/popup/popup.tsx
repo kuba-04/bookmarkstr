@@ -51,6 +51,7 @@ const Popup: React.FC = () => {
   const [showDebugInfo, setShowDebugInfo] = useState(false);
   
   const [publicKey, setPublicKey] = useState<string | null>(null);
+  const [secretKey, setSecretKey] = useState<string | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [initializationError, setInitializationError] = useState<string | null>(null);
   const [bookmarks, setBookmarks] = useState<ProcessedBookmark[]>([]);
@@ -68,22 +69,24 @@ const Popup: React.FC = () => {
       setIsAuthLoading(true);
       setInitializationError(null);
       setBookmarksError(null);
-      let userPk: string | null = null;
+      let keySet: { publicKey: string | null, secretKey: string | null } | null = null;
       try {
-        userPk = await authService.getLoggedInUser();
-        setPublicKey(userPk);
-        if (userPk) {
-          console.log(`[Popup] User ${userPk} is logged in. Initializing relays...`);
-          await relayService.initializeForUser(userPk);
-          console.log(`[Popup] Relay initialization attempt finished for ${userPk}.`);
-          fetchAndSetBookmarks(userPk);
+        keySet = await authService.getLoggedInUser();
+
+        setPublicKey(keySet.publicKey);
+        setSecretKey(keySet.secretKey);
+        if (keySet.publicKey) {
+          console.log(`[Popup] User ${keySet.publicKey} is logged in. Initializing relays...`);
+          await relayService.initializeForUser(keySet.publicKey);
+          console.log(`[Popup] Relay initialization attempt finished for ${keySet.publicKey}.`);
+          fetchAndSetBookmarks(keySet.publicKey);
         } else {
           console.log('[Popup] No user logged in.');
         }
       } catch (error) {
         console.error("[Popup] Error during initial auth check or relay init:", error);
         setInitializationError(error instanceof Error ? error.message : "Failed to initialize session");
-        if (userPk) setPublicKey(userPk); 
+        if (keySet) setPublicKey(keySet.publicKey); 
       } finally {
         setIsAuthLoading(false);
       }
@@ -119,12 +122,13 @@ const Popup: React.FC = () => {
     }
   };
 
-  const handleLoginSuccess = async (pk: string) => {
+  const handleLoginSuccess = async (pk: string, secretKey: string) => {
     console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
     setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     setPublicKey(pk);
+    setSecretKey(secretKey);
     setBookmarks([]);
     try {
       await relayService.initializeForUser(pk);
@@ -148,6 +152,7 @@ const Popup: React.FC = () => {
       relayService.cleanup();
       await authService.logout();
       setPublicKey(null);
+      setSecretKey(null);
       setBookmarks([]);
       console.log('[Popup] Logout successful.');
     } catch (error) {
@@ -161,8 +166,8 @@ const Popup: React.FC = () => {
 
   const handleDeleteBookmark = async (bookmarkId: string) => {
     console.log('[Popup] handleDeleteBookmark called with:', bookmarkId);
-    if (!publicKey) {
-      console.warn('[Popup] Cannot delete bookmark: no public key');
+    if (!publicKey || !secretKey) {
+      console.warn('[Popup] Cannot delete bookmark: no public key or secret key');
       return;
     }
     
@@ -185,7 +190,7 @@ const Popup: React.FC = () => {
       }
       
       // Delete the bookmark
-      await bookmarkService.deleteBookmark(bookmarkId, publicKey);
+      await bookmarkService.deleteBookmark(bookmarkId, publicKey, secretKey);
       console.log(`[Popup] Successfully deleted bookmark ${bookmarkId}`);
       
       // Refresh bookmarks list to ensure consistency with server state

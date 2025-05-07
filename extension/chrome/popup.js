@@ -30,9 +30,9 @@ var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__
 ));
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-// node_modules/.pnpm/react@19.1.0/node_modules/react/cjs/react.development.js
+// node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS({
-  "node_modules/.pnpm/react@19.1.0/node_modules/react/cjs/react.development.js"(exports, module) {
+  "node_modules/react/cjs/react.development.js"(exports, module) {
     "use strict";
     (function() {
       function defineDeprecationWarning(methodName, info) {
@@ -970,9 +970,9 @@ var require_react_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react@19.1.0/node_modules/react/index.js
+// node_modules/react/index.js
 var require_react = __commonJS({
-  "node_modules/.pnpm/react@19.1.0/node_modules/react/index.js"(exports, module) {
+  "node_modules/react/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -982,9 +982,9 @@ var require_react = __commonJS({
   }
 });
 
-// node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/cjs/scheduler.development.js
+// node_modules/scheduler/cjs/scheduler.development.js
 var require_scheduler_development = __commonJS({
-  "node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/cjs/scheduler.development.js"(exports) {
+  "node_modules/scheduler/cjs/scheduler.development.js"(exports) {
     "use strict";
     (function() {
       function performWorkUntilDeadline() {
@@ -1241,9 +1241,9 @@ var require_scheduler_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/index.js
+// node_modules/scheduler/index.js
 var require_scheduler = __commonJS({
-  "node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/index.js"(exports, module) {
+  "node_modules/scheduler/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -1253,9 +1253,9 @@ var require_scheduler = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom.development.js
+// node_modules/react-dom/cjs/react-dom.development.js
 var require_react_dom_development = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom.development.js"(exports) {
+  "node_modules/react-dom/cjs/react-dom.development.js"(exports) {
     "use strict";
     (function() {
       function noop() {
@@ -1497,9 +1497,9 @@ var require_react_dom_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/index.js
+// node_modules/react-dom/index.js
 var require_react_dom = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/index.js"(exports, module) {
+  "node_modules/react-dom/index.js"(exports, module) {
     "use strict";
     if (false) {
       checkDCE();
@@ -1510,9 +1510,9 @@ var require_react_dom = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom-client.development.js
+// node_modules/react-dom/cjs/react-dom-client.development.js
 var require_react_dom_client_development = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom-client.development.js"(exports) {
+  "node_modules/react-dom/cjs/react-dom-client.development.js"(exports) {
     "use strict";
     (function() {
       function findHook(fiber, id) {
@@ -19292,9 +19292,9 @@ var require_react_dom_client_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/client.js
+// node_modules/react-dom/client.js
 var require_client = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/client.js"(exports, module) {
+  "node_modules/react-dom/client.js"(exports, module) {
     "use strict";
     if (false) {
       checkDCE();
@@ -19309,7 +19309,7 @@ var require_client = __commonJS({
 var import_react6 = __toESM(require_react());
 var import_client = __toESM(require_client());
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/_assert.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/_assert.js
 function number(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error(`Wrong positive integer: ${n}`);
@@ -19340,10 +19340,10 @@ function output(out, instance) {
   }
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/crypto.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/crypto.js
 var crypto = typeof globalThis === "object" && "crypto" in globalThis ? globalThis.crypto : void 0;
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/utils.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/utils.js
 var u8a = (a) => a instanceof Uint8Array;
 var createView = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
 var rotr = (word, shift) => word << 32 - shift | word >>> shift;
@@ -19395,7 +19395,7 @@ function randomBytes(bytesLength = 32) {
   throw new Error("crypto.getRandomValues must be defined");
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/_sha2.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/_sha2.js
 function setBigUint64(view, byteOffset, value, isLE4) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE4);
@@ -19495,7 +19495,7 @@ var SHA2 = class extends Hash {
   }
 };
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/sha256.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/sha256.js
 var Chi = (a, b, c) => a & b ^ ~a & c;
 var Maj = (a, b, c) => a & b ^ a & c ^ b & c;
 var SHA256_K = /* @__PURE__ */ new Uint32Array([
@@ -19647,7 +19647,7 @@ var SHA256 = class extends SHA2 {
 };
 var sha256 = /* @__PURE__ */ wrapConstructor(() => new SHA256());
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/utils.js
+// node_modules/@noble/curves/esm/abstract/utils.js
 var utils_exports = {};
 __export(utils_exports, {
   bitGet: () => bitGet,
@@ -19862,7 +19862,7 @@ function validateObject(object, validators, optValidators = {}) {
   return object;
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/modular.js
+// node_modules/@noble/curves/esm/abstract/modular.js
 var _0n2 = BigInt(0);
 var _1n2 = BigInt(1);
 var _2n2 = BigInt(2);
@@ -20128,7 +20128,7 @@ function mapHashToField(key, fieldOrder, isLE4 = false) {
   return isLE4 ? numberToBytesLE(reduced, fieldLen) : numberToBytesBE(reduced, fieldLen);
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/curve.js
+// node_modules/@noble/curves/esm/abstract/curve.js
 var _0n3 = BigInt(0);
 var _1n3 = BigInt(1);
 function wNAF(c, bits) {
@@ -20246,7 +20246,7 @@ function validateBasic(curve) {
   });
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/weierstrass.js
+// node_modules/@noble/curves/esm/abstract/weierstrass.js
 function validatePointOpts(curve) {
   const opts = validateBasic(curve);
   validateObject(opts, {
@@ -21038,7 +21038,7 @@ function weierstrass(curveDef) {
   };
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/hmac.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/hmac.js
 var HMAC = class extends Hash {
   constructor(hash3, _key) {
     super();
@@ -21103,7 +21103,7 @@ var HMAC = class extends Hash {
 var hmac = (hash3, key, message) => new HMAC(hash3, key).update(message).digest();
 hmac.create = (hash3, key) => new HMAC(hash3, key);
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/_shortw_utils.js
+// node_modules/@noble/curves/esm/_shortw_utils.js
 function getHash(hash3) {
   return {
     hash: hash3,
@@ -21116,7 +21116,7 @@ function createCurve(curveDef, defHash) {
   return Object.freeze({ ...create(defHash), create });
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/secp256k1.js
+// node_modules/@noble/curves/esm/secp256k1.js
 var secp256k1P = BigInt("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
 var secp256k1N = BigInt("0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141");
 var _1n5 = BigInt(1);
@@ -21284,10 +21284,10 @@ var schnorr = /* @__PURE__ */ (() => ({
   }
 }))();
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/crypto.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/crypto.js
 var crypto2 = typeof globalThis === "object" && "crypto" in globalThis ? globalThis.crypto : void 0;
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/utils.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/utils.js
 var u8a3 = (a) => a instanceof Uint8Array;
 var createView2 = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
 var rotr2 = (word, shift) => word << 32 - shift | word >>> shift;
@@ -21365,7 +21365,7 @@ function randomBytes2(bytesLength = 32) {
   throw new Error("crypto.getRandomValues must be defined");
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/_assert.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/_assert.js
 function number2(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error(`Wrong positive integer: ${n}`);
@@ -21409,7 +21409,7 @@ var assert = {
 };
 var assert_default = assert;
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/_sha2.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/_sha2.js
 function setBigUint642(view, byteOffset, value, isLE4) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE4);
@@ -21509,7 +21509,7 @@ var SHA22 = class extends Hash2 {
   }
 };
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/sha256.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/sha256.js
 var Chi2 = (a, b, c) => a & b ^ ~a & c;
 var Maj2 = (a, b, c) => a & b ^ a & c ^ b & c;
 var SHA256_K2 = new Uint32Array([
@@ -21676,7 +21676,7 @@ var SHA224 = class extends SHA2562 {
 var sha2562 = wrapConstructor2(() => new SHA2562());
 var sha224 = wrapConstructor2(() => new SHA224());
 
-// node_modules/.pnpm/@scure+base@1.1.1/node_modules/@scure/base/lib/esm/index.js
+// node_modules/@scure/base/lib/esm/index.js
 function assertNumber(n) {
   if (!Number.isSafeInteger(n))
     throw new Error(`Wrong integer: ${n}`);
@@ -22029,7 +22029,7 @@ var CODERS = {
 };
 var coderTypeError = `Invalid encoding type. Available types: ${Object.keys(CODERS).join(", ")}`;
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_assert.js
+// node_modules/@noble/ciphers/esm/_assert.js
 function number3(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error(`positive integer expected, not ${n}`);
@@ -22061,7 +22061,7 @@ function output3(out, instance) {
   }
 }
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/utils.js
+// node_modules/@noble/ciphers/esm/utils.js
 var u8 = (arr) => new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
 var u32 = (arr) => new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
 var createView3 = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
@@ -22113,7 +22113,7 @@ function setBigUint643(view, byteOffset, value, isLE4) {
   view.setUint32(byteOffset + l, wl, isLE4);
 }
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_polyval.js
+// node_modules/@noble/ciphers/esm/_polyval.js
 var BLOCK_SIZE = 16;
 var ZEROS16 = /* @__PURE__ */ new Uint8Array(16);
 var ZEROS32 = u32(ZEROS16);
@@ -22303,7 +22303,7 @@ function wrapConstructorWithKey(hashCons) {
 var ghash = wrapConstructorWithKey((key, expectedLength) => new GHASH(key, expectedLength));
 var polyval = wrapConstructorWithKey((key, expectedLength) => new Polyval(key, expectedLength));
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/aes.js
+// node_modules/@noble/ciphers/esm/aes.js
 var BLOCK_SIZE2 = 16;
 var BLOCK_SIZE32 = 4;
 var EMPTY_BLOCK = new Uint8Array(BLOCK_SIZE2);
@@ -22845,7 +22845,7 @@ var siv = wrapCipher({ blockSize: 16, nonceLength: 12, tagLength: 16 }, function
   };
 });
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_poly1305.js
+// node_modules/@noble/ciphers/esm/_poly1305.js
 var u8to16 = (a, i2) => a[i2++] & 255 | (a[i2++] & 255) << 8;
 var Poly1305 = class {
   constructor(key) {
@@ -23101,7 +23101,7 @@ function wrapConstructorWithKey2(hashCons) {
 }
 var poly1305 = wrapConstructorWithKey2((key) => new Poly1305(key));
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_arx.js
+// node_modules/@noble/ciphers/esm/_arx.js
 var _utf8ToBytes = (str) => Uint8Array.from(str.split("").map((c) => c.charCodeAt(0)));
 var sigma16 = _utf8ToBytes("expand 16-byte k");
 var sigma32 = _utf8ToBytes("expand 32-byte k");
@@ -23212,7 +23212,7 @@ function createCipher(core, opts) {
   };
 }
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/chacha.js
+// node_modules/@noble/ciphers/esm/chacha.js
 function chachaCore(s, k, n, out, cnt, rounds = 20) {
   let y00 = s[0], y01 = s[1], y02 = s[2], y03 = s[3], y04 = k[0], y05 = k[1], y06 = k[2], y07 = k[3], y08 = k[4], y09 = k[5], y10 = k[6], y11 = k[7], y12 = cnt, y13 = n[0], y14 = n[1], y15 = n[2];
   let x00 = y00, x01 = y01, x02 = y02, x03 = y03, x04 = y04, x05 = y05, x06 = y06, x07 = y07, x08 = y08, x09 = y09, x10 = y10, x11 = y11, x12 = y12, x13 = y13, x14 = y14, x15 = y15;
@@ -23453,7 +23453,7 @@ var _poly1305_aead = (xorStream) => (key, nonce, AAD) => {
 var chacha20poly1305 = /* @__PURE__ */ wrapCipher({ blockSize: 64, nonceLength: 12, tagLength: 16 }, _poly1305_aead(chacha20));
 var xchacha20poly1305 = /* @__PURE__ */ wrapCipher({ blockSize: 64, nonceLength: 24, tagLength: 16 }, _poly1305_aead(xchacha20));
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/hmac.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/hmac.js
 var HMAC2 = class extends Hash2 {
   constructor(hash3, _key) {
     super();
@@ -23518,7 +23518,7 @@ var HMAC2 = class extends Hash2 {
 var hmac2 = (hash3, key, message) => new HMAC2(hash3, key).update(message).digest();
 hmac2.create = (hash3, key) => new HMAC2(hash3, key);
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/hkdf.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/hkdf.js
 function extract(hash3, ikm, salt) {
   assert_default.hash(hash3);
   if (salt === void 0)
@@ -23552,7 +23552,7 @@ function expand(hash3, prk, info, length = 32) {
   return okm.slice(0, length);
 }
 
-// node_modules/.pnpm/nostr-tools@2.12.0_typescript@5.8.3/node_modules/nostr-tools/lib/esm/index.js
+// node_modules/nostr-tools/lib/esm/index.js
 var __defProp2 = Object.defineProperty;
 var __export2 = (target, all) => {
   for (var name in all)
@@ -26003,11 +26003,31 @@ async function validateEvent2(event, url, method, body) {
   return true;
 }
 
-// node_modules/.pnpm/@noble+hashes@1.8.0/node_modules/@noble/hashes/esm/utils.js
+// node_modules/@noble/hashes/esm/utils.js
+function isBytes2(a) {
+  return a instanceof Uint8Array || ArrayBuffer.isView(a) && a.constructor.name === "Uint8Array";
+}
+function abytes(b, ...lengths) {
+  if (!isBytes2(b))
+    throw new Error("Uint8Array expected");
+  if (lengths.length > 0 && !lengths.includes(b.length))
+    throw new Error("Uint8Array expected of length " + lengths + ", got length=" + b.length);
+}
 var hasHexBuiltin = /* @__PURE__ */ (() => (
   // @ts-ignore
   typeof Uint8Array.from([]).toHex === "function" && typeof Uint8Array.fromHex === "function"
 ))();
+var hexes3 = /* @__PURE__ */ Array.from({ length: 256 }, (_, i2) => i2.toString(16).padStart(2, "0"));
+function bytesToHex3(bytes4) {
+  abytes(bytes4);
+  if (hasHexBuiltin)
+    return bytes4.toHex();
+  let hex2 = "";
+  for (let i2 = 0; i2 < bytes4.length; i2++) {
+    hex2 += hexes3[bytes4[i2]];
+  }
+  return hex2;
+}
 var asciis = { _0: 48, _9: 57, A: 65, F: 70, a: 97, f: 102 };
 function asciiToBase16(ch) {
   if (ch >= asciis._0 && ch <= asciis._9)
@@ -26044,6 +26064,7 @@ function hexToBytes3(hex2) {
 var AuthService = class _AuthService {
   constructor() {
     this.storageKey = "nostrUserPublicKey";
+    this.secretKey = "secretKey";
   }
   static getInstance() {
     if (!_AuthService.instance) {
@@ -26074,9 +26095,10 @@ var AuthService = class _AuthService {
         pkBytes = hexToBytes3(privateKey);
       }
       const publicKeyHex = getPublicKey(pkBytes);
+      const secretKeyHex = bytesToHex3(pkBytes);
       await chrome.storage.local.set({ [this.storageKey]: publicKeyHex });
-      console.log("Login successful, public key stored:", publicKeyHex);
-      return publicKeyHex;
+      await chrome.storage.local.set({ [this.secretKey]: secretKeyHex });
+      return { publicKey: publicKeyHex, secretKey: secretKeyHex };
     } catch (error) {
       console.error("Login failed:", error);
       if (error instanceof Error) {
@@ -26089,7 +26111,7 @@ var AuthService = class _AuthService {
    * Logs out the current user by removing the public key from storage.
    */
   async logout() {
-    await chrome.storage.local.remove(this.storageKey);
+    await chrome.storage.local.remove([this.storageKey, this.secretKey]);
     console.log("User logged out, public key removed from storage.");
   }
   /**
@@ -26097,8 +26119,11 @@ var AuthService = class _AuthService {
    * @returns The public key (hex format) if logged in, otherwise null.
    */
   async getLoggedInUser() {
-    const result = await chrome.storage.local.get(this.storageKey);
-    return result[this.storageKey] || null;
+    const result = await chrome.storage.local.get([this.storageKey, this.secretKey]);
+    return {
+      publicKey: result[this.storageKey] || null,
+      secretKey: result[this.secretKey] || null
+    };
   }
 };
 
@@ -26119,8 +26144,8 @@ var Login = ({ onLoginSuccess }) => {
       return;
     }
     try {
-      const publicKey = await authService.login(privateKey);
-      onLoginSuccess(publicKey);
+      const { publicKey, secretKey } = await authService.login(privateKey);
+      onLoginSuccess(publicKey, secretKey);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred.");
     } finally {
@@ -26152,7 +26177,7 @@ var Login = ({ onLoginSuccess }) => {
 // extension/popup/components/RelayManager.tsx
 var import_react2 = __toESM(require_react());
 
-// node_modules/.pnpm/async-mutex@0.5.0/node_modules/async-mutex/index.mjs
+// node_modules/async-mutex/index.mjs
 var E_TIMEOUT = new Error("timeout while waiting for mutex to become available");
 var E_ALREADY_LOCKED = new Error("mutex already locked");
 var E_CANCELED = new Error("request for lock canceled");
@@ -27264,7 +27289,7 @@ var BookmarkService = class {
    * @param publicKey The user's public key
    * @returns A promise that resolves when the bookmark is deleted
    */
-  async deleteBookmark(bookmarkId, publicKey) {
+  async deleteBookmark(bookmarkId, publicKey, secretKey) {
     console.log(`[BookmarkService] Deleting bookmark ${bookmarkId} for user ${publicKey}`);
     const currentBookmarks = await this.fetchBookmarks(publicKey);
     console.log(`[BookmarkService] Current bookmarks count: ${currentBookmarks.length}`);
@@ -27328,61 +27353,19 @@ var BookmarkService = class {
     console.log(`[BookmarkService] Creating new replaceable event (kind:10003) with timestamp ${newTimestamp} (${new Date(newTimestamp * 1e3).toISOString()})`);
     console.log(`[BookmarkService] Event contains ${tags.length} tags (bookmarks)`);
     try {
-      const signedEvent = await window.nostr.signEvent(event);
-      console.log(`[BookmarkService] Signed replaceable event with id: ${signedEvent.id}`);
-      const relays = this.relayService.getConnectedRelays();
-      const activeRelays = await this.ensureRelayConnections(relays);
-      if (activeRelays.length === 0) {
-        throw new Error("No connected relays available for publishing");
-      }
-      console.log(`[BookmarkService] Publishing replaceable event to ${activeRelays.length} relays...`);
-      const pool = this.relayService.getPool();
-      const publishPromises = activeRelays.map(
-        (relay) => new Promise(async (resolve) => {
-          try {
-            await pool.publish([relay], signedEvent);
-            console.log(`[BookmarkService] Successfully published replaceable event to ${relay}`);
-            resolve({ relay, success: true });
-          } catch (err) {
-            console.error(`[BookmarkService] Failed to publish to ${relay}:`, err);
-            resolve({ relay, success: false });
-          }
-        })
-      );
-      const results = await Promise.allSettled(publishPromises);
-      const successes = results.filter((r) => r.status === "fulfilled" && r.value.success).map((r) => r.value.relay);
-      if (successes.length > 0) {
-        console.log(`[BookmarkService] Successfully published replaceable event to ${successes.length}/${activeRelays.length} relays: ${successes.join(", ")}`);
-        console.log(`[BookmarkService] Waiting 3 seconds for relays to process the event...`);
-        await new Promise((resolve) => setTimeout(resolve, 3e3));
-        console.log(`[BookmarkService] Verifying deletion by fetching bookmarks again...`);
-        const bookmarksAfterDeletion = await this.fetchBookmarks(publicKey);
-        const stillExists = bookmarksAfterDeletion.some((b) => b.id === bookmarkId);
-        if (stillExists) {
-          console.error(`[BookmarkService] WARNING: Bookmark ${bookmarkId} still exists after deletion!`);
-          console.log(`[BookmarkService] Bookmark list after deletion:`, bookmarksAfterDeletion);
-          console.log(`[BookmarkService] Comparing events before and after deletion:`);
-          const getIdentifier = (bookmark) => {
-            if (bookmark.type === "note") {
-              return bookmark.eventId;
-            }
-            if (bookmark.type === "website") {
-              return bookmark.url;
-            }
-            const _exhaustiveCheck = bookmark;
-            return "";
-          };
-          const identifiersBefore = Array.from(new Set(currentBookmarks.map(getIdentifier)));
-          const identifiersAfter = Array.from(new Set(bookmarksAfterDeletion.map(getIdentifier)));
-          console.log(`[BookmarkService] Identifiers before:`, identifiersBefore);
-          console.log(`[BookmarkService] Identifiers after:`, identifiersAfter);
-          console.log(`[BookmarkService] Deletion operation completed but verification failed. This may be due to relay caching.`);
-        } else {
-          console.log(`[BookmarkService] Successfully deleted bookmark ${bookmarkId}, verified it no longer exists`);
+      let hexSecretKey = secretKey;
+      if (secretKey.startsWith("nsec")) {
+        const { type, data } = nip19_exports.decode(secretKey);
+        if (type !== "nsec") {
+          throw new Error("Invalid nsec private key format");
         }
-      } else {
-        throw new Error("Failed to publish replaceable event to any relays");
+        hexSecretKey = bytesToHex3(data);
       }
+      const secretKeyBytes = hexToBytes3(hexSecretKey);
+      const signedEvent = finalizeEvent(event, secretKeyBytes);
+      const relays = this.relayService.getConnectedRelays();
+      const pool = this.relayService.getPool();
+      await pool.publish(relays, signedEvent);
     } catch (error) {
       console.error("[BookmarkService] Error during bookmark deletion process:", error);
       throw error;
@@ -27711,6 +27694,7 @@ var ConnectionDebugInfo = ({ relayService, isVisible }) => {
 var Popup = () => {
   const [showDebugInfo, setShowDebugInfo] = (0, import_react6.useState)(false);
   const [publicKey, setPublicKey] = (0, import_react6.useState)(null);
+  const [secretKey, setSecretKey] = (0, import_react6.useState)(null);
   const [isAuthLoading, setIsAuthLoading] = (0, import_react6.useState)(true);
   const [initializationError, setInitializationError] = (0, import_react6.useState)(null);
   const [bookmarks, setBookmarks] = (0, import_react6.useState)([]);
@@ -27726,22 +27710,23 @@ var Popup = () => {
       setIsAuthLoading(true);
       setInitializationError(null);
       setBookmarksError(null);
-      let userPk = null;
+      let keySet = null;
       try {
-        userPk = await authService.getLoggedInUser();
-        setPublicKey(userPk);
-        if (userPk) {
-          console.log(`[Popup] User ${userPk} is logged in. Initializing relays...`);
-          await relayService.initializeForUser(userPk);
-          console.log(`[Popup] Relay initialization attempt finished for ${userPk}.`);
-          fetchAndSetBookmarks(userPk);
+        keySet = await authService.getLoggedInUser();
+        setPublicKey(keySet.publicKey);
+        setSecretKey(keySet.secretKey);
+        if (keySet.publicKey) {
+          console.log(`[Popup] User ${keySet.publicKey} is logged in. Initializing relays...`);
+          await relayService.initializeForUser(keySet.publicKey);
+          console.log(`[Popup] Relay initialization attempt finished for ${keySet.publicKey}.`);
+          fetchAndSetBookmarks(keySet.publicKey);
         } else {
           console.log("[Popup] No user logged in.");
         }
       } catch (error) {
         console.error("[Popup] Error during initial auth check or relay init:", error);
         setInitializationError(error instanceof Error ? error.message : "Failed to initialize session");
-        if (userPk) setPublicKey(userPk);
+        if (keySet) setPublicKey(keySet.publicKey);
       } finally {
         setIsAuthLoading(false);
       }
@@ -27772,12 +27757,13 @@ var Popup = () => {
       setIsBookmarksLoading(false);
     }
   };
-  const handleLoginSuccess = async (pk) => {
+  const handleLoginSuccess = async (pk, secretKey2) => {
     console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
     setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     setPublicKey(pk);
+    setSecretKey(secretKey2);
     setBookmarks([]);
     try {
       await relayService.initializeForUser(pk);
@@ -27800,6 +27786,7 @@ var Popup = () => {
       relayService.cleanup();
       await authService.logout();
       setPublicKey(null);
+      setSecretKey(null);
       setBookmarks([]);
       console.log("[Popup] Logout successful.");
     } catch (error) {
@@ -27812,8 +27799,8 @@ var Popup = () => {
   };
   const handleDeleteBookmark = async (bookmarkId) => {
     console.log("[Popup] handleDeleteBookmark called with:", bookmarkId);
-    if (!publicKey) {
-      console.warn("[Popup] Cannot delete bookmark: no public key");
+    if (!publicKey || !secretKey) {
+      console.warn("[Popup] Cannot delete bookmark: no public key or secret key");
       return;
     }
     const bookmarkToDelete = bookmarks.find((b) => b.id === bookmarkId);
@@ -27829,7 +27816,7 @@ var Popup = () => {
           console.warn("[Popup] Error during relay reconnection:", error);
         }
       }
-      await bookmarkService.deleteBookmark(bookmarkId, publicKey);
+      await bookmarkService.deleteBookmark(bookmarkId, publicKey, secretKey);
       console.log(`[Popup] Successfully deleted bookmark ${bookmarkId}`);
       setTimeout(() => {
         if (publicKey) {

@@ -1,6 +1,9 @@
 import { Event, Filter, SimplePool, finalizeEvent } from 'nostr-tools';
 import { RelayService } from './relay.service';
 import { ProcessedBookmark, NostrEvent, BookmarkListEvent } from '../../common/types'; // Corrected import path
+import { hexToBytes } from '@noble/hashes/utils';
+import { nip19 } from 'nostr-tools';
+import { bytesToHex } from '@noble/hashes/utils';
 
 declare global {
   interface Window {
@@ -534,7 +537,7 @@ export class BookmarkService {
    * @param publicKey The user's public key
    * @returns A promise that resolves when the bookmark is deleted
    */
-  async deleteBookmark(bookmarkId: string, publicKey: string): Promise<void> {
+  async deleteBookmark(bookmarkId: string, publicKey: string, secretKey: string): Promise<void> {
     console.log(`[BookmarkService] Deleting bookmark ${bookmarkId} for user ${publicKey}`);
     
     // Get current bookmarks
@@ -629,95 +632,24 @@ export class BookmarkService {
     console.log(`[BookmarkService] Event contains ${tags.length} tags (bookmarks)`);
 
     try {
-      // Sign the event using the window.nostr provider
-      const signedEvent = await window.nostr.signEvent(event);
-      
-      console.log(`[BookmarkService] Signed replaceable event with id: ${signedEvent.id}`);
-      
-      // Get connected relays
-      const relays = this.relayService.getConnectedRelays();
-      
-      // Ensure connections to relays
-      const activeRelays = await this.ensureRelayConnections(relays);
-      
-      if (activeRelays.length === 0) {
-        throw new Error("No connected relays available for publishing");
-      }
-      
-      console.log(`[BookmarkService] Publishing replaceable event to ${activeRelays.length} relays...`);
-      
-      // Publish using simplePool directly to better handle the process
-      const pool = this.relayService.getPool();
-      
-      // Create individual promises to track success/failure on each relay
-      const publishPromises = activeRelays.map(relay => 
-        new Promise<{relay: string, success: boolean}>(async (resolve) => {
-          try {
-            await pool.publish([relay], signedEvent);
-            console.log(`[BookmarkService] Successfully published replaceable event to ${relay}`);
-            resolve({relay, success: true});
-          } catch (err) {
-            console.error(`[BookmarkService] Failed to publish to ${relay}:`, err);
-            resolve({relay, success: false});
-          }
-        })
-      );
-      
-      // Wait for all publish attempts to complete
-      const results = await Promise.allSettled(publishPromises);
-      const successes = results
-        .filter(r => r.status === 'fulfilled' && r.value.success)
-        .map(r => (r as PromiseFulfilledResult<{relay: string, success: boolean}>).value.relay);
-      
-      if (successes.length > 0) {
-        console.log(`[BookmarkService] Successfully published replaceable event to ${successes.length}/${activeRelays.length} relays: ${successes.join(', ')}`);
-        
-        // Add a longer delay to ensure relays have processed the event
-        console.log(`[BookmarkService] Waiting 3 seconds for relays to process the event...`);
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        
-        // Don't force-close connections here as it might interrupt other operations
-        // Instead, wait briefly and then fetch bookmarks again
-        console.log(`[BookmarkService] Verifying deletion by fetching bookmarks again...`);
-        const bookmarksAfterDeletion = await this.fetchBookmarks(publicKey);
-        
-        // Check if the bookmark we deleted is still present
-        const stillExists = bookmarksAfterDeletion.some(b => b.id === bookmarkId);
-        
-        if (stillExists) {
-          console.error(`[BookmarkService] WARNING: Bookmark ${bookmarkId} still exists after deletion!`);
-          console.log(`[BookmarkService] Bookmark list after deletion:`, bookmarksAfterDeletion);
-          
-          // Log the event IDs before and after deletion
-          console.log(`[BookmarkService] Comparing events before and after deletion:`);
-          
-          // Extract event IDs or url/content for comparison
-          const getIdentifier = (bookmark: ProcessedBookmark) => {
-            if (bookmark.type === 'note') {
-              return bookmark.eventId;
-            }
-            if (bookmark.type === 'website') {
-              return bookmark.url;
-            }
-            // This is a TypeScript exhaustiveness check to make sure we handle all types
-            const _exhaustiveCheck: never = bookmark;
-            return ''; // This line should never execute
-          };
-          
-          const identifiersBefore = Array.from(new Set(currentBookmarks.map(getIdentifier)));
-          const identifiersAfter = Array.from(new Set(bookmarksAfterDeletion.map(getIdentifier)));
-          
-          console.log(`[BookmarkService] Identifiers before:`, identifiersBefore);
-          console.log(`[BookmarkService] Identifiers after:`, identifiersAfter);
-          
-          // Even if verification fails, we still proceeded with deletion
-          console.log(`[BookmarkService] Deletion operation completed but verification failed. This may be due to relay caching.`);
-        } else {
-          console.log(`[BookmarkService] Successfully deleted bookmark ${bookmarkId}, verified it no longer exists`);
+      // Convert nsec format to hex if needed
+      let hexSecretKey = secretKey;
+      if (secretKey.startsWith('nsec')) {
+        const { type, data } = nip19.decode(secretKey);
+        if (type !== 'nsec') {
+          throw new Error('Invalid nsec private key format');
         }
-      } else {
-        throw new Error("Failed to publish replaceable event to any relays");
+        hexSecretKey = bytesToHex(data);
       }
+      
+      // Convert the hex string secretKey to Uint8Array
+      const secretKeyBytes = hexToBytes(hexSecretKey);
+      
+      const signedEvent = finalizeEvent(event, secretKeyBytes);
+      const relays = this.relayService.getConnectedRelays();
+      const pool = this.relayService.getPool();
+      await pool.publish(relays, signedEvent);
+
     } catch (error) {
       console.error('[BookmarkService] Error during bookmark deletion process:', error);
       throw error;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AuthService } from '../services/auth.service';
 
 interface LoginProps {
-  onLoginSuccess: (publicKey: string) => void;
+  onLoginSuccess: (publicKey: string, secretKey: string) => void;
 }
 
 export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
@@ -24,8 +24,8 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     }
 
     try {
-      const publicKey = await authService.login(privateKey);
-      onLoginSuccess(publicKey);
+      const { publicKey, secretKey } = await authService.login(privateKey);
+      onLoginSuccess(publicKey, secretKey);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred.');
     } finally {
