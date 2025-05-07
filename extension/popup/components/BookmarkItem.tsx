@@ -120,8 +120,17 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         if (isImage) {
           return (
             <div className="flex flex-col items-start w-full space-y-2">
-              <div className="w-full mb-1">
+              <div className="w-full mb-1 flex justify-between items-start">
                 <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
+                <button
+                  onClick={handleDelete}
+                  className="p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200"
+                  title="Delete"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
               </div>
               <div style={imageContainerStyle}>
                 <a 
@@ -147,7 +156,18 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         
         return (
           <div className="flex flex-col space-y-2 w-full">
-            <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
+            <div className="flex justify-between items-start">
+              <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
+              <button
+                onClick={handleDelete}
+                className="p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200"
+                title="Delete"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </button>
+            </div>
             <a 
               href={bookmark.url} 
               target="_blank" 
@@ -176,7 +196,18 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         
         return (
           <div className="flex flex-col items-start w-full space-y-3">
-            <h3 className="text-gray-800 font-medium text-base mb-1">{noteTitle}</h3>
+            <div className="w-full flex justify-between items-start mb-1">
+              <h3 className="text-gray-800 font-medium text-base">{noteTitle}</h3>
+              <button
+                onClick={handleDelete}
+                className="p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200"
+                title="Delete"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </button>
+            </div>
             
             <p className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
               {makeUrlsClickable(textContent)}
@@ -235,20 +266,8 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
     <li className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden">
       <div className="flex flex-col">
         {/* Content area */}
-        <div className="mb-3">
+        <div>
           {renderBookmarkContent(bookmark)}
-        </div>
-        
-        <div className="flex justify-end mt-2 pt-2 border-t border-gray-100">
-          <button
-            onClick={handleDelete}
-            className="px-3 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-sm font-medium flex items-center"
-          >
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-            Delete
-          </button>
         </div>
       </div>
     </li>

@@ -27575,7 +27575,15 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
       case "website": {
         const isImage = bookmark2.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
         if (isImage) {
-          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title)), /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
+          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
+            "button",
+            {
+              onClick: handleDelete,
+              className: "p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200",
+              title: "Delete"
+            },
+            /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }))
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
             "a",
             {
               href: bookmark2.url,
@@ -27594,7 +27602,15 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
             )
           )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark2)));
         }
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2 w-full" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2 w-full" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
+          "button",
+          {
+            onClick: handleDelete,
+            className: "p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200",
+            title: "Delete"
+          },
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }))
+        )), /* @__PURE__ */ import_react4.default.createElement(
           "a",
           {
             href: bookmark2.url,
@@ -27612,7 +27628,15 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
         const imageUrls = content ? findImageUrls(content) : [];
         const textContent = content || `Note ID: ${bookmark2.eventId}`;
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base mb-1" }, noteTitle), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full flex justify-between items-start mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, noteTitle), /* @__PURE__ */ import_react4.default.createElement(
+          "button",
+          {
+            onClick: handleDelete,
+            className: "p-1.5 text-gray-400 hover:text-green-600 rounded-full hover:bg-green-50 transition-colors duration-200",
+            title: "Delete"
+          },
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" }))
+        )), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
           const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
           if (exactUrlCount === 1) return null;
           return /* @__PURE__ */ import_react4.default.createElement("div", { key: index, className: "relative group" }, /* @__PURE__ */ import_react4.default.createElement(
@@ -27640,15 +27664,7 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
         return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center text-red-500" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-2 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" })), "Unknown Bookmark Type");
     }
   };
-  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "mb-3" }, renderBookmarkContent(bookmark)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end mt-2 pt-2 border-t border-gray-100" }, /* @__PURE__ */ import_react4.default.createElement(
-    "button",
-    {
-      onClick: handleDelete,
-      className: "px-3 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-sm font-medium flex items-center"
-    },
-    /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-1", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" })),
-    "Delete"
-  ))));
+  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react4.default.createElement("div", null, renderBookmarkContent(bookmark))));
 };
 var BookmarkItem_default = BookmarkItem;
 
