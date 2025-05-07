@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RelayService, RelayStatus } from '../services/relay.service';
+import styles from '../styles/glassmorphism.module.css';
 
 export const RelayManager: React.FC = () => {
   const [relayStatuses, setRelayStatuses] = useState<RelayStatus[]>([]);
@@ -76,33 +77,31 @@ export const RelayManager: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: RelayStatus['status']): string => {
-    switch (status) {
-      case 'connected': return 'text-green-600';
-      case 'connecting':
-      case 'disconnecting': return 'text-yellow-600';
-      case 'disconnected': return 'text-gray-500';
-      case 'error': return 'text-red-600';
-      default: return 'text-gray-500';
-    }
-  };
+  const connectedCount = relayStatuses.filter(relay => relay.status === 'connected').length;
 
   return (
-    <div className="mt-6">
-      <h3 className="text-lg font-medium mb-3">Relay Connections</h3>
+    <div className={`mt-6 p-4 ${styles.glass} rounded-lg`}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className={styles.title}>
+          Relay Connections
+          <span className={styles.badge}>
+            {" "} { connectedCount} connected
+          </span>
+        </h3>
+      </div>
 
       <form onSubmit={handleAddRelay} className="flex gap-2 mb-4">
         <input
           type="text"
           value={newRelayUrl}
           onChange={(e) => setNewRelayUrl(e.target.value)}
-          className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className={`px-3 py-2 rounded-md ${styles.glassInput} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
           placeholder="wss://your.relay.com"
           disabled={isLoading}
         />
         <button
           type="submit"
-          className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+          className={`px-4 py-2 rounded-md ${styles.glassButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
             isLoading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           disabled={isLoading}
@@ -115,24 +114,25 @@ export const RelayManager: React.FC = () => {
 
       {isLoading && <p className="text-sm text-gray-500 mb-2">Processing...</p>}
 
-      <ul className="space-y-2">
+      <div className="space-y-2">
         {relayStatuses.length === 0 && !isLoading && (
             <p className="text-sm text-gray-500">No relays configured or connected.</p>
         )}
         {relayStatuses.map(({ url, status, error: relayError }) => (
-          <li key={url} className="flex items-center justify-between p-2 border rounded-md bg-gray-50">
-            <div className="flex-grow mr-2 overflow-hidden">
+          <div 
+            key={url} 
+            className={`flex items-center justify-between p-3 ${styles.glassCard} rounded-md`}
+          >
+            <div className="flex-grow mr-2 overflow-hidden flex items-center">
+                <div className={`${styles.statusDot} ${status === 'connected' ? styles.connected : styles.disconnected} mr-3`} />
                 <span className="text-sm font-medium truncate">{url}</span>
-                {relayError && <span className="block text-xs text-red-500 truncate">({relayError})</span>}
+                {relayError && <span className="block text-xs text-red-500 truncate ml-2">({relayError})</span>}
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className={`text-sm font-semibold ${getStatusColor(status)}`}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </span>
               {(status === 'connected' || status === 'connecting' || status === 'error') && (
                 <button
                   onClick={() => handleDisconnectRelay(url)}
-                  className={`px-2 py-1 text-xs font-medium rounded border border-red-500 text-red-600 hover:bg-red-50 ${
+                  className={`px-3 py-1 text-sm font-medium rounded-md text-red-600 ${styles.glassDisconnect} ${
                      isLoading ? 'opacity-50 cursor-not-allowed' : ''
                    }`}
                   disabled={isLoading}
@@ -144,7 +144,7 @@ export const RelayManager: React.FC = () => {
               {status === 'disconnected' && (
                  <button
                   onClick={() => handleConnectRelay(url)}
-                  className={`px-2 py-1 text-xs font-medium rounded border border-green-500 text-green-600 hover:bg-green-50 ${
+                  className={`px-3 py-1 text-sm font-medium rounded-md border border-green-500 text-green-600 hover:bg-green-50 ${
                     isLoading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                   disabled={isLoading}
@@ -154,9 +154,9 @@ export const RelayManager: React.FC = () => {
                 </button>
               )}
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }; 

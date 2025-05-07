@@ -1,5 +1,6 @@
 import React from 'react';
 import { ProcessedBookmark } from '../../common/types';
+import styles from '../styles/glassmorphism.module.css';
 
 interface BookmarkItemProps {
   bookmark: ProcessedBookmark;
@@ -15,7 +16,7 @@ const formatTimestamp = (timestamp: number): string => {
 // Helper function to render common parts (like timestamp)
 const renderMetadata = (bookmark: ProcessedBookmark) => {
   return (
-    <span className="text-xs text-gray-400 font-medium">{formatTimestamp(bookmark.createdAt)}</span>
+    <span className="text-xs text-gray-400 font-medium">Added {formatTimestamp(bookmark.createdAt)}</span>
   );
 };
 
@@ -63,7 +64,7 @@ const makeUrlsClickable = (content: string): React.ReactNode[] => {
         href={cleanUrl} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150"
+        className="text-indigo-600 hover:text-indigo-700 break-all font-medium transition-colors duration-150"
       >
         {cleanUrl}
       </a>
@@ -118,12 +119,12 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         
         if (isImage) {
           return (
-            <div className="flex flex-col items-start w-full space-y-2">
+            <div className={`flex flex-col items-start w-full space-y-2 ${styles.bookmarkItem}`}>
               <div className="w-full mb-1 flex justify-between items-start">
-                <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
+                <h3 className="text-gray-800 font-medium text-base truncate flex-1 mr-2">{bookmark.title}</h3>
                 <button
                   onClick={handleDelete}
-                  className="p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200"
+                  className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
                   title="Delete bookmark"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +143,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
                     src={bookmark.url} 
                     alt={bookmark.title} 
                     style={imageStyle}
-                    className="hover:shadow-lg transition-shadow duration-200"
+                    className="hover:shadow-lg transition-shadow duration-200 border border-gray-100 rounded-lg"
                   />
                 </a>
               </div>
@@ -154,12 +155,12 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         }
         
         return (
-          <div className="flex flex-col space-y-2 w-full">
-            <div className="flex justify-between items-start">
-              <h3 className="text-gray-800 font-medium text-base">{bookmark.title}</h3>
+          <div className={`flex flex-col space-y-2 w-full ${styles.bookmarkItem}`}>
+            <div className="flex justify-between items-start mb-1">
+              <h3 className="text-gray-800 font-medium text-base truncate flex-1 mr-2">{bookmark.title}</h3>
               <button
                 onClick={handleDelete}
-                className="p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200"
+                className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
                 title="Delete bookmark"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,7 +172,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
               href={bookmark.url} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="text-blue-600 hover:text-blue-700 break-all text-sm transition-colors duration-150"
+              className="text-indigo-600 hover:text-indigo-700 break-all text-sm transition-colors duration-150 hover:underline"
               title={bookmark.url}
             >
               {bookmark.url}
@@ -185,7 +186,6 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
       
       case 'note': {
         // Note content handling
-        const noteTitle = bookmark.title;
         const content = bookmark.content;
         const imageUrls = content ? findImageUrls(content) : [];
         const textContent = content || `Note ID: ${bookmark.eventId}`;
@@ -194,12 +194,16 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
         
         return (
-          <div className="flex flex-col items-start w-full space-y-3">
+          <div className={`flex flex-col items-start w-full space-y-3 ${styles.bookmarkItem}`}>
             <div className="w-full mb-1 flex justify-between items-start">
-              <h3 className="text-gray-800 font-medium text-base">{noteTitle}</h3>
+              <div className="flex-1 mr-2">
+                <div className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
+                  {makeUrlsClickable(textContent)}
+                </div>
+              </div>
               <button
                 onClick={handleDelete}
-                className="p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200"
+                className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
                 title="Delete bookmark"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,10 +211,6 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
                 </svg>
               </button>
             </div>
-            
-            <p className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
-              {makeUrlsClickable(textContent)}
-            </p>
             
             {imageUrls.length > 0 && (
               <div className="w-full grid grid-cols-2 gap-2">
@@ -232,7 +232,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
                           src={url} 
                           alt={`Image ${index + 1}`} 
                           style={imageStyle}
-                          className="hover:shadow-lg transition-shadow duration-200 w-full"
+                          className="hover:shadow-lg transition-shadow duration-200 w-full border border-gray-100 rounded-lg"
                         />
                       </a>
                     </div>
@@ -261,16 +261,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
     }
   };
 
-  return (
-    <li className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden">
-      <div className="flex flex-col">
-        {/* Content area */}
-        <div>
-          {renderBookmarkContent(bookmark)}
-        </div>
-      </div>
-    </li>
-  );
+  return renderBookmarkContent(bookmark);
 };
 
 export default BookmarkItem; 

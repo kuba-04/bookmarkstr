@@ -9,6 +9,7 @@ import { RelayService } from './services/relay.service';
 import { BookmarkService } from './services/bookmark.service';
 import { ProcessedBookmark } from '../common/types';
 import BookmarkList from './components/BookmarkList';
+import styles from './styles/glassmorphism.module.css';
 
 const Popup: React.FC = () => {
   const [publicKey, setPublicKey] = useState<string | null>(null);
@@ -164,10 +165,7 @@ const Popup: React.FC = () => {
       // Revert the optimistic update if deletion failed
       if (bookmarkToDelete) {
         setBookmarks(prev => [...prev, bookmarkToDelete].sort((a, b) => {
-          // Handle both old and new bookmark formats
-          const timeA = 'createdAt' in a ? a.createdAt : a.created_at;
-          const timeB = 'createdAt' in b ? b.createdAt : b.created_at;
-          return timeB - timeA;
+          return b.createdAt - a.createdAt;
         }));
       }
       
@@ -187,10 +185,10 @@ const Popup: React.FC = () => {
 
   if (isAuthLoading) {
     return (
-      <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50">
+      <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center">
         <div className="flex flex-col items-center space-y-2">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="text-gray-600">Loading your bookmarks...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          <p className="text-gray-700">Connecting to relays...</p>
         </div>
       </div>
     );
@@ -198,8 +196,8 @@ const Popup: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-w-[400px] min-h-[500px] flex flex-col bg-gray-50">
-        <header className="bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
+      <div className="min-w-[400px] min-h-[500px] flex flex-col">
+        <header className={`px-4 py-3 ${styles.glass} mb-4 shadow-lg`}>
           <h1 className="text-2xl font-bold text-gray-800 text-center">Bookmarkstr</h1>
         </header>
         
@@ -207,29 +205,44 @@ const Popup: React.FC = () => {
         
         {publicKey ? (
           <div className="flex-grow flex flex-col p-4 space-y-4">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className={`rounded-lg ${styles.glass} p-4`}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600">Logged in as:</p>
-                  <p className="text-xs font-mono break-all text-gray-500">{publicKey}</p>
+                  <p className="text-sm font-medium text-gray-700">Logged in as:</p>
+                  <p className="text-xs font-mono break-all text-gray-600">{publicKey}</p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="ml-4 px-3 py-1.5 border border-red-200 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+                  className={`ml-4 p-2 rounded-md text-sm font-medium text-red-600 ${styles.glassDisconnect} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150 hover:text-red-700`}
+                  title="Logout"
                 >
-                  Logout
+                  <svg 
+                    className="w-5 h-5" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
+                    />
+                  </svg>
                 </button>
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className={`rounded-lg ${styles.glass} p-4`}>
               <div className="flex items-center justify-between">
                 <button 
                   onClick={() => setShowRelayManager(!showRelayManager)}
                   className="flex items-center text-lg font-medium text-gray-800 focus:outline-none"
                 >
                   <span>Relay Connections</span>
-                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                  {" "}
+                  <span className={styles.badge}>
                     {relayService.getRelayStatuses().filter(status => status.status === 'connected').length} connected
                   </span>
                   <svg 
@@ -244,18 +257,21 @@ const Popup: React.FC = () => {
                 </button>
               </div>
               
-              {showRelayManager && <RelayManager />}
+              {showRelayManager && (
+                <div className="mt-4">
+                  <RelayManager />
+                </div>
+              )}
             </div>
 
-            <div className="flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col">
+            <div className={`flex-grow rounded-lg ${styles.glass} p-4 overflow-hidden flex flex-col`}>
               <div className="flex flex-col">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-lg font-semibold text-gray-800">My Bookmarks</h2>
                   <div className="flex items-center space-x-2">
                     {!isBookmarksLoading && (
                       <button 
                         onClick={() => fetchAndSetBookmarks(publicKey!)} 
-                        className="text-xs text-blue-600 hover:text-blue-800"
+                        className="text-xs text-indigo-600 hover:text-indigo-800"
                         title="Retry loading bookmarks"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,7 +280,7 @@ const Popup: React.FC = () => {
                       </button>
                     )}
                     {isBookmarksLoading && (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
                     )}
                   </div>
                 </div>

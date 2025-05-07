@@ -26129,6 +26129,25 @@ var AuthService = class _AuthService {
 
 // extension/popup/components/Login.tsx
 var import_react = __toESM(require_react());
+
+// extension/popup/styles/glassmorphism.module.css
+var glassmorphism_default = {
+  container: "glassmorphism_container",
+  glass: "glassmorphism_glass",
+  glassCard: "glassmorphism_glassCard",
+  bookmarkItem: "glassmorphism_bookmarkItem",
+  inputWrapper: "glassmorphism_inputWrapper",
+  glassInput: "glassmorphism_glassInput",
+  glassButton: "glassmorphism_glassButton",
+  glassDisconnect: "glassmorphism_glassDisconnect",
+  statusDot: "glassmorphism_statusDot",
+  connected: "glassmorphism_connected",
+  disconnected: "glassmorphism_disconnected",
+  title: "glassmorphism_title",
+  badge: "glassmorphism_badge"
+};
+
+// extension/popup/components/Login.tsx
 var Login = ({ onLoginSuccess }) => {
   const [privateKey, setPrivateKey] = (0, import_react.useState)("");
   const [error, setError] = (0, import_react.useState)(null);
@@ -26152,26 +26171,28 @@ var Login = ({ onLoginSuccess }) => {
       setIsLoading(false);
     }
   };
-  return /* @__PURE__ */ import_react.default.createElement("div", { className: "p-4" }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "text-xl font-semibold mb-4" }, "Login with Private Key"), /* @__PURE__ */ import_react.default.createElement("form", { onSubmit: handleLogin }, /* @__PURE__ */ import_react.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react.default.createElement("label", { htmlFor: "privateKey", className: "block text-sm font-medium text-gray-700 mb-1" }, "Private Key (nsec or hex):"), /* @__PURE__ */ import_react.default.createElement(
+  return /* @__PURE__ */ import_react.default.createElement("div", { className: `p-6 ${glassmorphism_default.glass} rounded-lg max-w-md mx-auto` }, /* @__PURE__ */ import_react.default.createElement("div", { className: "text-center mb-6" }, /* @__PURE__ */ import_react.default.createElement("p", { className: "text-gray-600 text-sm" }, "Sign in with your Nostr private key to access your bookmarks across devices")), /* @__PURE__ */ import_react.default.createElement("form", { onSubmit: handleLogin, className: "space-y-4" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react.default.createElement("div", { className: `${glassmorphism_default.inputWrapper} relative` }, /* @__PURE__ */ import_react.default.createElement(
     "input",
     {
       type: "password",
       id: "privateKey",
       value: privateKey,
       onChange: (e) => setPrivateKey(e.target.value),
-      className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
-      placeholder: "nsec... or hex...",
-      disabled: isLoading
+      className: `w-full px-4 py-3 rounded-lg ${glassmorphism_default.glassInput} focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base`,
+      placeholder: "Enter your nsec or hex key",
+      disabled: isLoading,
+      autoComplete: "off",
+      spellCheck: "false"
     }
-  )), error && /* @__PURE__ */ import_react.default.createElement("p", { className: "text-red-500 text-sm mb-4" }, error), /* @__PURE__ */ import_react.default.createElement(
+  ))), error && /* @__PURE__ */ import_react.default.createElement("div", { className: "bg-red-50 border border-red-200 text-red-600 rounded-md p-3 text-sm" }, error), /* @__PURE__ */ import_react.default.createElement(
     "button",
     {
       type: "submit",
-      className: `w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+      className: `w-full py-3 px-4 rounded-lg ${glassmorphism_default.glassButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-base font-medium ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
       disabled: isLoading
     },
-    isLoading ? "Logging in..." : "Login"
-  )));
+    isLoading ? /* @__PURE__ */ import_react.default.createElement("span", { className: "flex items-center justify-center" }, /* @__PURE__ */ import_react.default.createElement("svg", { className: "animate-spin -ml-1 mr-2 h-5 w-5 text-white", fill: "none", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react.default.createElement("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }), /* @__PURE__ */ import_react.default.createElement("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" })), "Logging in...") : "Sign In"
+  ), /* @__PURE__ */ import_react.default.createElement("p", { className: "text-center text-xs text-gray-500 mt-4" }, "Your private key is only stored locally and never shared with any server")));
 };
 
 // extension/popup/components/RelayManager.tsx
@@ -26801,28 +26822,14 @@ var RelayManager = () => {
       setIsLoading(false);
     }
   };
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "connected":
-        return "text-green-600";
-      case "connecting":
-      case "disconnecting":
-        return "text-yellow-600";
-      case "disconnected":
-        return "text-gray-500";
-      case "error":
-        return "text-red-600";
-      default:
-        return "text-gray-500";
-    }
-  };
-  return /* @__PURE__ */ import_react2.default.createElement("div", { className: "mt-6" }, /* @__PURE__ */ import_react2.default.createElement("h3", { className: "text-lg font-medium mb-3" }, "Relay Connections"), /* @__PURE__ */ import_react2.default.createElement("form", { onSubmit: handleAddRelay, className: "flex gap-2 mb-4" }, /* @__PURE__ */ import_react2.default.createElement(
+  const connectedCount = relayStatuses.filter((relay) => relay.status === "connected").length;
+  return /* @__PURE__ */ import_react2.default.createElement("div", { className: `mt-6 p-4 ${glassmorphism_default.glass} rounded-lg` }, /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex items-center justify-between mb-4" }, /* @__PURE__ */ import_react2.default.createElement("h3", { className: glassmorphism_default.title }, "Relay Connections", /* @__PURE__ */ import_react2.default.createElement("span", { className: glassmorphism_default.badge }, " ", " ", connectedCount, " connected"))), /* @__PURE__ */ import_react2.default.createElement("form", { onSubmit: handleAddRelay, className: "flex gap-2 mb-4" }, /* @__PURE__ */ import_react2.default.createElement(
     "input",
     {
       type: "text",
       value: newRelayUrl,
       onChange: (e) => setNewRelayUrl(e.target.value),
-      className: "flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
+      className: `px-3 py-2 rounded-md ${glassmorphism_default.glassInput} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`,
       placeholder: "wss://your.relay.com",
       disabled: isLoading
     }
@@ -26830,29 +26837,37 @@ var RelayManager = () => {
     "button",
     {
       type: "submit",
-      className: `px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+      className: `px-4 py-2 rounded-md ${glassmorphism_default.glassButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
       disabled: isLoading
     },
     "Add & Connect"
-  )), error && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-red-500 text-sm mb-2" }, "Error: ", error), isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500 mb-2" }, "Processing..."), /* @__PURE__ */ import_react2.default.createElement("ul", { className: "space-y-2" }, relayStatuses.length === 0 && !isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500" }, "No relays configured or connected."), relayStatuses.map(({ url, status, error: relayError }) => /* @__PURE__ */ import_react2.default.createElement("li", { key: url, className: "flex items-center justify-between p-2 border rounded-md bg-gray-50" }, /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex-grow mr-2 overflow-hidden" }, /* @__PURE__ */ import_react2.default.createElement("span", { className: "text-sm font-medium truncate" }, url), relayError && /* @__PURE__ */ import_react2.default.createElement("span", { className: "block text-xs text-red-500 truncate" }, "(", relayError, ")")), /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex items-center gap-2 flex-shrink-0" }, /* @__PURE__ */ import_react2.default.createElement("span", { className: `text-sm font-semibold ${getStatusColor(status)}` }, status.charAt(0).toUpperCase() + status.slice(1)), (status === "connected" || status === "connecting" || status === "error") && /* @__PURE__ */ import_react2.default.createElement(
-    "button",
+  )), error && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-red-500 text-sm mb-2" }, "Error: ", error), isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500 mb-2" }, "Processing..."), /* @__PURE__ */ import_react2.default.createElement("div", { className: "space-y-2" }, relayStatuses.length === 0 && !isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500" }, "No relays configured or connected."), relayStatuses.map(({ url, status, error: relayError }) => /* @__PURE__ */ import_react2.default.createElement(
+    "div",
     {
-      onClick: () => handleDisconnectRelay(url),
-      className: `px-2 py-1 text-xs font-medium rounded border border-red-500 text-red-600 hover:bg-red-50 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
-      disabled: isLoading,
-      title: `Disconnect from ${url}`
+      key: url,
+      className: `flex items-center justify-between p-3 ${glassmorphism_default.glassCard} rounded-md`
     },
-    "Disconnect"
-  ), status === "disconnected" && /* @__PURE__ */ import_react2.default.createElement(
-    "button",
-    {
-      onClick: () => handleConnectRelay(url),
-      className: `px-2 py-1 text-xs font-medium rounded border border-green-500 text-green-600 hover:bg-green-50 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
-      disabled: isLoading,
-      title: `Connect to ${url}`
-    },
-    "Connect"
-  ))))));
+    /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex-grow mr-2 overflow-hidden flex items-center" }, /* @__PURE__ */ import_react2.default.createElement("div", { className: `${glassmorphism_default.statusDot} ${status === "connected" ? glassmorphism_default.connected : glassmorphism_default.disconnected} mr-3` }), /* @__PURE__ */ import_react2.default.createElement("span", { className: "text-sm font-medium truncate" }, url), relayError && /* @__PURE__ */ import_react2.default.createElement("span", { className: "block text-xs text-red-500 truncate ml-2" }, "(", relayError, ")")),
+    /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex items-center gap-2 flex-shrink-0" }, (status === "connected" || status === "connecting" || status === "error") && /* @__PURE__ */ import_react2.default.createElement(
+      "button",
+      {
+        onClick: () => handleDisconnectRelay(url),
+        className: `px-3 py-1 text-sm font-medium rounded-md text-red-600 ${glassmorphism_default.glassDisconnect} ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+        disabled: isLoading,
+        title: `Disconnect from ${url}`
+      },
+      "Disconnect"
+    ), status === "disconnected" && /* @__PURE__ */ import_react2.default.createElement(
+      "button",
+      {
+        onClick: () => handleConnectRelay(url),
+        className: `px-3 py-1 text-sm font-medium rounded-md border border-green-500 text-green-600 hover:bg-green-50 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+        disabled: isLoading,
+        title: `Connect to ${url}`
+      },
+      "Connect"
+    ))
+  ))));
 };
 
 // extension/popup/components/ErrorBoundary.tsx
@@ -27502,7 +27517,7 @@ var formatTimestamp = (timestamp) => {
   return date.toLocaleString();
 };
 var renderMetadata = (bookmark) => {
-  return /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-medium" }, formatTimestamp(bookmark.createdAt));
+  return /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-medium" }, "Added ", formatTimestamp(bookmark.createdAt));
 };
 var findImageUrls = (content) => {
   const imagePattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi;
@@ -27532,7 +27547,7 @@ var makeUrlsClickable = (content) => {
           href: cleanUrl,
           target: "_blank",
           rel: "noopener noreferrer",
-          className: "text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150"
+          className: "text-indigo-600 hover:text-indigo-700 break-all font-medium transition-colors duration-150"
         },
         cleanUrl
       )
@@ -27574,11 +27589,11 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
       case "website": {
         const isImage = bookmark2.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
         if (isImage) {
-          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
+          return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-2 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base truncate flex-1 mr-2" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
             "button",
             {
               onClick: handleDelete,
-              className: "p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200",
+              className: `p-1.5 text-red-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`,
               title: "Delete bookmark"
             },
             /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
@@ -27596,16 +27611,16 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
                 src: bookmark2.url,
                 alt: bookmark2.title,
                 style: imageStyle,
-                className: "hover:shadow-lg transition-shadow duration-200"
+                className: "hover:shadow-lg transition-shadow duration-200 border border-gray-100 rounded-lg"
               }
             )
           )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark2)));
         }
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2 w-full" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col space-y-2 w-full ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-between items-start mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base truncate flex-1 mr-2" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
           "button",
           {
             onClick: handleDelete,
-            className: "p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200",
+            className: `p-1.5 text-red-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`,
             title: "Delete bookmark"
           },
           /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
@@ -27615,27 +27630,26 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
             href: bookmark2.url,
             target: "_blank",
             rel: "noopener noreferrer",
-            className: "text-blue-600 hover:text-blue-700 break-all text-sm transition-colors duration-150",
+            className: "text-indigo-600 hover:text-indigo-700 break-all text-sm transition-colors duration-150 hover:underline",
             title: bookmark2.url
           },
           bookmark2.url
         ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark2)));
       }
       case "note": {
-        const noteTitle = bookmark2.title;
         const content = bookmark2.content;
         const imageUrls = content ? findImageUrls(content) : [];
         const textContent = content || `Note ID: ${bookmark2.eventId}`;
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base" }, noteTitle), /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent))), /* @__PURE__ */ import_react4.default.createElement(
           "button",
           {
             onClick: handleDelete,
-            className: "p-1.5 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors duration-200",
+            className: `p-1.5 text-red-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`,
             title: "Delete bookmark"
           },
           /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
-        )), /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
+        )), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
           const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
           if (exactUrlCount === 1) return null;
           return /* @__PURE__ */ import_react4.default.createElement("div", { key: index, className: "relative group" }, /* @__PURE__ */ import_react4.default.createElement(
@@ -27652,7 +27666,7 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
                 src: url,
                 alt: `Image ${index + 1}`,
                 style: imageStyle,
-                className: "hover:shadow-lg transition-shadow duration-200 w-full"
+                className: "hover:shadow-lg transition-shadow duration-200 w-full border border-gray-100 rounded-lg"
               }
             )
           ));
@@ -27663,22 +27677,22 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
         return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center text-red-500" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-2 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" })), "Unknown Bookmark Type");
     }
   };
-  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react4.default.createElement("div", null, renderBookmarkContent(bookmark))));
+  return renderBookmarkContent(bookmark);
 };
 var BookmarkItem_default = BookmarkItem;
 
 // extension/popup/components/BookmarkList.tsx
 var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
   if (isLoading) {
-    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-500" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3" }), /* @__PURE__ */ import_react5.default.createElement("p", null, "Loading bookmarks..."));
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-700" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-3" }), /* @__PURE__ */ import_react5.default.createElement("p", null, "Loading bookmarks..."));
   }
   if (error) {
-    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "bg-red-50 text-red-600 px-4 py-3 rounded-lg text-center max-w-sm" }, /* @__PURE__ */ import_react5.default.createElement("p", { className: "font-medium mb-1" }, "Error loading bookmarks"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-red-500" }, error)));
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: `${glassmorphism_default.glassCard} text-red-600 px-4 py-3 rounded-lg text-center max-w-sm` }, /* @__PURE__ */ import_react5.default.createElement("p", { className: "font-medium mb-1" }, "Error loading bookmarks"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-red-500" }, error)));
   }
   if (bookmarks.length === 0) {
-    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-500" }, /* @__PURE__ */ import_react5.default.createElement("svg", { className: "w-12 h-12 text-gray-300 mb-3", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react5.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" })), /* @__PURE__ */ import_react5.default.createElement("p", null, "No bookmarks found"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-gray-400 mt-1" }, "Bookmarks you save will appear here"));
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-700" }, /* @__PURE__ */ import_react5.default.createElement("svg", { className: "w-12 h-12 text-gray-400 mb-3", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react5.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" })), /* @__PURE__ */ import_react5.default.createElement("p", null, "No bookmarks found"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-gray-500 mt-1" }, "Bookmarks you save will appear here"));
   }
-  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "space-y-2" }, bookmarks.map((bookmark) => {
+  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "divide-y divide-gray-200" }, bookmarks.map((bookmark) => {
     console.log("Rendering bookmark:", bookmark.id);
     const deleteHandler = onDeleteBookmark ? () => {
       console.log("Delete handler called for bookmark:", bookmark.id);
@@ -27687,14 +27701,13 @@ var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
       console.log("Fallback delete handler called for bookmark:", bookmark.id);
       return Promise.resolve();
     };
-    return /* @__PURE__ */ import_react5.default.createElement(
+    return /* @__PURE__ */ import_react5.default.createElement("li", { key: bookmark.id, className: "py-3 first:pt-0 last:pb-0 hover:bg-gray-50 transition-colors rounded-sm" }, /* @__PURE__ */ import_react5.default.createElement(
       BookmarkItem_default,
       {
-        key: bookmark.id,
         bookmark,
         onDelete: deleteHandler
       }
-    );
+    ));
   }));
 };
 var BookmarkList_default = BookmarkList2;
@@ -27832,9 +27845,7 @@ var Popup = () => {
       console.error("[Popup] Error deleting bookmark:", error);
       if (bookmarkToDelete) {
         setBookmarks((prev) => [...prev, bookmarkToDelete].sort((a, b) => {
-          const timeA = "createdAt" in a ? a.createdAt : a.created_at;
-          const timeB = "createdAt" in b ? b.createdAt : b.created_at;
-          return timeB - timeA;
+          return b.createdAt - a.createdAt;
         }));
       }
       setBookmarksError("Failed to delete bookmark. Please try again.");
@@ -27845,23 +27856,43 @@ var Popup = () => {
     return /* @__PURE__ */ import_react6.default.createElement("div", { className: "p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-4" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "font-bold" }, "Initialization Error:"), /* @__PURE__ */ import_react6.default.createElement("p", null, initializationError));
   };
   if (isAuthLoading) {
-    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col items-center space-y-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" }), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-gray-600" }, "Loading your bookmarks...")));
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col items-center space-y-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" }), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-gray-700" }, "Connecting to relays...")));
   }
-  return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] flex flex-col bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("header", { className: "bg-white border-b border-gray-200 px-4 py-3 shadow-sm" }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold text-gray-800 text-center" }, "Bookmarkstr")), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col p-4 space-y-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm font-medium text-gray-600" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all text-gray-500" }, publicKey)), /* @__PURE__ */ import_react6.default.createElement(
+  return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("header", { className: `px-4 py-3 ${glassmorphism_default.glass} mb-4 shadow-lg` }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold text-gray-800 text-center" }, "Bookmarkstr")), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col p-4 space-y-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: `rounded-lg ${glassmorphism_default.glass} p-4` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm font-medium text-gray-700" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all text-gray-600" }, publicKey)), /* @__PURE__ */ import_react6.default.createElement(
     "button",
     {
       onClick: handleLogout,
-      className: "ml-4 px-3 py-1.5 border border-red-200 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+      className: `ml-4 p-2 rounded-md text-sm font-medium text-red-600 ${glassmorphism_default.glassDisconnect} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150 hover:text-red-700`,
+      title: "Logout"
     },
-    "Logout"
-  ))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react6.default.createElement(
+    /* @__PURE__ */ import_react6.default.createElement(
+      "svg",
+      {
+        className: "w-5 h-5",
+        fill: "none",
+        stroke: "currentColor",
+        viewBox: "0 0 24 24",
+        xmlns: "http://www.w3.org/2000/svg"
+      },
+      /* @__PURE__ */ import_react6.default.createElement(
+        "path",
+        {
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          strokeWidth: 2,
+          d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        }
+      )
+    )
+  ))), /* @__PURE__ */ import_react6.default.createElement("div", { className: `rounded-lg ${glassmorphism_default.glass} p-4` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react6.default.createElement(
     "button",
     {
       onClick: () => setShowRelayManager(!showRelayManager),
       className: "flex items-center text-lg font-medium text-gray-800 focus:outline-none"
     },
     /* @__PURE__ */ import_react6.default.createElement("span", null, "Relay Connections"),
-    /* @__PURE__ */ import_react6.default.createElement("span", { className: "ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full" }, relayService.getRelayStatuses().filter((status) => status.status === "connected").length, " connected"),
+    " ",
+    /* @__PURE__ */ import_react6.default.createElement("span", { className: glassmorphism_default.badge }, relayService.getRelayStatuses().filter((status) => status.status === "connected").length, " connected"),
     /* @__PURE__ */ import_react6.default.createElement(
       "svg",
       {
@@ -27873,15 +27904,15 @@ var Popup = () => {
       },
       /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 9l-7 7-7-7" })
     )
-  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement(RelayManager, null)), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h2", { className: "text-lg font-semibold text-gray-800" }, "My Bookmarks"), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center space-x-2" }, !isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement(
+  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement("div", { className: "mt-4" }, /* @__PURE__ */ import_react6.default.createElement(RelayManager, null))), /* @__PURE__ */ import_react6.default.createElement("div", { className: `flex-grow rounded-lg ${glassmorphism_default.glass} p-4 overflow-hidden flex flex-col` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center space-x-2" }, !isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement(
     "button",
     {
       onClick: () => fetchAndSetBookmarks(publicKey),
-      className: "text-xs text-blue-600 hover:text-blue-800",
+      className: "text-xs text-indigo-600 hover:text-indigo-800",
       title: "Retry loading bookmarks"
     },
     /* @__PURE__ */ import_react6.default.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" }))
-  ), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
+  ), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
     BookmarkList_default,
     {
       bookmarks,
