@@ -30,5 +30,4 @@ if (!fs.existsSync('output/icons')) {
 sizes.forEach(size => {
     const iconData = createIcon(size);
     fs.writeFileSync(`output/icons/icon${size}.png`, iconData);
-    console.log(`Created icon${size}.png`);
 }); 

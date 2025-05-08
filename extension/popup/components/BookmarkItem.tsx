@@ -1,8 +1,10 @@
 import React from 'react';
 import { ProcessedBookmark } from '../../common/types';
+import styles from '../styles/glassmorphism.module.css';
 
 interface BookmarkItemProps {
   bookmark: ProcessedBookmark;
+  onDelete?: () => Promise<void>;  // Make it optional to avoid type errors
 }
 
 // Helper function to format timestamp (you might want a more sophisticated library later)
@@ -12,9 +14,11 @@ const formatTimestamp = (timestamp: number): string => {
 };
 
 // Helper function to render common parts (like timestamp)
-const renderMetadata = (bookmark: ProcessedBookmark) => (
-    <span className="text-xs text-gray-400 font-medium">{formatTimestamp(bookmark.created_at)}</span>
-);
+const renderMetadata = (bookmark: ProcessedBookmark) => {
+  return (
+    <span className="text-xs text-gray-400 font-medium">Added {formatTimestamp(bookmark.createdAt)}</span>
+  );
+};
 
 // Function to detect image URLs in content
 const findImageUrls = (content: string): string[] => {
@@ -24,7 +28,7 @@ const findImageUrls = (content: string): string[] => {
 };
 
 // Function to detect URLs in content and make them clickable
-const makeUrlsClickable = (content: string): React.ReactNode[] => {
+const makeUrlsClickable = (content: string | undefined) => {
   if (!content) return [content];
   
   // URL regex pattern - match non-whitespace chars to avoid capturing trailing punctuation
@@ -60,7 +64,7 @@ const makeUrlsClickable = (content: string): React.ReactNode[] => {
         href={cleanUrl} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150"
+        className="text-indigo-600 hover:text-indigo-700 break-all font-medium transition-colors duration-150"
       >
         {cleanUrl}
       </a>
@@ -94,16 +98,46 @@ const imageStyle = {
   borderRadius: '6px'
 };
 
-const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
-  const renderBookmarkContent = () => {
+const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDelete) {
+      try {
+        await onDelete();
+      } catch (error) {
+        console.error('Error deleting bookmark:', error);
+      }
+    }
+  };
+
+  const handleOpenInPrimal = (e: React.MouseEvent, eventId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(`https://primal.net/e/${eventId}`, '_blank');
+  };
+
+  const renderBookmarkContent = (bookmark: ProcessedBookmark) => {
     switch (bookmark.type) {
-      case 'url': {
+      case 'website': {
         // Check if the URL is an image
         const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
         
         if (isImage) {
           return (
-            <div className="flex flex-col items-start w-full space-y-2">
+            <div className={`flex flex-col items-start w-full space-y-2 ${styles.bookmarkItem}`}>
+              <div className="w-full mb-1 flex justify-between items-start">
+                <h3 className="text-gray-800 font-medium text-base truncate flex-1 mr-2">{bookmark.title}</h3>
+                <button
+                  onClick={handleDelete}
+                  className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
+                  title="Delete bookmark"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
               <div style={imageContainerStyle}>
                 <a 
                   href={bookmark.url} 
@@ -113,9 +147,9 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
                 >
                   <img 
                     src={bookmark.url} 
-                    alt="Bookmarked image" 
+                    alt={bookmark.title} 
                     style={imageStyle}
-                    className="hover:shadow-lg transition-shadow duration-200"
+                    className="hover:shadow-lg transition-shadow duration-200 border border-gray-100 rounded-lg"
                   />
                 </a>
               </div>
@@ -127,12 +161,24 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
         }
         
         return (
-          <div className="flex flex-col space-y-1 w-full">
+          <div className={`flex flex-col space-y-2 w-full ${styles.bookmarkItem}`}>
+            <div className="flex justify-between items-start mb-1">
+              <h3 className="text-gray-800 font-medium text-base truncate flex-1 mr-2">{bookmark.title}</h3>
+              <button
+                onClick={handleDelete}
+                className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
+                title="Delete bookmark"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
             <a 
               href={bookmark.url} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150"
+              className="text-indigo-600 hover:text-indigo-700 break-all text-sm transition-colors duration-150 hover:underline"
               title={bookmark.url}
             >
               {bookmark.url}
@@ -145,17 +191,43 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
       }
       
       case 'note': {
-        const imageUrls = bookmark.content ? findImageUrls(bookmark.content) : [];
-        const textContent = bookmark.content || `Note ID: ${bookmark.eventId}`;
+        // Note content handling
+        const content = bookmark.content;
+        const imageUrls = content ? findImageUrls(content) : [];
+        const textContent = content || "";
         
         // Extract all URLs for comparison with image URLs
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
         
         return (
-          <div className="flex flex-col items-start w-full space-y-3">
-            <p className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
-              {makeUrlsClickable(textContent)}
-            </p>
+          <div className={`flex flex-col items-start w-full space-y-3 ${styles.bookmarkItem}`}>
+            <div className="w-full mb-1 flex justify-between items-start">
+              <div className="flex-1 mr-2">
+                <div className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
+                  {makeUrlsClickable(textContent)}
+                </div>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <button
+                  onClick={(e) => handleOpenInPrimal(e, bookmark.eventId)}
+                  className={`p-1.5 text-indigo-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-indigo-50 flex-shrink-0`}
+                  title="Open in Primal.net"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className={`p-1.5 text-red-600 rounded-full ${styles.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`}
+                  title="Delete bookmark"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
             
             {imageUrls.length > 0 && (
               <div className="w-full grid grid-cols-2 gap-2">
@@ -177,7 +249,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
                           src={url} 
                           alt={`Image ${index + 1}`} 
                           style={imageStyle}
-                          className="hover:shadow-lg transition-shadow duration-200 w-full"
+                          className="hover:shadow-lg transition-shadow duration-200 w-full border border-gray-100 rounded-lg"
                         />
                       </a>
                     </div>
@@ -193,43 +265,6 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
         );
       }
       
-      case 'article':
-        return (
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-start">
-              <svg className="w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-              </svg>
-              <span className="font-mono text-sm break-all text-gray-600 w-full" title={`Article Naddr: ${bookmark.naddr}`}>
-                {`Article: ${bookmark.naddr}`}
-              </span>
-            </div>
-            <div className="flex items-center justify-between w-full text-xs">
-              {bookmark.relayHint && (
-                <span className="text-gray-400 flex items-center" title={`Relay Hint: ${bookmark.relayHint}`}>
-                  <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span className="break-all">{bookmark.relayHint}</span>
-                </span>
-              )}
-              {renderMetadata(bookmark)}
-            </div>
-          </div>
-        );
-         
-      case 'hashtag':
-        return (
-          <div className="flex flex-col space-y-1">
-            <span className="text-purple-600 font-medium hover:text-purple-700 transition-colors duration-150 break-all">
-              #{bookmark.hashtag}
-            </span>
-            <div className="flex justify-end">
-              {renderMetadata(bookmark)}
-            </div>
-          </div>
-        );
-        
       default:
         console.warn('Unknown bookmark type:', bookmark);
         return (
@@ -243,11 +278,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark }) => {
     }
   };
 
-  return (
-    <li className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden">
-      {renderBookmarkContent()}
-    </li>
-  );
+  return renderBookmarkContent(bookmark);
 };
 
 export default BookmarkItem; 

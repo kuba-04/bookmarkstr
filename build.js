@@ -26,7 +26,6 @@ function copyManifest() {
     path.join(targetDir, 'manifest.json'), 
     path.join(outputDir, 'manifest.json')
   );
-  console.log('Copied manifest.json from', isFirefox ? 'Firefox' : 'Chrome');
 }
 
 // Copy static files
@@ -36,16 +35,12 @@ function copyFiles() {
   
   // Copy nostr-provider.js
   fs.copyFileSync('extension/nostr-provider.js', path.join(outputDir, 'nostr-provider.js'));
-  
-  console.log('Copied static files');
 }
 
 // Build CSS
 function buildCss(outPath) {
   try {
-    console.log('Building CSS to', outPath);
     execSync(`pnpm exec tailwindcss -i ./extension/popup/popup.css -o ${outPath}${isProd ? ' --minify' : ''}`);
-    console.log('CSS build complete');
   } catch (error) {
     console.error('Error building CSS:', error);
   }
@@ -69,7 +64,6 @@ async function buildJs() {
       sourcemap: !isProd,
       logLevel: 'info',
     });
-    console.log('Built JavaScript files');
   } catch (err) {
     console.error('Build failed:', err);
     process.exit(1);
@@ -88,8 +82,6 @@ function copyToBrowserDir() {
   // Copy static files
   fs.copyFileSync('extension/popup.html', path.join(targetDir, 'popup.html'));
   fs.copyFileSync('extension/nostr-provider.js', path.join(targetDir, 'nostr-provider.js'));
-  
-  console.log(`Copied files to ${targetDir} for development`);
 }
 
 // Watch for changes and rebuild
@@ -102,11 +94,6 @@ function watchChanges() {
     'extension/content',
     'extension/common'
   ];
-  
-  console.log('Watching for changes...');
-  
-  // Do not use Tailwind's watch process - it causes rebuild loops
-  // Instead, rebuild CSS manually when needed
   
   // Keep track of rebuild state to prevent loops
   let isRebuilding = false;
@@ -155,10 +142,8 @@ function watchChanges() {
       
       // Only rebuild for code changes, not for CSS changes (to avoid loops)
       if (filename.endsWith('.tsx') || filename.endsWith('.ts')) {
-        console.log(`Source file changed: ${filename}`);
         processSourceChange();
       } else if (filename.endsWith('.css')) {
-        console.log(`CSS file changed: ${filename}`);
         // Just build CSS files, don't rebuild JS
         buildCss(path.join(outputDir, 'popup.css'));
         buildCss(path.join(targetDir, 'popup.css'));
@@ -171,7 +156,6 @@ function watchChanges() {
     if (!filename) return;
     
     if (filename === 'popup.html' || filename === 'nostr-provider.js') {
-      console.log(`Core file changed: ${filename}`);
       copyFiles();
       copyToBrowserDir();
     }
@@ -180,7 +164,6 @@ function watchChanges() {
   // Watch manifest files
   fs.watch(targetDir, { recursive: false }, (eventType, filename) => {
     if (filename === 'manifest.json') {
-      console.log(`Manifest changed`);
       copyManifest();
     }
   });
@@ -188,8 +171,6 @@ function watchChanges() {
 
 // Main build function
 async function build() {
-  console.log(`Building for ${isFirefox ? 'Firefox' : 'Chrome'} in ${isProd ? 'production' : 'development'} mode`);
-  
   // Copy manifest
   copyManifest();
   
@@ -209,8 +190,6 @@ async function build() {
   
   // Copy to browser-specific directory for development
   copyToBrowserDir();
-  
-  console.log('Build completed successfully!');
   
   // Watch for changes in development mode
   if (!isProd) {

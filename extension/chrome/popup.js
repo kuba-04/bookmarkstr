@@ -30,9 +30,9 @@ var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__
 ));
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
-// node_modules/.pnpm/react@19.1.0/node_modules/react/cjs/react.development.js
+// node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS({
-  "node_modules/.pnpm/react@19.1.0/node_modules/react/cjs/react.development.js"(exports, module) {
+  "node_modules/react/cjs/react.development.js"(exports, module) {
     "use strict";
     (function() {
       function defineDeprecationWarning(methodName, info) {
@@ -970,9 +970,9 @@ var require_react_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react@19.1.0/node_modules/react/index.js
+// node_modules/react/index.js
 var require_react = __commonJS({
-  "node_modules/.pnpm/react@19.1.0/node_modules/react/index.js"(exports, module) {
+  "node_modules/react/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -982,9 +982,9 @@ var require_react = __commonJS({
   }
 });
 
-// node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/cjs/scheduler.development.js
+// node_modules/scheduler/cjs/scheduler.development.js
 var require_scheduler_development = __commonJS({
-  "node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/cjs/scheduler.development.js"(exports) {
+  "node_modules/scheduler/cjs/scheduler.development.js"(exports) {
     "use strict";
     (function() {
       function performWorkUntilDeadline() {
@@ -1241,9 +1241,9 @@ var require_scheduler_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/index.js
+// node_modules/scheduler/index.js
 var require_scheduler = __commonJS({
-  "node_modules/.pnpm/scheduler@0.26.0/node_modules/scheduler/index.js"(exports, module) {
+  "node_modules/scheduler/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -1253,9 +1253,9 @@ var require_scheduler = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom.development.js
+// node_modules/react-dom/cjs/react-dom.development.js
 var require_react_dom_development = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom.development.js"(exports) {
+  "node_modules/react-dom/cjs/react-dom.development.js"(exports) {
     "use strict";
     (function() {
       function noop() {
@@ -1497,9 +1497,9 @@ var require_react_dom_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/index.js
+// node_modules/react-dom/index.js
 var require_react_dom = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/index.js"(exports, module) {
+  "node_modules/react-dom/index.js"(exports, module) {
     "use strict";
     if (false) {
       checkDCE();
@@ -1510,9 +1510,9 @@ var require_react_dom = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom-client.development.js
+// node_modules/react-dom/cjs/react-dom-client.development.js
 var require_react_dom_client_development = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/cjs/react-dom-client.development.js"(exports) {
+  "node_modules/react-dom/cjs/react-dom-client.development.js"(exports) {
     "use strict";
     (function() {
       function findHook(fiber, id) {
@@ -19292,9 +19292,9 @@ var require_react_dom_client_development = __commonJS({
   }
 });
 
-// node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/client.js
+// node_modules/react-dom/client.js
 var require_client = __commonJS({
-  "node_modules/.pnpm/react-dom@19.1.0_react@19.1.0/node_modules/react-dom/client.js"(exports, module) {
+  "node_modules/react-dom/client.js"(exports, module) {
     "use strict";
     if (false) {
       checkDCE();
@@ -19309,7 +19309,7 @@ var require_client = __commonJS({
 var import_react6 = __toESM(require_react());
 var import_client = __toESM(require_client());
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/_assert.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/_assert.js
 function number(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error(`Wrong positive integer: ${n}`);
@@ -19340,10 +19340,10 @@ function output(out, instance) {
   }
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/crypto.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/crypto.js
 var crypto = typeof globalThis === "object" && "crypto" in globalThis ? globalThis.crypto : void 0;
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/utils.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/utils.js
 var u8a = (a) => a instanceof Uint8Array;
 var createView = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
 var rotr = (word, shift) => word << 32 - shift | word >>> shift;
@@ -19395,7 +19395,7 @@ function randomBytes(bytesLength = 32) {
   throw new Error("crypto.getRandomValues must be defined");
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/_sha2.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/_sha2.js
 function setBigUint64(view, byteOffset, value, isLE4) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE4);
@@ -19495,7 +19495,7 @@ var SHA2 = class extends Hash {
   }
 };
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/sha256.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/sha256.js
 var Chi = (a, b, c) => a & b ^ ~a & c;
 var Maj = (a, b, c) => a & b ^ a & c ^ b & c;
 var SHA256_K = /* @__PURE__ */ new Uint32Array([
@@ -19647,7 +19647,7 @@ var SHA256 = class extends SHA2 {
 };
 var sha256 = /* @__PURE__ */ wrapConstructor(() => new SHA256());
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/utils.js
+// node_modules/@noble/curves/esm/abstract/utils.js
 var utils_exports = {};
 __export(utils_exports, {
   bitGet: () => bitGet,
@@ -19862,7 +19862,7 @@ function validateObject(object, validators, optValidators = {}) {
   return object;
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/modular.js
+// node_modules/@noble/curves/esm/abstract/modular.js
 var _0n2 = BigInt(0);
 var _1n2 = BigInt(1);
 var _2n2 = BigInt(2);
@@ -20128,7 +20128,7 @@ function mapHashToField(key, fieldOrder, isLE4 = false) {
   return isLE4 ? numberToBytesLE(reduced, fieldLen) : numberToBytesBE(reduced, fieldLen);
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/curve.js
+// node_modules/@noble/curves/esm/abstract/curve.js
 var _0n3 = BigInt(0);
 var _1n3 = BigInt(1);
 function wNAF(c, bits) {
@@ -20246,7 +20246,7 @@ function validateBasic(curve) {
   });
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/abstract/weierstrass.js
+// node_modules/@noble/curves/esm/abstract/weierstrass.js
 function validatePointOpts(curve) {
   const opts = validateBasic(curve);
   validateObject(opts, {
@@ -21038,7 +21038,7 @@ function weierstrass(curveDef) {
   };
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.2/node_modules/@noble/hashes/esm/hmac.js
+// node_modules/@noble/curves/node_modules/@noble/hashes/esm/hmac.js
 var HMAC = class extends Hash {
   constructor(hash3, _key) {
     super();
@@ -21103,7 +21103,7 @@ var HMAC = class extends Hash {
 var hmac = (hash3, key, message) => new HMAC(hash3, key).update(message).digest();
 hmac.create = (hash3, key) => new HMAC(hash3, key);
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/_shortw_utils.js
+// node_modules/@noble/curves/esm/_shortw_utils.js
 function getHash(hash3) {
   return {
     hash: hash3,
@@ -21116,7 +21116,7 @@ function createCurve(curveDef, defHash) {
   return Object.freeze({ ...create(defHash), create });
 }
 
-// node_modules/.pnpm/@noble+curves@1.2.0/node_modules/@noble/curves/esm/secp256k1.js
+// node_modules/@noble/curves/esm/secp256k1.js
 var secp256k1P = BigInt("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
 var secp256k1N = BigInt("0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141");
 var _1n5 = BigInt(1);
@@ -21284,10 +21284,10 @@ var schnorr = /* @__PURE__ */ (() => ({
   }
 }))();
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/crypto.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/crypto.js
 var crypto2 = typeof globalThis === "object" && "crypto" in globalThis ? globalThis.crypto : void 0;
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/utils.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/utils.js
 var u8a3 = (a) => a instanceof Uint8Array;
 var createView2 = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
 var rotr2 = (word, shift) => word << 32 - shift | word >>> shift;
@@ -21365,7 +21365,7 @@ function randomBytes2(bytesLength = 32) {
   throw new Error("crypto.getRandomValues must be defined");
 }
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/_assert.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/_assert.js
 function number2(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error(`Wrong positive integer: ${n}`);
@@ -21409,7 +21409,7 @@ var assert = {
 };
 var assert_default = assert;
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/_sha2.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/_sha2.js
 function setBigUint642(view, byteOffset, value, isLE4) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE4);
@@ -21509,7 +21509,7 @@ var SHA22 = class extends Hash2 {
   }
 };
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/sha256.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/sha256.js
 var Chi2 = (a, b, c) => a & b ^ ~a & c;
 var Maj2 = (a, b, c) => a & b ^ a & c ^ b & c;
 var SHA256_K2 = new Uint32Array([
@@ -21676,7 +21676,7 @@ var SHA224 = class extends SHA2562 {
 var sha2562 = wrapConstructor2(() => new SHA2562());
 var sha224 = wrapConstructor2(() => new SHA224());
 
-// node_modules/.pnpm/@scure+base@1.1.1/node_modules/@scure/base/lib/esm/index.js
+// node_modules/@scure/base/lib/esm/index.js
 function assertNumber(n) {
   if (!Number.isSafeInteger(n))
     throw new Error(`Wrong integer: ${n}`);
@@ -22029,7 +22029,7 @@ var CODERS = {
 };
 var coderTypeError = `Invalid encoding type. Available types: ${Object.keys(CODERS).join(", ")}`;
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_assert.js
+// node_modules/@noble/ciphers/esm/_assert.js
 function number3(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error(`positive integer expected, not ${n}`);
@@ -22061,7 +22061,7 @@ function output3(out, instance) {
   }
 }
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/utils.js
+// node_modules/@noble/ciphers/esm/utils.js
 var u8 = (arr) => new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
 var u32 = (arr) => new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
 var createView3 = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
@@ -22113,7 +22113,7 @@ function setBigUint643(view, byteOffset, value, isLE4) {
   view.setUint32(byteOffset + l, wl, isLE4);
 }
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_polyval.js
+// node_modules/@noble/ciphers/esm/_polyval.js
 var BLOCK_SIZE = 16;
 var ZEROS16 = /* @__PURE__ */ new Uint8Array(16);
 var ZEROS32 = u32(ZEROS16);
@@ -22303,7 +22303,7 @@ function wrapConstructorWithKey(hashCons) {
 var ghash = wrapConstructorWithKey((key, expectedLength) => new GHASH(key, expectedLength));
 var polyval = wrapConstructorWithKey((key, expectedLength) => new Polyval(key, expectedLength));
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/aes.js
+// node_modules/@noble/ciphers/esm/aes.js
 var BLOCK_SIZE2 = 16;
 var BLOCK_SIZE32 = 4;
 var EMPTY_BLOCK = new Uint8Array(BLOCK_SIZE2);
@@ -22845,7 +22845,7 @@ var siv = wrapCipher({ blockSize: 16, nonceLength: 12, tagLength: 16 }, function
   };
 });
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_poly1305.js
+// node_modules/@noble/ciphers/esm/_poly1305.js
 var u8to16 = (a, i2) => a[i2++] & 255 | (a[i2++] & 255) << 8;
 var Poly1305 = class {
   constructor(key) {
@@ -23101,7 +23101,7 @@ function wrapConstructorWithKey2(hashCons) {
 }
 var poly1305 = wrapConstructorWithKey2((key) => new Poly1305(key));
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/_arx.js
+// node_modules/@noble/ciphers/esm/_arx.js
 var _utf8ToBytes = (str) => Uint8Array.from(str.split("").map((c) => c.charCodeAt(0)));
 var sigma16 = _utf8ToBytes("expand 16-byte k");
 var sigma32 = _utf8ToBytes("expand 32-byte k");
@@ -23212,7 +23212,7 @@ function createCipher(core, opts) {
   };
 }
 
-// node_modules/.pnpm/@noble+ciphers@0.5.3/node_modules/@noble/ciphers/esm/chacha.js
+// node_modules/@noble/ciphers/esm/chacha.js
 function chachaCore(s, k, n, out, cnt, rounds = 20) {
   let y00 = s[0], y01 = s[1], y02 = s[2], y03 = s[3], y04 = k[0], y05 = k[1], y06 = k[2], y07 = k[3], y08 = k[4], y09 = k[5], y10 = k[6], y11 = k[7], y12 = cnt, y13 = n[0], y14 = n[1], y15 = n[2];
   let x00 = y00, x01 = y01, x02 = y02, x03 = y03, x04 = y04, x05 = y05, x06 = y06, x07 = y07, x08 = y08, x09 = y09, x10 = y10, x11 = y11, x12 = y12, x13 = y13, x14 = y14, x15 = y15;
@@ -23453,7 +23453,7 @@ var _poly1305_aead = (xorStream) => (key, nonce, AAD) => {
 var chacha20poly1305 = /* @__PURE__ */ wrapCipher({ blockSize: 64, nonceLength: 12, tagLength: 16 }, _poly1305_aead(chacha20));
 var xchacha20poly1305 = /* @__PURE__ */ wrapCipher({ blockSize: 64, nonceLength: 24, tagLength: 16 }, _poly1305_aead(xchacha20));
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/hmac.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/hmac.js
 var HMAC2 = class extends Hash2 {
   constructor(hash3, _key) {
     super();
@@ -23518,7 +23518,7 @@ var HMAC2 = class extends Hash2 {
 var hmac2 = (hash3, key, message) => new HMAC2(hash3, key).update(message).digest();
 hmac2.create = (hash3, key) => new HMAC2(hash3, key);
 
-// node_modules/.pnpm/@noble+hashes@1.3.1/node_modules/@noble/hashes/esm/hkdf.js
+// node_modules/nostr-tools/node_modules/@noble/hashes/esm/hkdf.js
 function extract(hash3, ikm, salt) {
   assert_default.hash(hash3);
   if (salt === void 0)
@@ -23552,7 +23552,7 @@ function expand(hash3, prk, info, length = 32) {
   return okm.slice(0, length);
 }
 
-// node_modules/.pnpm/nostr-tools@2.12.0_typescript@5.8.3/node_modules/nostr-tools/lib/esm/index.js
+// node_modules/nostr-tools/lib/esm/index.js
 var __defProp2 = Object.defineProperty;
 var __export2 = (target, all) => {
   for (var name in all)
@@ -26003,11 +26003,31 @@ async function validateEvent2(event, url, method, body) {
   return true;
 }
 
-// node_modules/.pnpm/@noble+hashes@1.8.0/node_modules/@noble/hashes/esm/utils.js
+// node_modules/@noble/hashes/esm/utils.js
+function isBytes2(a) {
+  return a instanceof Uint8Array || ArrayBuffer.isView(a) && a.constructor.name === "Uint8Array";
+}
+function abytes(b, ...lengths) {
+  if (!isBytes2(b))
+    throw new Error("Uint8Array expected");
+  if (lengths.length > 0 && !lengths.includes(b.length))
+    throw new Error("Uint8Array expected of length " + lengths + ", got length=" + b.length);
+}
 var hasHexBuiltin = /* @__PURE__ */ (() => (
   // @ts-ignore
   typeof Uint8Array.from([]).toHex === "function" && typeof Uint8Array.fromHex === "function"
 ))();
+var hexes3 = /* @__PURE__ */ Array.from({ length: 256 }, (_, i2) => i2.toString(16).padStart(2, "0"));
+function bytesToHex3(bytes4) {
+  abytes(bytes4);
+  if (hasHexBuiltin)
+    return bytes4.toHex();
+  let hex2 = "";
+  for (let i2 = 0; i2 < bytes4.length; i2++) {
+    hex2 += hexes3[bytes4[i2]];
+  }
+  return hex2;
+}
 var asciis = { _0: 48, _9: 57, A: 65, F: 70, a: 97, f: 102 };
 function asciiToBase16(ch) {
   if (ch >= asciis._0 && ch <= asciis._9)
@@ -26044,6 +26064,7 @@ function hexToBytes3(hex2) {
 var AuthService = class _AuthService {
   constructor() {
     this.storageKey = "nostrUserPublicKey";
+    this.secretKey = "secretKey";
   }
   static getInstance() {
     if (!_AuthService.instance) {
@@ -26053,7 +26074,7 @@ var AuthService = class _AuthService {
   }
   /**
    * Logs in the user using a private key (nsec or hex).
-   * Validates the key, derives the public key, and stores it in local storage.
+   * Validates the key, derives the public key, and stores it in session storage.
    * @param privateKey The private key string (nsec or hex format).
    * @returns The public key (hex format) if login is successful.
    * @throws Error if the private key is invalid.
@@ -26074,9 +26095,10 @@ var AuthService = class _AuthService {
         pkBytes = hexToBytes3(privateKey);
       }
       const publicKeyHex = getPublicKey(pkBytes);
-      await chrome.storage.local.set({ [this.storageKey]: publicKeyHex });
-      console.log("Login successful, public key stored:", publicKeyHex);
-      return publicKeyHex;
+      const secretKeyHex = bytesToHex3(pkBytes);
+      await chrome.storage.session.set({ [this.storageKey]: publicKeyHex });
+      await chrome.storage.session.set({ [this.secretKey]: secretKeyHex });
+      return { publicKey: publicKeyHex, secretKey: secretKeyHex };
     } catch (error) {
       console.error("Login failed:", error);
       if (error instanceof Error) {
@@ -26089,21 +26111,43 @@ var AuthService = class _AuthService {
    * Logs out the current user by removing the public key from storage.
    */
   async logout() {
-    await chrome.storage.local.remove(this.storageKey);
-    console.log("User logged out, public key removed from storage.");
+    await chrome.storage.session.remove([this.storageKey, this.secretKey]);
+    console.log("User logged out, public key removed from session storage.");
   }
   /**
    * Checks if a user is currently logged in by looking for the public key in storage.
    * @returns The public key (hex format) if logged in, otherwise null.
    */
   async getLoggedInUser() {
-    const result = await chrome.storage.local.get(this.storageKey);
-    return result[this.storageKey] || null;
+    const result = await chrome.storage.session.get([this.storageKey, this.secretKey]);
+    return {
+      publicKey: result[this.storageKey] || null,
+      secretKey: result[this.secretKey] || null
+    };
   }
 };
 
 // extension/popup/components/Login.tsx
 var import_react = __toESM(require_react());
+
+// extension/popup/styles/glassmorphism.module.css
+var glassmorphism_default = {
+  container: "glassmorphism_container",
+  glass: "glassmorphism_glass",
+  glassCard: "glassmorphism_glassCard",
+  bookmarkItem: "glassmorphism_bookmarkItem",
+  inputWrapper: "glassmorphism_inputWrapper",
+  glassInput: "glassmorphism_glassInput",
+  glassButton: "glassmorphism_glassButton",
+  glassDisconnect: "glassmorphism_glassDisconnect",
+  statusDot: "glassmorphism_statusDot",
+  connected: "glassmorphism_connected",
+  disconnected: "glassmorphism_disconnected",
+  title: "glassmorphism_title",
+  badge: "glassmorphism_badge"
+};
+
+// extension/popup/components/Login.tsx
 var Login = ({ onLoginSuccess }) => {
   const [privateKey, setPrivateKey] = (0, import_react.useState)("");
   const [error, setError] = (0, import_react.useState)(null);
@@ -26119,40 +26163,42 @@ var Login = ({ onLoginSuccess }) => {
       return;
     }
     try {
-      const publicKey = await authService.login(privateKey);
-      onLoginSuccess(publicKey);
+      const { publicKey, secretKey } = await authService.login(privateKey);
+      onLoginSuccess(publicKey, secretKey);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred.");
     } finally {
       setIsLoading(false);
     }
   };
-  return /* @__PURE__ */ import_react.default.createElement("div", { className: "p-4" }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "text-xl font-semibold mb-4" }, "Login with Private Key"), /* @__PURE__ */ import_react.default.createElement("form", { onSubmit: handleLogin }, /* @__PURE__ */ import_react.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react.default.createElement("label", { htmlFor: "privateKey", className: "block text-sm font-medium text-gray-700 mb-1" }, "Private Key (nsec or hex):"), /* @__PURE__ */ import_react.default.createElement(
+  return /* @__PURE__ */ import_react.default.createElement("div", { className: `p-6 ${glassmorphism_default.glass} rounded-lg max-w-md mx-auto` }, /* @__PURE__ */ import_react.default.createElement("div", { className: "text-center mb-6" }, /* @__PURE__ */ import_react.default.createElement("p", { className: "text-gray-600 text-sm" }, "Sign in with your Nostr private key to access your bookmarks across devices")), /* @__PURE__ */ import_react.default.createElement("form", { onSubmit: handleLogin, className: "space-y-4" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react.default.createElement("div", { className: `${glassmorphism_default.inputWrapper} relative` }, /* @__PURE__ */ import_react.default.createElement(
     "input",
     {
       type: "password",
       id: "privateKey",
       value: privateKey,
       onChange: (e) => setPrivateKey(e.target.value),
-      className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500",
-      placeholder: "nsec... or hex...",
-      disabled: isLoading
+      className: `w-full px-4 py-3 rounded-lg ${glassmorphism_default.glassInput} focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base`,
+      placeholder: "Enter your nsec or hex key",
+      disabled: isLoading,
+      autoComplete: "off",
+      spellCheck: "false"
     }
-  )), error && /* @__PURE__ */ import_react.default.createElement("p", { className: "text-red-500 text-sm mb-4" }, error), /* @__PURE__ */ import_react.default.createElement(
+  ))), error && /* @__PURE__ */ import_react.default.createElement("div", { className: "bg-red-50 border border-red-200 text-red-600 rounded-md p-3 text-sm" }, error), /* @__PURE__ */ import_react.default.createElement(
     "button",
     {
       type: "submit",
-      className: `w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+      className: `w-full py-3 px-4 rounded-lg ${glassmorphism_default.glassButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-base font-medium ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
       disabled: isLoading
     },
-    isLoading ? "Logging in..." : "Login"
-  )));
+    isLoading ? /* @__PURE__ */ import_react.default.createElement("span", { className: "flex items-center justify-center" }, /* @__PURE__ */ import_react.default.createElement("svg", { className: "animate-spin -ml-1 mr-2 h-5 w-5 text-white", fill: "none", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react.default.createElement("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }), /* @__PURE__ */ import_react.default.createElement("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" })), "Logging in...") : "Sign In"
+  ), /* @__PURE__ */ import_react.default.createElement("p", { className: "text-center text-xs text-gray-500 mt-4" }, "Your private key is only stored locally and never shared with any server")));
 };
 
 // extension/popup/components/RelayManager.tsx
 var import_react2 = __toESM(require_react());
 
-// node_modules/.pnpm/async-mutex@0.5.0/node_modules/async-mutex/index.mjs
+// node_modules/async-mutex/index.mjs
 var E_TIMEOUT = new Error("timeout while waiting for mutex to become available");
 var E_ALREADY_LOCKED = new Error("mutex already locked");
 var E_CANCELED = new Error("request for lock canceled");
@@ -26368,10 +26414,14 @@ var RelayService = class _RelayService {
     this.listeners = [];
     this.subscriptions = /* @__PURE__ */ new Map();
     this.reconnectTimeouts = /* @__PURE__ */ new Map();
-    this.CONNECTION_TIMEOUT = 3e4;
-    // Increased to 30 seconds
+    this.CONNECTION_TIMEOUT = 45e3;
+    // Increased to 45 seconds
     this.RECONNECT_DELAY = 5e3;
     // 5 seconds
+    this.MAX_RECONNECT_ATTEMPTS = 3;
+    // Maximum number of reconnection attempts
+    this.reconnectAttempts = /* @__PURE__ */ new Map();
+    // Track reconnection attempts
     // Fallback relays in case we can't fetch user's relays or for initial discovery
     this.fallbackRelays = [
       "wss://relay.damus.io",
@@ -26381,10 +26431,7 @@ var RelayService = class _RelayService {
       // 'wss://relay.nostr.band', // Old fallback
       // 'wss://relay.current.fyi'  // Old fallback
     ];
-    console.log("[RelayService] Constructor called");
     try {
-      console.log("[RelayService] SimplePool created successfully");
-      console.log("[RelayService] Configured fallback relays:", this.fallbackRelays);
     } catch (error) {
       console.error("[RelayService] Error in RelayService constructor:", error);
     }
@@ -26396,124 +26443,82 @@ var RelayService = class _RelayService {
     return _RelayService.instance;
   }
   /**
-   * Fetches user's relay list from kind:3 events (or kind:10002)
+   * Fetches user's relay list from kind:10002 events (NIP-65)
    */
   async fetchUserRelays(pubkey) {
-    console.log(`[RelayService] fetchUserRelays called for pubkey: ${pubkey}`);
     const discoveryRelays = this.fallbackRelays;
-    console.log(`[RelayService] Using discovery relays: ${discoveryRelays.join(", ")}`);
     return new Promise((resolve) => {
       const filter = {
-        kinds: [3],
-        // Using Kind 3 as per original code, might need change to 10002 based on NIP-65
+        kinds: [10002],
+        // NIP-65 specifies kind:10002
         authors: [pubkey],
         limit: 1
       };
-      console.log(`[RelayService] Subscribing to discovery relays for filter:`, filter);
       let eventReceived = false;
       const sub = this.pool.subscribe(discoveryRelays, filter, {
         onevent: (event) => {
           eventReceived = true;
-          console.log(`[RelayService] Received kind:3 event for relays:`, event);
           try {
-            const relays = JSON.parse(event.content);
-            if (typeof relays !== "object" || relays === null) {
-              throw new Error("Parsed content is not an object");
-            }
-            const relayList = Object.entries(relays).map(([url, settings]) => ({
-              url,
-              // Default to true if read/write properties are missing or not explicitly false
-              read: settings?.read !== false,
-              write: settings?.write !== false
-            })).filter((item) => item.url.startsWith("wss://"));
-            console.log(`[RelayService] Parsed relay list from event:`, relayList);
+            const relayList = event.tags.filter((tag) => tag[0] === "r").map((tag) => {
+              const [_, url, marker] = tag;
+              return {
+                url,
+                read: marker ? marker === "read" : true,
+                write: marker ? marker === "write" : true
+              };
+            }).filter((item) => item.url.startsWith("wss://"));
             sub.close();
             resolve(relayList);
           } catch (e) {
-            console.error("[RelayService] Failed to parse relay list from event content:", e, "Event content:", event.content);
             sub.close();
             resolve([]);
           }
         },
         onclose: (reason) => {
-          console.log(`[RelayService] Subscription to discovery relays closed. Reason: ${reason}`);
           if (!eventReceived) {
-            console.log("[RelayService] Subscription closed without receiving event, resolving empty.");
             resolve([]);
           }
         }
-        // Add EOSE handling? Might not be necessary if limit: 1 works reliably.
       });
       const timeoutDuration = 5e3;
-      console.log(`[RelayService] Setting timeout for relay discovery: ${timeoutDuration}ms`);
       setTimeout(() => {
         if (!eventReceived) {
-          console.log("[RelayService] Relay discovery timed out.");
           sub.close();
         }
       }, timeoutDuration);
     });
   }
   /**
+   * Publishes a NIP-65 relay list event
+   */
+  async publishRelayList(pubkey) {
+    const relayList = Array.from(this.targetRelays).map((url) => ["r", url]);
+    const unsignedEvent = {
+      kind: 10002,
+      created_at: Math.floor(Date.now() / 1e3),
+      tags: relayList,
+      content: "",
+      // NIP-65 specifies empty content
+      pubkey
+    };
+    const signedEvent = await window.nostr.signEvent(unsignedEvent);
+    const connectedRelays = this.getConnectedRelays();
+    if (connectedRelays.length === 0) {
+      throw new Error("No connected relays available for publishing");
+    }
+    await this.pool.publish(connectedRelays, signedEvent);
+  }
+  /**
    * Initializes relay connections for a user
    */
   async initializeForUser(pubkey) {
-    console.log(`[RelayService] Initializing relays for user: ${pubkey}`);
-    let relayList = [];
-    let relaysToConnect = [];
-    try {
-      relayList = await this.fetchUserRelays(pubkey);
-      console.log(`[RelayService] Fetched relay list result:`, relayList);
-      if (relayList && relayList.length > 0) {
-        console.log("[RelayService] Using relays found in user profile.");
-        relaysToConnect = relayList.map((r) => r.url);
-      } else {
-        console.log("[RelayService] No relays found in profile or fetch failed/timed out. Using fallback relays.");
-        relaysToConnect = this.fallbackRelays;
-      }
-      console.log(`[RelayService] Relays determined for connection: ${relaysToConnect.join(", ")}`);
-      if (relaysToConnect.length === 0) {
-        console.error("[RelayService] No relays to connect to (neither user nor fallback worked).");
-        throw new Error("No relays available to connect.");
-      }
-      await this.connectToRelays(relaysToConnect);
-      console.log("[RelayService] Initial connection attempt finished. Checking connection status...");
-      const maxWaitTime = 15e3;
-      const startTime = Date.now();
-      while (Date.now() - startTime < maxWaitTime) {
-        const connectedRelays = this.getConnectedRelays();
-        if (connectedRelays.length > 0) {
-          console.log(`[RelayService] Successfully connected to initial relays: ${connectedRelays.join(", ")}`);
-          return;
-        }
-        console.log(`[RelayService] Waiting for connection... (${(Date.now() - startTime) / 1e3}s / ${maxWaitTime / 1e3}s)`);
-        await new Promise((resolve) => setTimeout(resolve, 1e3));
-      }
-      console.error("[RelayService] Timed out waiting for any relay connection after initial attempt.");
-      throw new Error("Timed out waiting for relay connections");
-    } catch (error) {
-      console.error(`[RelayService] Error during initializeForUser for ${pubkey}:`, error);
-      const triedFallbacks = relaysToConnect.every((url) => this.fallbackRelays.includes(url));
-      if (!triedFallbacks && this.getConnectedRelays().length === 0) {
-        console.warn("[RelayService] Initial connection failed, attempting connection to fallback relays as a last resort.");
-        try {
-          await this.connectToRelays(this.fallbackRelays);
-          const connectedFallbacks = this.getConnectedRelays();
-          if (connectedFallbacks.length > 0) {
-            console.log(`[RelayService] Successfully connected to fallback relays: ${connectedFallbacks.join(", ")}`);
-            return;
-          } else {
-            console.error("[RelayService] Failed to connect even to fallback relays.");
-            throw new Error("Failed to connect to initial relays and fallback relays.");
-          }
-        } catch (fallbackError) {
-          console.error("[RelayService] Error connecting to fallback relays:", fallbackError);
-          throw new Error("Failed to connect to initial relays. Error during fallback connection attempt.");
-        }
-      } else if (this.getConnectedRelays().length === 0) {
-        console.error("[RelayService] Initialization failed. No relays connected.");
-        throw new Error("Failed to connect to initial relays. No relays configured or connected.");
-      }
+    const relayList = await this.fetchUserRelays(pubkey);
+    if (relayList.length > 0) {
+      this.targetRelays.clear();
+      relayList.forEach((relay) => this.targetRelays.add(relay.url));
+      await this.connectToRelays(Array.from(this.targetRelays));
+    } else {
+      await this.connectToRelays(this.fallbackRelays);
     }
   }
   updateRelayStatus(url, status, error) {
@@ -26521,7 +26526,6 @@ var RelayService = class _RelayService {
     if (current?.status === status && current?.error === error) {
       return;
     }
-    console.log(`Updating status for ${url}: ${status} ${error ? `(${error})` : ""}`);
     this.relayStatuses.set(url, { url, status, error });
     this.notifyListeners();
     if (status === "error" && this.targetRelays.has(url)) {
@@ -26533,18 +26537,16 @@ var RelayService = class _RelayService {
     if (existingTimeout) {
       clearTimeout(existingTimeout);
     }
-    const timeout = setTimeout(async () => {
-      console.log(`Attempting to reconnect to ${url}`);
-      try {
-        await this.connectToRelays([url]);
-      } catch (error) {
-        console.error(`Reconnection attempt to ${url} failed:`, error);
-        if (this.targetRelays.has(url)) {
+    if (this.targetRelays.has(url)) {
+      const timeout = setTimeout(async () => {
+        try {
+          await this.connectToRelays([url]);
+        } catch (error) {
           this.scheduleReconnect(url);
         }
-      }
-    }, this.RECONNECT_DELAY);
-    this.reconnectTimeouts.set(url, timeout);
+      }, this.RECONNECT_DELAY);
+      this.reconnectTimeouts.set(url, timeout);
+    }
   }
   notifyListeners() {
     this.listeners.forEach((listener) => listener(this.getRelayStatuses()));
@@ -26560,65 +26562,50 @@ var RelayService = class _RelayService {
     return Array.from(this.relayStatuses.values());
   }
   async connectToRelays(relayUrls) {
-    console.log(`[RelayService] ENTERING connectToRelays with URLs: ${JSON.stringify(relayUrls)}`);
     if (!Array.isArray(relayUrls)) {
-      const errorMsg = `[RelayService] connectToRelays called with invalid argument (expected array): ${relayUrls}`;
-      console.error(errorMsg);
-      throw new Error(errorMsg);
+      throw new Error(`[RelayService] connectToRelays called with invalid argument (expected array): ${relayUrls}`);
     }
     const release = await this.connectionMutex.acquire();
     try {
-      console.log(`[RelayService] Connecting to relays: ${relayUrls.join(", ")}`);
       const promises = relayUrls.map(async (url) => {
         const currentStatus = this.relayStatuses.get(url)?.status;
         if (currentStatus === "connected" || currentStatus === "connecting") {
-          console.log(`[RelayService] Skipping connection attempt for ${url} (already ${currentStatus})`);
           return;
         }
         this.targetRelays.add(url);
         this.updateRelayStatus(url, "connecting");
         try {
-          console.log(`[RelayService] Attempting pool.ensureRelay(${url})`);
           await this.pool.ensureRelay(url, {
             connectionTimeout: this.CONNECTION_TIMEOUT
           });
-          console.log(`[RelayService] ensureRelay(${url}) succeeded.`);
           this.updateRelayStatus(url, "connected");
+          this.reconnectAttempts.delete(url);
         } catch (error) {
-          console.error(`[RelayService] Failed to connect to relay ${url}:`, error);
-          this.updateRelayStatus(url, "error", error instanceof Error ? error.message : "Connection failed");
-          this.targetRelays.delete(url);
+          const attempts = (this.reconnectAttempts.get(url) || 0) + 1;
+          this.reconnectAttempts.set(url, attempts);
+          this.updateRelayStatus(url, "error", `Connection failed (attempt ${attempts}/${this.MAX_RECONNECT_ATTEMPTS})`);
+          this.scheduleReconnect(url);
         }
       });
-      console.log("[RelayService] Waiting for all connection promises...");
       const results = await Promise.allSettled(promises);
-      console.log("[RelayService] All connection promises settled.");
       results.forEach((result, index) => {
         const url = relayUrls[index];
         if (result.status === "fulfilled") {
           if (this.relayStatuses.get(url)?.status === "connected") {
-            console.log(`[RelayService] Connection attempt for ${url} successful.`);
           } else {
             console.warn(`[RelayService] ensureRelay promise for ${url} fulfilled, but final status is: ${this.relayStatuses.get(url)?.status}`);
           }
         } else {
           console.error(`[RelayService] Connection attempt for ${url} rejected:`, result.reason);
-          if (this.relayStatuses.get(url)?.status !== "error") {
-            this.updateRelayStatus(url, "error", result.reason instanceof Error ? result.reason.message : String(result.reason));
-          }
         }
       });
       const successfulConnections = this.getConnectedRelays().length;
-      console.log(`[RelayService] Final connected count: ${successfulConnections} out of ${relayUrls.length}`);
       if (successfulConnections === 0 && relayUrls.length > 0) {
-        console.error("[RelayService] Failed to connect to ANY target relays after attempts.");
         throw new Error("Failed to connect to any relays");
       }
     } catch (error) {
-      console.error("[RelayService] Error in connectToRelays outer block:", error);
       throw error;
     } finally {
-      console.log("[RelayService] Releasing connection mutex.");
       this.notifyListeners();
       release();
     }
@@ -26627,7 +26614,6 @@ var RelayService = class _RelayService {
     const release = await this.connectionMutex.acquire();
     try {
       if (!this.targetRelays.has(url)) {
-        console.log(`Relay ${url} is not a target, skipping disconnect.`);
         if (this.relayStatuses.get(url)?.status !== "disconnected") {
           this.updateRelayStatus(url, "disconnected");
         }
@@ -26644,10 +26630,8 @@ var RelayService = class _RelayService {
         const subsToClose = Array.from(this.subscriptions.keys());
         subsToClose.forEach((id) => this.unsubscribe(id));
         this.pool.close([url]);
-        console.log(`Closed connection to ${url} via SimplePool.`);
         this.updateRelayStatus(url, "disconnected");
       } catch (error) {
-        console.error(`Error closing relay ${url} via SimplePool:`, error);
         this.updateRelayStatus(url, "disconnected", error instanceof Error ? error.message : "Close operation failed");
       }
     } finally {
@@ -26657,10 +26641,8 @@ var RelayService = class _RelayService {
   }
   async disconnectAllRelays() {
     const urlsToDisconnect = Array.from(this.targetRelays);
-    console.log("Disconnecting from all target relays:", urlsToDisconnect);
     const promises = urlsToDisconnect.map((url) => this.disconnectFromRelay(url));
     await Promise.allSettled(promises);
-    console.log("Finished disconnecting all relays.");
   }
   subscribe(filters, callback) {
     const connectedRelays = Array.from(this.relayStatuses.values()).filter((status) => status.status === "connected").map((status) => status.url);
@@ -26742,8 +26724,9 @@ var RelayManager = () => {
     }
     setIsLoading(true);
     try {
-      await relayService.disconnectFromRelay(urlToAdd);
-      await relayService.initializeForUser("dummy");
+      await relayService.connectToRelays([urlToAdd]);
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
       setNewRelayUrl("");
     } catch (err) {
       console.error("Error adding relay:", err);
@@ -26757,6 +26740,8 @@ var RelayManager = () => {
     setError(null);
     try {
       await relayService.disconnectFromRelay(url);
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
     } catch (err) {
       console.error("Error disconnecting relay:", err);
       setError(err instanceof Error ? err.message : "Failed to disconnect relay.");
@@ -26768,7 +26753,9 @@ var RelayManager = () => {
     setIsLoading(true);
     setError(null);
     try {
-      await relayService.initializeForUser("dummy");
+      await relayService.connectToRelays([url]);
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
     } catch (err) {
       console.error("Error connecting relay:", err);
       setError(err instanceof Error ? err.message : "Failed to connect relay.");
@@ -26776,28 +26763,14 @@ var RelayManager = () => {
       setIsLoading(false);
     }
   };
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "connected":
-        return "text-green-600";
-      case "connecting":
-      case "disconnecting":
-        return "text-yellow-600";
-      case "disconnected":
-        return "text-gray-500";
-      case "error":
-        return "text-red-600";
-      default:
-        return "text-gray-500";
-    }
-  };
-  return /* @__PURE__ */ import_react2.default.createElement("div", { className: "mt-6" }, /* @__PURE__ */ import_react2.default.createElement("h3", { className: "text-lg font-medium mb-3" }, "Relay Connections"), /* @__PURE__ */ import_react2.default.createElement("form", { onSubmit: handleAddRelay, className: "flex gap-2 mb-4" }, /* @__PURE__ */ import_react2.default.createElement(
+  const connectedCount = relayStatuses.filter((relay) => relay.status === "connected").length;
+  return /* @__PURE__ */ import_react2.default.createElement("div", { className: `mt-6 p-4 ${glassmorphism_default.glass} rounded-lg` }, /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex items-center justify-between mb-4" }, /* @__PURE__ */ import_react2.default.createElement("h3", { className: glassmorphism_default.title }, "Relay Connections", /* @__PURE__ */ import_react2.default.createElement("span", { className: glassmorphism_default.badge }, " ", " ", connectedCount, " connected"))), /* @__PURE__ */ import_react2.default.createElement("form", { onSubmit: handleAddRelay, className: "flex gap-2 mb-4" }, /* @__PURE__ */ import_react2.default.createElement(
     "input",
     {
       type: "text",
       value: newRelayUrl,
       onChange: (e) => setNewRelayUrl(e.target.value),
-      className: "flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
+      className: `px-3 py-2 rounded-md ${glassmorphism_default.glassInput} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`,
       placeholder: "wss://your.relay.com",
       disabled: isLoading
     }
@@ -26805,29 +26778,37 @@ var RelayManager = () => {
     "button",
     {
       type: "submit",
-      className: `px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+      className: `px-4 py-2 rounded-md ${glassmorphism_default.glassButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
       disabled: isLoading
     },
     "Add & Connect"
-  )), error && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-red-500 text-sm mb-2" }, "Error: ", error), isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500 mb-2" }, "Processing..."), /* @__PURE__ */ import_react2.default.createElement("ul", { className: "space-y-2" }, relayStatuses.length === 0 && !isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500" }, "No relays configured or connected."), relayStatuses.map(({ url, status, error: relayError }) => /* @__PURE__ */ import_react2.default.createElement("li", { key: url, className: "flex items-center justify-between p-2 border rounded-md bg-gray-50" }, /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex-grow mr-2 overflow-hidden" }, /* @__PURE__ */ import_react2.default.createElement("span", { className: "text-sm font-medium truncate" }, url), relayError && /* @__PURE__ */ import_react2.default.createElement("span", { className: "block text-xs text-red-500 truncate" }, "(", relayError, ")")), /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex items-center gap-2 flex-shrink-0" }, /* @__PURE__ */ import_react2.default.createElement("span", { className: `text-sm font-semibold ${getStatusColor(status)}` }, status.charAt(0).toUpperCase() + status.slice(1)), (status === "connected" || status === "connecting" || status === "error") && /* @__PURE__ */ import_react2.default.createElement(
-    "button",
+  )), error && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-red-500 text-sm mb-2" }, "Error: ", error), isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500 mb-2" }, "Processing..."), /* @__PURE__ */ import_react2.default.createElement("div", { className: "space-y-2" }, relayStatuses.length === 0 && !isLoading && /* @__PURE__ */ import_react2.default.createElement("p", { className: "text-sm text-gray-500" }, "No relays configured or connected."), relayStatuses.map(({ url, status, error: relayError }) => /* @__PURE__ */ import_react2.default.createElement(
+    "div",
     {
-      onClick: () => handleDisconnectRelay(url),
-      className: `px-2 py-1 text-xs font-medium rounded border border-red-500 text-red-600 hover:bg-red-50 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
-      disabled: isLoading,
-      title: `Disconnect from ${url}`
+      key: url,
+      className: `flex items-center justify-between p-3 ${glassmorphism_default.glassCard} rounded-md`
     },
-    "Disconnect"
-  ), status === "disconnected" && /* @__PURE__ */ import_react2.default.createElement(
-    "button",
-    {
-      onClick: () => handleConnectRelay(url),
-      className: `px-2 py-1 text-xs font-medium rounded border border-green-500 text-green-600 hover:bg-green-50 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
-      disabled: isLoading,
-      title: `Connect to ${url}`
-    },
-    "Connect"
-  ))))));
+    /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex-grow mr-2 overflow-hidden flex items-center" }, /* @__PURE__ */ import_react2.default.createElement("div", { className: `${glassmorphism_default.statusDot} ${status === "connected" ? glassmorphism_default.connected : glassmorphism_default.disconnected} mr-3` }), /* @__PURE__ */ import_react2.default.createElement("span", { className: "text-sm font-medium truncate" }, url), relayError && /* @__PURE__ */ import_react2.default.createElement("span", { className: "block text-xs text-red-500 truncate ml-2" }, "(", relayError, ")")),
+    /* @__PURE__ */ import_react2.default.createElement("div", { className: "flex items-center gap-2 flex-shrink-0" }, (status === "connected" || status === "connecting" || status === "error") && /* @__PURE__ */ import_react2.default.createElement(
+      "button",
+      {
+        onClick: () => handleDisconnectRelay(url),
+        className: `px-3 py-1 text-sm font-medium rounded-md text-red-600 ${glassmorphism_default.glassDisconnect} ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+        disabled: isLoading,
+        title: `Disconnect from ${url}`
+      },
+      "Disconnect"
+    ), status === "disconnected" && /* @__PURE__ */ import_react2.default.createElement(
+      "button",
+      {
+        onClick: () => handleConnectRelay(url),
+        className: `px-3 py-1 text-sm font-medium rounded-md border border-green-500 text-green-600 hover:bg-green-50 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`,
+        disabled: isLoading,
+        title: `Connect to ${url}`
+      },
+      "Connect"
+    ))
+  ))));
 };
 
 // extension/popup/components/ErrorBoundary.tsx
@@ -26869,7 +26850,6 @@ var BookmarkService = class {
       "wss://nos.lol",
       "wss://relay.nostr.band",
       "wss://relay.damus.io",
-      "wss://relay.current.fyi",
       "wss://nostr.land",
       "wss://relay.primal.net"
     ];
@@ -26881,41 +26861,55 @@ var BookmarkService = class {
    * @returns The note content if found, or null if not found
    */
   async fetchNoteFallback(eventId) {
-    console.log(`[BookmarkService] Using fallback method to fetch note: ${eventId}`);
     const pool = this.relayService.getPool();
     let relaysToTry = this.relayService.getConnectedRelays();
     if (relaysToTry.length === 0) {
-      console.log(`[BookmarkService] No connected relays. Using fallback relays.`);
       relaysToTry = this.fallbackRelays;
-    } else {
-      console.log(`[BookmarkService] Using ${relaysToTry.length} connected relays first.`);
     }
     try {
       const filter = {
         ids: [eventId],
         kinds: [1]
       };
-      console.log(`[BookmarkService] Attempting direct fetch of note ${eventId} from relays: ${relaysToTry.join(", ")}`);
       const event = await pool.get(relaysToTry, filter);
       if (event) {
-        console.log(`[BookmarkService] Successfully fetched note ${eventId}`);
         return event.content;
       } else {
         if (JSON.stringify(relaysToTry) !== JSON.stringify(this.fallbackRelays)) {
-          console.log(`[BookmarkService] Note not found in connected relays. Trying fallback relays.`);
           const fallbackEvent = await pool.get(this.fallbackRelays, filter);
           if (fallbackEvent) {
-            console.log(`[BookmarkService] Successfully fetched note ${eventId} from fallback relays`);
             return fallbackEvent.content;
           }
         }
-        console.log(`[BookmarkService] Note ${eventId} not found in any relay`);
         return null;
       }
     } catch (error) {
-      console.error(`[BookmarkService] Error during fallback fetch:`, error);
       return null;
     }
+  }
+  // Add a helper method to ensure relays are connected and ready before use
+  async ensureRelayConnections(relays) {
+    if (relays.length === 0) {
+      return [];
+    }
+    const pool = this.relayService.getPool();
+    const connectionResults = await Promise.allSettled(
+      relays.map(async (relay) => {
+        try {
+          await Promise.race([
+            pool.ensureRelay(relay),
+            new Promise(
+              (_, reject) => setTimeout(() => reject(new Error(`Connection timeout for ${relay}`)), 5e3)
+            )
+          ]);
+          return relay;
+        } catch (err) {
+          return null;
+        }
+      })
+    );
+    const connectedRelays = connectionResults.filter((result) => result.status === "fulfilled" && result.value !== null).map((result) => result.value);
+    return connectedRelays;
   }
   /**
    * Fetches the user's latest bookmark list event (kind 10003)
@@ -26924,25 +26918,37 @@ var BookmarkService = class {
    * @returns A promise that resolves to an array of ProcessedBookmark objects, sorted newest first.
    */
   async fetchBookmarks(publicKey) {
-    console.log(`[BookmarkService] Fetching bookmark list for pubkey: ${publicKey}`);
-    const filter = {
-      authors: [publicKey],
-      kinds: [10003],
-      limit: 1
-    };
     const connectedRelayUrls = this.relayService.getConnectedRelays();
-    if (connectedRelayUrls.length === 0) {
-      console.warn("[BookmarkService] No connected relays to fetch bookmark list from.");
-      return [];
+    let relaysToUse = connectedRelayUrls.length > 0 ? connectedRelayUrls : this.fallbackRelays;
+    if (relaysToUse.length === 0) {
+      console.warn("[BookmarkService] Could not connect to any relays. Using mock data for testing.");
     }
     try {
-      const bookmarkListEvent = await this.relayService.getPool().get(connectedRelayUrls, filter);
-      if (!bookmarkListEvent) {
-        console.log(`[BookmarkService] No kind:10003 event found for pubkey ${publicKey}.`);
+      const filter = {
+        authors: [publicKey],
+        kinds: [10003],
+        // Set a higher limit to increase chance of getting the most recent event
+        limit: 5
+      };
+      const pool = this.relayService.getPool();
+      const bookmarkEvents = await pool.querySync(
+        relaysToUse,
+        filter,
+        { maxWait: 1500 }
+        // 10 second timeout
+      );
+      if (bookmarkEvents.length === 0) {
+        const bookmarkListEvent2 = await pool.querySync(relaysToUse, { ...filter });
+        if (bookmarkListEvent2.length > 0) {
+          const bookmarks2 = this.parseBookmarkEvent(bookmarkListEvent2[0]);
+          const updatedBookmarks2 = await this.fetchNoteContentsForBookmarks(bookmarks2, relaysToUse);
+          return updatedBookmarks2;
+        }
         return [];
       }
-      console.log(`[BookmarkService] Found kind:10003 event:`, bookmarkListEvent.id);
-      let bookmarks = this.parseBookmarkEvent(bookmarkListEvent);
+      const sortedEvents = [...bookmarkEvents].sort((a, b) => b.created_at - a.created_at);
+      let bookmarkListEvent = sortedEvents[0];
+      const bookmarks = this.parseBookmarkEvent(bookmarkListEvent);
       const updatedBookmarks = await Promise.all(
         bookmarks.map(async (bookmark) => {
           if (bookmark.type === "note") {
@@ -26961,7 +26967,6 @@ var BookmarkService = class {
           return bookmark;
         })
       );
-      console.log(`[BookmarkService] Returning ${updatedBookmarks.length} bookmarks with fetched note content.`);
       return updatedBookmarks;
     } catch (error) {
       console.error("[BookmarkService] Error fetching bookmarks:", error);
@@ -26980,7 +26985,6 @@ var BookmarkService = class {
       return bookmarks;
     }
     const eventIdsToFetch = noteBookmarks.map((b) => b.eventId);
-    console.log(`[BookmarkService] Fetching content for ${eventIdsToFetch.length} note events...`);
     const noteFilter = {
       ids: eventIdsToFetch,
       kinds: [1]
@@ -26988,7 +26992,6 @@ var BookmarkService = class {
     const noteEvents = [];
     const pool = this.relayService.getPool();
     const currentConnectedRelays = this.relayService.getConnectedRelays();
-    console.log(`[BookmarkService] Relays used for kind:1 fetch (via getConnectedRelays): ${JSON.stringify(currentConnectedRelays)}`);
     return new Promise((resolve, reject) => {
       let sub = null;
       const queryTimeout = 1e4;
@@ -27004,7 +27007,6 @@ var BookmarkService = class {
         if (sub) {
           sub.close();
           sub = null;
-          console.log(`[BookmarkService] Fetched ${noteEvents.length} kind:1 events in total.`);
           const noteContentMap = /* @__PURE__ */ new Map();
           noteEvents.forEach((event) => {
             if (!noteContentMap.has(event.id)) {
@@ -27026,27 +27028,22 @@ var BookmarkService = class {
         }
       };
       const timer = setTimeout(() => {
-        console.warn(`[BookmarkService] Timeout hit after ${queryTimeout}ms waiting for note events/EOSE from ${expectedEoseCount} relays.`);
         timeoutHit = true;
         completeSubscription();
       }, queryTimeout);
       try {
-        const filtersToSubscribe = [noteFilter];
-        console.log(`[BookmarkService] Subscribing for notes on relays: ${JSON.stringify(currentConnectedRelays)}`);
-        sub = pool.subscribe(currentConnectedRelays, filtersToSubscribe, {
+        sub = pool.subscribe(currentConnectedRelays, noteFilter, {
           onevent: (event) => {
             noteEvents.push(event);
           },
           oneose: () => {
             eoseReceivedCount++;
-            console.log(`[BookmarkService] Received EOSE from ${currentConnectedRelays.length} relays (${eoseReceivedCount}/${expectedEoseCount}).`);
             if (eoseReceivedCount >= expectedEoseCount && !timeoutHit) {
               clearTimeout(timer);
               completeSubscription();
             }
           },
           onclose: (reason) => {
-            console.log(`[BookmarkService] Note subscription closed prematurely. Reason: ${reason}`);
             if (!timeoutHit && sub) {
               clearTimeout(timer);
               completeSubscription();
@@ -27054,7 +27051,6 @@ var BookmarkService = class {
           }
         });
       } catch (error) {
-        console.error("[BookmarkService] Error subscribing to fetch note contents:", error);
         clearTimeout(timer);
         resolve(bookmarks);
       }
@@ -27069,83 +27065,261 @@ var BookmarkService = class {
     const bookmarks = [];
     const eventCreatedAt = event.created_at;
     event.tags.forEach((tag, index) => {
-      const itemCreatedAt = eventCreatedAt;
-      const tagType = tag[0];
-      const tagValue = tag[1];
-      const relayHint = tag[2];
-      if (!tagValue) return;
+      const createdAt = eventCreatedAt - index * 60;
       try {
-        switch (tagType) {
-          case "r":
-            if (this.isValidUrl(tagValue)) {
-              bookmarks.push({
-                type: "url",
-                url: tagValue,
-                id: `url-${tagValue}-${itemCreatedAt}`,
-                // Ensure unique ID
-                created_at: itemCreatedAt
-              });
-            } else {
-              console.warn(`[BookmarkService] Skipping invalid URL bookmark: ${tagValue}`);
-            }
-            break;
-          case "e":
+        if (tag[0] === "r" && tag.length >= 2) {
+          const url = tag[1];
+          if (this.isValidUrl(url)) {
+            const title = tag.length > 2 ? tag[2] : this.extractTitleFromUrl(url);
+            const id = url;
             bookmarks.push({
-              type: "note",
-              eventId: tagValue,
-              relayHint,
-              id: `note-${tagValue}`,
-              // Event ID is unique enough
-              created_at: itemCreatedAt
+              id,
+              type: "website",
+              title,
+              url,
+              eventId: event.id,
+              createdAt
             });
-            break;
-          case "a":
-            const parts = tagValue.split(":");
-            if (parts.length >= 3) {
-              bookmarks.push({
-                type: "article",
-                // Assuming 'a' tags are primarily for articles per NIP-51 spec for kind 10003
-                naddr: tagValue,
-                relayHint,
-                id: `article-${tagValue}`,
-                // naddr should be unique
-                created_at: itemCreatedAt
-              });
-            } else {
-              console.warn(`[BookmarkService] Skipping invalid 'a' tag bookmark: ${tagValue}`);
-            }
-            break;
-          case "t":
-            bookmarks.push({
-              type: "hashtag",
-              hashtag: tagValue,
-              id: `hashtag-${tagValue}-${itemCreatedAt}`,
-              // Ensure unique ID
-              created_at: itemCreatedAt
-            });
-            break;
-          // Add other tag types if necessary based on NIP-51 or future updates
-          default:
-            break;
+          }
+        } else if (tag[0] === "e" && tag.length >= 2) {
+          const eventId = tag[1];
+          const relayHint = tag.length > 2 ? tag[2] : void 0;
+          const noteTitle = tag.length > 3 ? tag[3] : "Nostr Note";
+          const id = eventId;
+          bookmarks.push({
+            id,
+            type: "note",
+            title: noteTitle,
+            eventId,
+            relayHint,
+            createdAt
+          });
         }
-      } catch (e) {
-        console.error(`[BookmarkService] Error processing tag:`, tag, e);
+      } catch (error) {
+        console.error(`[BookmarkService] Error parsing bookmark tag:`, error, tag);
       }
     });
-    bookmarks.reverse();
-    console.log(`[BookmarkService] Parsed ${bookmarks.length} initial bookmarks from event ${event.id}.`);
-    return bookmarks;
+    const sortedBookmarks = bookmarks.sort((a, b) => {
+      return b.createdAt - a.createdAt;
+    });
+    return sortedBookmarks;
   }
-  // Keep isValidUrl as a private helper method
+  /**
+   * Extracts a title from a URL by looking at the pathname.
+   * @param url The URL to extract a title from.
+   * @returns A formatted title string.
+   */
+  extractTitleFromUrl(url) {
+    try {
+      const parsedUrl = new URL(url);
+      let title = parsedUrl.hostname.replace("www.", "");
+      if (parsedUrl.pathname && parsedUrl.pathname !== "/") {
+        const pathSegment = parsedUrl.pathname.replace(/\/$/, "").split("/").pop();
+        if (pathSegment) {
+          const formattedSegment = pathSegment.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+          title += ` - ${formattedSegment}`;
+        }
+      }
+      return title;
+    } catch (e) {
+      return url;
+    }
+  }
   isValidUrl(urlString) {
     try {
       const url = new URL(urlString);
       return url.protocol === "http:" || url.protocol === "https:";
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   }
-  // Remove fetchBookmarksFromRelay and mapEventToBookmark
+  /**
+   * Deletes a bookmark by creating a new kind 10003 event without the specified bookmark
+   * @param bookmarkId The ID of the bookmark to delete (event ID for notes, URL for websites)
+   * @param publicKey The user's public key
+   * @returns A promise that resolves when the bookmark is deleted
+   */
+  async deleteBookmark(bookmarkId, publicKey, secretKey) {
+    const currentBookmarks = await this.fetchBookmarks(publicKey);
+    const bookmarkToDelete = currentBookmarks.find((b) => b.id === bookmarkId);
+    if (!bookmarkToDelete) {
+      throw new Error(`Bookmark with ID ${bookmarkId} not found`);
+    }
+    const updatedBookmarks = currentBookmarks.filter((b) => b.id !== bookmarkId);
+    if (currentBookmarks.length === updatedBookmarks.length) {
+      throw new Error(`Failed to remove bookmark from list`);
+    }
+    const tags = [];
+    updatedBookmarks.forEach((bookmark) => {
+      if (bookmark.type === "website") {
+        tags.push(["r", bookmark.url, bookmark.title]);
+      } else if (bookmark.type === "note") {
+        const tag = ["e", bookmark.eventId];
+        if (bookmark.relayHint) tag.push(bookmark.relayHint);
+        if ("title" in bookmark) tag.push(bookmark.title);
+        tags.push(tag);
+      }
+    });
+    let latestTimestamp = 0;
+    let latestEventId = "";
+    try {
+      const filter = {
+        authors: [publicKey],
+        kinds: [10003],
+        limit: 10
+      };
+      const relays = this.relayService.getConnectedRelays();
+      const connectedRelays = await this.ensureRelayConnections(relays);
+      if (connectedRelays.length > 0) {
+        const pool = this.relayService.getPool();
+        const events = await pool.querySync(connectedRelays, filter, { maxWait: 5e3 });
+        if (events.length > 0) {
+          const sortedEvents = [...events].sort((a, b) => b.created_at - a.created_at);
+          latestTimestamp = sortedEvents[0].created_at;
+          latestEventId = sortedEvents[0].id;
+        }
+      }
+    } catch (error) {
+    }
+    const currentTime = Math.floor(Date.now() / 1e3);
+    const newTimestamp = Math.max(latestTimestamp + 1, currentTime);
+    const event = {
+      kind: 10003,
+      // Bookmarks list (a replaceable event per NIP-01)
+      created_at: newTimestamp,
+      tags,
+      content: "",
+      // Empty content for bookmark list events
+      pubkey: publicKey
+    };
+    try {
+      let hexSecretKey = secretKey;
+      if (secretKey.startsWith("nsec")) {
+        const { type, data } = nip19_exports.decode(secretKey);
+        if (type !== "nsec") {
+          throw new Error("Invalid nsec private key format");
+        }
+        hexSecretKey = bytesToHex3(data);
+      }
+      const secretKeyBytes = hexToBytes3(hexSecretKey);
+      const signedEvent = finalizeEvent(event, secretKeyBytes);
+      const relays = this.relayService.getConnectedRelays();
+      const pool = this.relayService.getPool();
+      await pool.publish(relays, signedEvent);
+    } catch (error) {
+      console.error("[BookmarkService] Error during bookmark deletion process:", error);
+      throw error;
+    }
+  }
+  /**
+   * Helper method to publish an event to relays with reconnection and fallback handling
+   * @param event The signed event to publish
+   */
+  async publishEventToRelays(event) {
+    const usableRelays = this.relayService.getConnectedRelays();
+    if (usableRelays.length > 0) {
+      const publishResults = await this.tryPublishToRelays(usableRelays, event);
+      if (publishResults.some((result) => result)) {
+        return true;
+      }
+      console.warn(`[BookmarkService] Failed to publish to any usable relay, will attempt reconnection`);
+    } else {
+      console.warn("[BookmarkService] No usable relays available, will attempt reconnection");
+    }
+    try {
+      const pool = this.relayService.getPool();
+      const connectionPromises = this.fallbackRelays.map(async (relay) => {
+        try {
+          return await Promise.race([
+            pool.ensureRelay(relay, { connectionTimeout: 5e3 }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Connection timeout for ${relay}`)), 5e3))
+          ]);
+        } catch (e) {
+          console.warn(`[BookmarkService] Failed to connect to fallback relay ${relay}:`, e);
+          return null;
+        }
+      });
+      await Promise.allSettled(connectionPromises);
+      const availableRelays = this.relayService.getConnectedRelays();
+      if (availableRelays.length > 0) {
+        const fallbackResults = await this.tryPublishToRelays(availableRelays, event);
+        if (fallbackResults.some((result) => result)) {
+          return true;
+        }
+      }
+      console.warn("[BookmarkService] Could not publish through relay service, trying direct publish method");
+      return await this.lastResortPublish(event);
+    } catch (error) {
+      console.error("[BookmarkService] Error in relay reconnection and publish attempt:", error);
+      return false;
+    }
+  }
+  /**
+   * Try to publish an event to a set of relays with individual error handling
+   */
+  async tryPublishToRelays(relays, event) {
+    if (relays.length === 0) return [];
+    const pool = this.relayService.getPool();
+    const publishPromises = relays.map(async (relay) => {
+      try {
+        await Promise.race([
+          pool.publish([relay], event),
+          new Promise((_, reject) => setTimeout(() => reject(new Error(`Publish timeout for ${relay}`)), 5e3))
+        ]);
+        return true;
+      } catch (e) {
+        console.warn(`[BookmarkService] Failed to publish to relay ${relay}:`, e);
+        return false;
+      }
+    });
+    const results = await Promise.allSettled(publishPromises);
+    return results.map((r) => r.status === "fulfilled" && r.value);
+  }
+  /**
+   * Last resort method to publish directly to relays
+   * This is a fallback when normal publish methods fail
+   */
+  async lastResortPublish(event) {
+    const tempPool = new SimplePool();
+    let success = false;
+    try {
+      const publishPromises = this.fallbackRelays.map(async (relay) => {
+        try {
+          const relayConn = tempPool.ensureRelay(relay, { connectionTimeout: 3e3 });
+          await Promise.race([
+            relayConn,
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Connection timeout`)), 3e3))
+          ]);
+          await Promise.race([
+            tempPool.publish([relay], event),
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`Publish timeout`)), 3e3))
+          ]);
+          return true;
+        } catch (e) {
+          console.warn(`[BookmarkService] Direct publish failed for ${relay}:`, e);
+          return false;
+        }
+      });
+      const results = await Promise.allSettled(publishPromises);
+      const successes = results.filter((r) => r.status === "fulfilled" && r.value).length;
+      if (successes > 0) {
+        success = true;
+      } else {
+        console.warn("[BookmarkService] All publishing attempts failed, proceeding with local deletion only");
+      }
+    } catch (e) {
+      console.error("[BookmarkService] Error in last resort publish:", e);
+    } finally {
+      console.log("[BookmarkService] Cleaning up tempPool connections in lastResortPublish.");
+      if (this.fallbackRelays.length > 0) {
+        try {
+          await tempPool.close(this.fallbackRelays);
+        } catch (closeError) {
+        }
+      }
+    }
+    return success;
+  }
 };
 
 // extension/popup/components/BookmarkList.tsx
@@ -27157,7 +27331,9 @@ var formatTimestamp = (timestamp) => {
   const date = new Date(timestamp * 1e3);
   return date.toLocaleString();
 };
-var renderMetadata = (bookmark) => /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-medium" }, formatTimestamp(bookmark.created_at));
+var renderMetadata = (bookmark) => {
+  return /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-xs text-gray-400 font-medium" }, "Added ", formatTimestamp(bookmark.createdAt));
+};
 var findImageUrls = (content) => {
   const imagePattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi;
   return content.match(imagePattern) || [];
@@ -27186,7 +27362,7 @@ var makeUrlsClickable = (content) => {
           href: cleanUrl,
           target: "_blank",
           rel: "noopener noreferrer",
-          className: "text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150"
+          className: "text-indigo-600 hover:text-indigo-700 break-all font-medium transition-colors duration-150"
         },
         cleanUrl
       )
@@ -27211,16 +27387,40 @@ var imageStyle = {
   objectFit: "contain",
   borderRadius: "6px"
 };
-var BookmarkItem = ({ bookmark }) => {
-  const renderBookmarkContent = () => {
-    switch (bookmark.type) {
-      case "url": {
-        const isImage = bookmark.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
+var BookmarkItem = ({ bookmark, onDelete }) => {
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDelete) {
+      try {
+        await onDelete();
+      } catch (error) {
+        console.error("Error deleting bookmark:", error);
+      }
+    }
+  };
+  const handleOpenInPrimal = (e, eventId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(`https://primal.net/e/${eventId}`, "_blank");
+  };
+  const renderBookmarkContent = (bookmark2) => {
+    switch (bookmark2.type) {
+      case "website": {
+        const isImage = bookmark2.url.match(/\.(jpeg|jpg|gif|png|webp)$/i) !== null;
         if (isImage) {
-          return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
+          return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-2 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base truncate flex-1 mr-2" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
+            "button",
+            {
+              onClick: handleDelete,
+              className: `p-1.5 text-red-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`,
+              title: "Delete bookmark"
+            },
+            /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { style: imageContainerStyle }, /* @__PURE__ */ import_react4.default.createElement(
             "a",
             {
-              href: bookmark.url,
+              href: bookmark2.url,
               target: "_blank",
               rel: "noopener noreferrer",
               className: "hover:opacity-90 transition-opacity rounded-lg overflow-hidden"
@@ -27228,31 +27428,56 @@ var BookmarkItem = ({ bookmark }) => {
             /* @__PURE__ */ import_react4.default.createElement(
               "img",
               {
-                src: bookmark.url,
-                alt: "Bookmarked image",
+                src: bookmark2.url,
+                alt: bookmark2.title,
                 style: imageStyle,
-                className: "hover:shadow-lg transition-shadow duration-200"
+                className: "hover:shadow-lg transition-shadow duration-200 border border-gray-100 rounded-lg"
               }
             )
-          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
+          )), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark2)));
         }
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1 w-full" }, /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col space-y-2 w-full ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-between items-start mb-1" }, /* @__PURE__ */ import_react4.default.createElement("h3", { className: "text-gray-800 font-medium text-base truncate flex-1 mr-2" }, bookmark2.title), /* @__PURE__ */ import_react4.default.createElement(
+          "button",
+          {
+            onClick: handleDelete,
+            className: `p-1.5 text-red-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`,
+            title: "Delete bookmark"
+          },
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
+        )), /* @__PURE__ */ import_react4.default.createElement(
           "a",
           {
-            href: bookmark.url,
+            href: bookmark2.url,
             target: "_blank",
             rel: "noopener noreferrer",
-            className: "text-blue-600 hover:text-blue-700 break-all font-medium transition-colors duration-150",
-            title: bookmark.url
+            className: "text-indigo-600 hover:text-indigo-700 break-all text-sm transition-colors duration-150 hover:underline",
+            title: bookmark2.url
           },
-          bookmark.url
-        ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
+          bookmark2.url
+        ), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark2)));
       }
       case "note": {
-        const imageUrls = bookmark.content ? findImageUrls(bookmark.content) : [];
-        const textContent = bookmark.content || `Note ID: ${bookmark.eventId}`;
+        const content = bookmark2.content;
+        const imageUrls = content ? findImageUrls(content) : [];
+        const textContent = content || "";
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col items-start w-full space-y-3" }, /* @__PURE__ */ import_react4.default.createElement("p", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent)), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement(
+          "button",
+          {
+            onClick: (e) => handleOpenInPrimal(e, bookmark2.eventId),
+            className: `p-1.5 text-indigo-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-indigo-50 flex-shrink-0`,
+            title: "Open in Primal.net"
+          },
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" }))
+        ), /* @__PURE__ */ import_react4.default.createElement(
+          "button",
+          {
+            onClick: handleDelete,
+            className: `p-1.5 text-red-600 rounded-full ${glassmorphism_default.glassDisconnect} transition-colors duration-200 hover:bg-red-50 flex-shrink-0`,
+            title: "Delete bookmark"
+          },
+          /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" }))
+        ))), imageUrls.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full grid grid-cols-2 gap-2" }, imageUrls.map((url, index) => {
           const exactUrlCount = allUrlMatches.filter((match) => match === url).length;
           if (exactUrlCount === 1) return null;
           return /* @__PURE__ */ import_react4.default.createElement("div", { key: index, className: "relative group" }, /* @__PURE__ */ import_react4.default.createElement(
@@ -27269,43 +27494,56 @@ var BookmarkItem = ({ bookmark }) => {
                 src: url,
                 alt: `Image ${index + 1}`,
                 style: imageStyle,
-                className: "hover:shadow-lg transition-shadow duration-200 w-full"
+                className: "hover:shadow-lg transition-shadow duration-200 w-full border border-gray-100 rounded-lg"
               }
             )
           ));
-        }).filter(Boolean)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark)));
+        }).filter(Boolean)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end w-full" }, renderMetadata(bookmark2)));
       }
-      case "article":
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-start" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "font-mono text-sm break-all text-gray-600 w-full", title: `Article Naddr: ${bookmark.naddr}` }, `Article: ${bookmark.naddr}`)), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center justify-between w-full text-xs" }, bookmark.relayHint && /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-gray-400 flex items-center", title: `Relay Hint: ${bookmark.relayHint}` }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-3 h-3 mr-1 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 10V3L4 14h7v7l9-11h-7z" })), /* @__PURE__ */ import_react4.default.createElement("span", { className: "break-all" }, bookmark.relayHint)), renderMetadata(bookmark)));
-      case "hashtag":
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-1" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "text-purple-600 font-medium hover:text-purple-700 transition-colors duration-150 break-all" }, "#", bookmark.hashtag), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex justify-end" }, renderMetadata(bookmark)));
       default:
-        console.warn("Unknown bookmark type:", bookmark);
+        console.warn("Unknown bookmark type:", bookmark2);
         return /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex items-center text-red-500" }, /* @__PURE__ */ import_react4.default.createElement("svg", { className: "w-4 h-4 mr-2 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react4.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" })), "Unknown Bookmark Type");
     }
   };
-  return /* @__PURE__ */ import_react4.default.createElement("li", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 overflow-hidden" }, renderBookmarkContent());
+  return renderBookmarkContent(bookmark);
 };
 var BookmarkItem_default = BookmarkItem;
 
 // extension/popup/components/BookmarkList.tsx
-var BookmarkList2 = ({ bookmarks, isLoading, error }) => {
+var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
   if (isLoading) {
-    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-500" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3" }), /* @__PURE__ */ import_react5.default.createElement("p", null, "Loading bookmarks..."));
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-700" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-3" }), /* @__PURE__ */ import_react5.default.createElement("p", null, "Loading bookmarks..."));
   }
   if (error) {
-    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "bg-red-50 text-red-600 px-4 py-3 rounded-lg text-center max-w-sm" }, /* @__PURE__ */ import_react5.default.createElement("p", { className: "font-medium mb-1" }, "Error loading bookmarks"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-red-500" }, error)));
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: `${glassmorphism_default.glassCard} text-red-600 px-4 py-3 rounded-lg text-center max-w-sm` }, /* @__PURE__ */ import_react5.default.createElement("p", { className: "font-medium mb-1" }, "Error loading bookmarks"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-red-500" }, error)));
   }
   if (bookmarks.length === 0) {
-    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-500" }, /* @__PURE__ */ import_react5.default.createElement("svg", { className: "w-12 h-12 text-gray-300 mb-3", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react5.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" })), /* @__PURE__ */ import_react5.default.createElement("p", null, "No bookmarks found"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-gray-400 mt-1" }, "Bookmarks you save will appear here"));
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-700" }, /* @__PURE__ */ import_react5.default.createElement("svg", { className: "w-12 h-12 text-gray-400 mb-3", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react5.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" })), /* @__PURE__ */ import_react5.default.createElement("p", null, "No bookmarks found"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-gray-500 mt-1" }, "Bookmarks you save will appear here"));
   }
-  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "space-y-2" }, bookmarks.map((bookmark) => /* @__PURE__ */ import_react5.default.createElement(BookmarkItem_default, { key: bookmark.id, bookmark })));
+  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "divide-y divide-gray-200" }, bookmarks.map((bookmark) => {
+    console.log("Rendering bookmark:", bookmark.id);
+    const deleteHandler = onDeleteBookmark ? () => {
+      console.log("Delete handler called for bookmark:", bookmark.id);
+      return onDeleteBookmark(bookmark.id);
+    } : () => {
+      console.log("Fallback delete handler called for bookmark:", bookmark.id);
+      return Promise.resolve();
+    };
+    return /* @__PURE__ */ import_react5.default.createElement("li", { key: bookmark.id, className: "py-3 first:pt-0 last:pb-0 hover:bg-gray-50 transition-colors rounded-sm" }, /* @__PURE__ */ import_react5.default.createElement(
+      BookmarkItem_default,
+      {
+        bookmark,
+        onDelete: deleteHandler
+      }
+    ));
+  }));
 };
 var BookmarkList_default = BookmarkList2;
 
 // extension/popup/popup.tsx
 var Popup = () => {
   const [publicKey, setPublicKey] = (0, import_react6.useState)(null);
+  const [secretKey, setSecretKey] = (0, import_react6.useState)(null);
   const [isAuthLoading, setIsAuthLoading] = (0, import_react6.useState)(true);
   const [initializationError, setInitializationError] = (0, import_react6.useState)(null);
   const [bookmarks, setBookmarks] = (0, import_react6.useState)([]);
@@ -27317,26 +27555,22 @@ var Popup = () => {
   const bookmarkService = (0, import_react6.useMemo)(() => new BookmarkService(relayService), [relayService]);
   (0, import_react6.useEffect)(() => {
     const checkAuthAndInitRelays = async () => {
-      console.log("[Popup] Checking auth status...");
       setIsAuthLoading(true);
       setInitializationError(null);
       setBookmarksError(null);
-      let userPk = null;
+      let keySet = null;
       try {
-        userPk = await authService.getLoggedInUser();
-        setPublicKey(userPk);
-        if (userPk) {
-          console.log(`[Popup] User ${userPk} is logged in. Initializing relays...`);
-          await relayService.initializeForUser(userPk);
-          console.log(`[Popup] Relay initialization attempt finished for ${userPk}.`);
-          fetchAndSetBookmarks(userPk);
-        } else {
-          console.log("[Popup] No user logged in.");
+        keySet = await authService.getLoggedInUser();
+        setPublicKey(keySet.publicKey);
+        setSecretKey(keySet.secretKey);
+        if (keySet.publicKey) {
+          await relayService.initializeForUser(keySet.publicKey);
+          fetchAndSetBookmarks(keySet.publicKey);
         }
       } catch (error) {
         console.error("[Popup] Error during initial auth check or relay init:", error);
         setInitializationError(error instanceof Error ? error.message : "Failed to initialize session");
-        if (userPk) setPublicKey(userPk);
+        if (keySet) setPublicKey(keySet.publicKey);
       } finally {
         setIsAuthLoading(false);
       }
@@ -27347,13 +27581,11 @@ var Popup = () => {
   }, []);
   const fetchAndSetBookmarks = async (pk) => {
     if (!pk) return;
-    console.log(`[Popup] Fetching bookmarks for ${pk}...`);
     setIsBookmarksLoading(true);
     setBookmarksError(null);
     try {
       const fetchedBookmarks = await bookmarkService.fetchBookmarks(pk);
       setBookmarks(fetchedBookmarks);
-      console.log(`[Popup] Fetched ${fetchedBookmarks.length} bookmarks.`);
     } catch (error) {
       console.error(`[Popup] Error fetching bookmarks for ${pk}:`, error);
       setBookmarksError(error instanceof Error ? error.message : "Failed to fetch bookmarks");
@@ -27362,16 +27594,14 @@ var Popup = () => {
       setIsBookmarksLoading(false);
     }
   };
-  const handleLoginSuccess = async (pk) => {
-    console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
-    setIsAuthLoading(true);
+  const handleLoginSuccess = async (pk, secretKey2) => {
     setInitializationError(null);
     setBookmarksError(null);
     setPublicKey(pk);
+    setSecretKey(secretKey2);
     setBookmarks([]);
     try {
       await relayService.initializeForUser(pk);
-      console.log(`[Popup] Relay initialization attempt finished for ${pk}.`);
       fetchAndSetBookmarks(pk);
     } catch (error) {
       console.error(`[Popup] Error initializing relays after login for ${pk}:`, error);
@@ -27381,17 +27611,15 @@ var Popup = () => {
     }
   };
   const handleLogout = async () => {
-    console.log("[Popup] Logging out...");
     setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     try {
-      console.log("[Popup] Cleaning up relay connections...");
       relayService.cleanup();
       await authService.logout();
       setPublicKey(null);
+      setSecretKey(null);
       setBookmarks([]);
-      console.log("[Popup] Logout successful.");
     } catch (error) {
       console.error("[Popup] Error during logout or relay cleanup:", error);
       setPublicKey(null);
@@ -27400,28 +27628,83 @@ var Popup = () => {
       setIsAuthLoading(false);
     }
   };
+  const handleDeleteBookmark = async (bookmarkId) => {
+    if (!publicKey || !secretKey) {
+      console.warn("[Popup] Cannot delete bookmark: no public key or secret key");
+      return;
+    }
+    const bookmarkToDelete = bookmarks.find((b) => b.id === bookmarkId);
+    if (bookmarkToDelete) {
+      setBookmarks((prev) => prev.filter((b) => b.id !== bookmarkId));
+    }
+    try {
+      const usableRelays = relayService.getConnectedRelays();
+      if (usableRelays.length === 0) {
+        try {
+        } catch (error) {
+          console.warn("[Popup] Error during relay reconnection:", error);
+        }
+      }
+      await bookmarkService.deleteBookmark(bookmarkId, publicKey, secretKey);
+      setTimeout(() => {
+        if (publicKey) {
+          fetchAndSetBookmarks(publicKey).catch((error) => {
+            console.error("[Popup] Error refreshing bookmarks after deletion:", error);
+          });
+        }
+      }, 3e3);
+    } catch (error) {
+      console.error("[Popup] Error deleting bookmark:", error);
+      if (bookmarkToDelete) {
+        setBookmarks((prev) => [...prev, bookmarkToDelete].sort((a, b) => {
+          return b.createdAt - a.createdAt;
+        }));
+      }
+      setBookmarksError("Failed to delete bookmark. Please try again.");
+    }
+  };
   const renderError = () => {
     if (!initializationError) return null;
     return /* @__PURE__ */ import_react6.default.createElement("div", { className: "p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-4" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "font-bold" }, "Initialization Error:"), /* @__PURE__ */ import_react6.default.createElement("p", null, initializationError));
   };
   if (isAuthLoading) {
-    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col items-center space-y-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" }), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-gray-600" }, "Loading Session...")));
+    return /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] p-4 flex justify-center items-center" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col items-center space-y-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" }), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-gray-700" }, "Connecting to relays...")));
   }
-  return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] flex flex-col bg-gray-50" }, /* @__PURE__ */ import_react6.default.createElement("header", { className: "bg-white border-b border-gray-200 px-4 py-3 shadow-sm" }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold text-gray-800 text-center" }, "Bookmarkstr")), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col p-4 space-y-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm font-medium text-gray-600" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all text-gray-500" }, publicKey)), /* @__PURE__ */ import_react6.default.createElement(
+  return /* @__PURE__ */ import_react6.default.createElement(ErrorBoundary_default, null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "min-w-[400px] min-h-[500px] flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("header", { className: `px-4 py-3 ${glassmorphism_default.glass} mb-4 shadow-lg` }, /* @__PURE__ */ import_react6.default.createElement("h1", { className: "text-2xl font-bold text-gray-800 text-center" }, "Bookmarkstr")), renderError(), publicKey ? /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow flex flex-col p-4 space-y-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: `rounded-lg ${glassmorphism_default.glass} p-4` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-1" }, /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-sm font-medium text-gray-700" }, "Logged in as:"), /* @__PURE__ */ import_react6.default.createElement("p", { className: "text-xs font-mono break-all text-gray-600" }, publicKey)), /* @__PURE__ */ import_react6.default.createElement(
     "button",
     {
       onClick: handleLogout,
-      className: "ml-4 px-3 py-1.5 border border-red-200 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+      className: `ml-4 p-2 rounded-md text-sm font-medium text-red-600 ${glassmorphism_default.glassDisconnect} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150 hover:text-red-700`,
+      title: "Logout"
     },
-    "Logout"
-  ))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "bg-white rounded-lg shadow-sm border border-gray-200 p-4" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react6.default.createElement(
+    /* @__PURE__ */ import_react6.default.createElement(
+      "svg",
+      {
+        className: "w-5 h-5",
+        fill: "none",
+        stroke: "currentColor",
+        viewBox: "0 0 24 24",
+        xmlns: "http://www.w3.org/2000/svg"
+      },
+      /* @__PURE__ */ import_react6.default.createElement(
+        "path",
+        {
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          strokeWidth: 2,
+          d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        }
+      )
+    )
+  ))), /* @__PURE__ */ import_react6.default.createElement("div", { className: `rounded-lg ${glassmorphism_default.glass} p-4` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between" }, /* @__PURE__ */ import_react6.default.createElement(
     "button",
     {
       onClick: () => setShowRelayManager(!showRelayManager),
       className: "flex items-center text-lg font-medium text-gray-800 focus:outline-none"
     },
     /* @__PURE__ */ import_react6.default.createElement("span", null, "Relay Connections"),
-    /* @__PURE__ */ import_react6.default.createElement("span", { className: "ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full" }, relayService.getRelayStatuses().filter((status) => status.status === "connected").length, " connected"),
+    " ",
+    /* @__PURE__ */ import_react6.default.createElement("span", { className: glassmorphism_default.badge }, relayService.getRelayStatuses().filter((status) => status.status === "connected").length, " connected"),
     /* @__PURE__ */ import_react6.default.createElement(
       "svg",
       {
@@ -27433,14 +27716,23 @@ var Popup = () => {
       },
       /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 9l-7 7-7-7" })
     )
-  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement(RelayManager, null)), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("h2", { className: "text-lg font-semibold text-gray-800" }, "My Bookmarks"), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" })), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
+  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement("div", { className: "mt-4" }, /* @__PURE__ */ import_react6.default.createElement(RelayManager, null))), /* @__PURE__ */ import_react6.default.createElement("div", { className: `flex-grow rounded-lg ${glassmorphism_default.glass} p-4 overflow-hidden flex flex-col` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center space-x-2" }, !isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement(
+    "button",
+    {
+      onClick: () => fetchAndSetBookmarks(publicKey),
+      className: "text-xs text-indigo-600 hover:text-indigo-800",
+      title: "Retry loading bookmarks"
+    },
+    /* @__PURE__ */ import_react6.default.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" }))
+  ), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
     BookmarkList_default,
     {
       bookmarks,
       isLoading: isBookmarksLoading,
-      error: bookmarksError
+      error: bookmarksError,
+      onDeleteBookmark: handleDeleteBookmark
     }
-  )))) : /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow p-4" }, /* @__PURE__ */ import_react6.default.createElement(Login, { onLoginSuccess: handleLoginSuccess }))));
+  ))))) : /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow p-4" }, /* @__PURE__ */ import_react6.default.createElement(Login, { onLoginSuccess: handleLoginSuccess }))));
 };
 var root = (0, import_client.createRoot)(document.getElementById("root"));
 root.render(

@@ -9,9 +9,11 @@ import { RelayService } from './services/relay.service';
 import { BookmarkService } from './services/bookmark.service';
 import { ProcessedBookmark } from '../common/types';
 import BookmarkList from './components/BookmarkList';
+import styles from './styles/glassmorphism.module.css';
 
 const Popup: React.FC = () => {
   const [publicKey, setPublicKey] = useState<string | null>(null);
+  const [secretKey, setSecretKey] = useState<string | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [initializationError, setInitializationError] = useState<string | null>(null);
   const [bookmarks, setBookmarks] = useState<ProcessedBookmark[]>([]);
@@ -25,26 +27,23 @@ const Popup: React.FC = () => {
 
   useEffect(() => {
     const checkAuthAndInitRelays = async () => {
-      console.log('[Popup] Checking auth status...');
       setIsAuthLoading(true);
       setInitializationError(null);
       setBookmarksError(null);
-      let userPk: string | null = null;
+      let keySet: { publicKey: string | null, secretKey: string | null } | null = null;
       try {
-        userPk = await authService.getLoggedInUser();
-        setPublicKey(userPk);
-        if (userPk) {
-          console.log(`[Popup] User ${userPk} is logged in. Initializing relays...`);
-          await relayService.initializeForUser(userPk);
-          console.log(`[Popup] Relay initialization attempt finished for ${userPk}.`);
-          fetchAndSetBookmarks(userPk);
-        } else {
-          console.log('[Popup] No user logged in.');
+        keySet = await authService.getLoggedInUser();
+
+        setPublicKey(keySet.publicKey);
+        setSecretKey(keySet.secretKey);
+        if (keySet.publicKey) {
+          await relayService.initializeForUser(keySet.publicKey);
+          fetchAndSetBookmarks(keySet.publicKey);
         }
       } catch (error) {
         console.error("[Popup] Error during initial auth check or relay init:", error);
         setInitializationError(error instanceof Error ? error.message : "Failed to initialize session");
-        if (userPk) setPublicKey(userPk); 
+        if (keySet) setPublicKey(keySet.publicKey); 
       } finally {
         setIsAuthLoading(false);
       }
@@ -58,13 +57,11 @@ const Popup: React.FC = () => {
 
   const fetchAndSetBookmarks = async (pk: string) => {
     if (!pk) return;
-    console.log(`[Popup] Fetching bookmarks for ${pk}...`);
     setIsBookmarksLoading(true);
     setBookmarksError(null);
     try {
       const fetchedBookmarks = await bookmarkService.fetchBookmarks(pk);
       setBookmarks(fetchedBookmarks);
-      console.log(`[Popup] Fetched ${fetchedBookmarks.length} bookmarks.`);
     } catch (error) {
       console.error(`[Popup] Error fetching bookmarks for ${pk}:`, error);
       setBookmarksError(error instanceof Error ? error.message : "Failed to fetch bookmarks");
@@ -74,16 +71,14 @@ const Popup: React.FC = () => {
     }
   };
 
-  const handleLoginSuccess = async (pk: string) => {
-    console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
-    setIsAuthLoading(true);
+  const handleLoginSuccess = async (pk: string, secretKey: string) => {
     setInitializationError(null);
     setBookmarksError(null);
     setPublicKey(pk);
+    setSecretKey(secretKey);
     setBookmarks([]);
     try {
       await relayService.initializeForUser(pk);
-      console.log(`[Popup] Relay initialization attempt finished for ${pk}.`);
       fetchAndSetBookmarks(pk);
     } catch (error) {
       console.error(`[Popup] Error initializing relays after login for ${pk}:`, error);
@@ -94,23 +89,71 @@ const Popup: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    console.log('[Popup] Logging out...');
     setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     try {
-      console.log('[Popup] Cleaning up relay connections...');
       relayService.cleanup();
       await authService.logout();
       setPublicKey(null);
+      setSecretKey(null);
       setBookmarks([]);
-      console.log('[Popup] Logout successful.');
     } catch (error) {
       console.error("[Popup] Error during logout or relay cleanup:", error);
       setPublicKey(null);
       setBookmarks([]);
     } finally {
       setIsAuthLoading(false);
+    }
+  };
+
+  const handleDeleteBookmark = async (bookmarkId: string) => {
+    if (!publicKey || !secretKey) {
+      console.warn('[Popup] Cannot delete bookmark: no public key or secret key');
+      return;
+    }
+    
+    // Optimistically update UI by removing the bookmark immediately
+    const bookmarkToDelete = bookmarks.find(b => b.id === bookmarkId);
+    if (bookmarkToDelete) {
+      setBookmarks(prev => prev.filter(b => b.id !== bookmarkId));
+    }
+    
+    try {
+      const usableRelays = relayService.getConnectedRelays();
+      
+      if (usableRelays.length === 0) {
+        try {
+        } catch (error) {
+          console.warn('[Popup] Error during relay reconnection:', error);
+          // Continue anyway - the bookmark service will handle relay issues
+        }
+      }
+      
+      // Delete the bookmark
+      await bookmarkService.deleteBookmark(bookmarkId, publicKey, secretKey);
+      
+      // Refresh bookmarks list to ensure consistency with server state
+      // Use a small delay to allow relays to process the update
+      setTimeout(() => {
+        // Check if we still have the public key (user hasn't logged out)
+        if (publicKey) {
+          fetchAndSetBookmarks(publicKey).catch(error => {
+            console.error('[Popup] Error refreshing bookmarks after deletion:', error);
+          });
+        }
+      }, 3000); // Increased delay to 1.5 seconds to give more time for relay processing
+    } catch (error) {
+      console.error('[Popup] Error deleting bookmark:', error);
+      
+      // Revert the optimistic update if deletion failed
+      if (bookmarkToDelete) {
+        setBookmarks(prev => [...prev, bookmarkToDelete].sort((a, b) => {
+          return b.createdAt - a.createdAt;
+        }));
+      }
+      
+      setBookmarksError('Failed to delete bookmark. Please try again.');
     }
   };
 
@@ -126,10 +169,10 @@ const Popup: React.FC = () => {
 
   if (isAuthLoading) {
     return (
-      <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center bg-gray-50">
+      <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center">
         <div className="flex flex-col items-center space-y-2">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="text-gray-600">Loading Session...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          <p className="text-gray-700">Connecting to relays...</p>
         </div>
       </div>
     );
@@ -137,8 +180,8 @@ const Popup: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-w-[400px] min-h-[500px] flex flex-col bg-gray-50">
-        <header className="bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
+      <div className="min-w-[400px] min-h-[500px] flex flex-col">
+        <header className={`px-4 py-3 ${styles.glass} mb-4 shadow-lg`}>
           <h1 className="text-2xl font-bold text-gray-800 text-center">Bookmarkstr</h1>
         </header>
         
@@ -146,29 +189,44 @@ const Popup: React.FC = () => {
         
         {publicKey ? (
           <div className="flex-grow flex flex-col p-4 space-y-4">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className={`rounded-lg ${styles.glass} p-4`}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600">Logged in as:</p>
-                  <p className="text-xs font-mono break-all text-gray-500">{publicKey}</p>
+                  <p className="text-sm font-medium text-gray-700">Logged in as:</p>
+                  <p className="text-xs font-mono break-all text-gray-600">{publicKey}</p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="ml-4 px-3 py-1.5 border border-red-200 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+                  className={`ml-4 p-2 rounded-md text-sm font-medium text-red-600 ${styles.glassDisconnect} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150 hover:text-red-700`}
+                  title="Logout"
                 >
-                  Logout
+                  <svg 
+                    className="w-5 h-5" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
+                    />
+                  </svg>
                 </button>
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className={`rounded-lg ${styles.glass} p-4`}>
               <div className="flex items-center justify-between">
                 <button 
                   onClick={() => setShowRelayManager(!showRelayManager)}
                   className="flex items-center text-lg font-medium text-gray-800 focus:outline-none"
                 >
                   <span>Relay Connections</span>
-                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                  {" "}
+                  <span className={styles.badge}>
                     {relayService.getRelayStatuses().filter(status => status.status === 'connected').length} connected
                   </span>
                   <svg 
@@ -183,22 +241,42 @@ const Popup: React.FC = () => {
                 </button>
               </div>
               
-              {showRelayManager && <RelayManager />}
+              {showRelayManager && (
+                <div className="mt-4">
+                  <RelayManager />
+                </div>
+              )}
             </div>
 
-            <div className="flex-grow bg-white rounded-lg shadow-sm border border-gray-200 p-4 overflow-hidden flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-semibold text-gray-800">My Bookmarks</h2>
-                {isBookmarksLoading && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                )}
-              </div>
-              <div className="flex-grow overflow-auto -mx-4 px-4">
-                <BookmarkList 
-                  bookmarks={bookmarks} 
-                  isLoading={isBookmarksLoading} 
-                  error={bookmarksError}
-                />
+            <div className={`flex-grow rounded-lg ${styles.glass} p-4 overflow-hidden flex flex-col`}>
+              <div className="flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    {!isBookmarksLoading && (
+                      <button 
+                        onClick={() => fetchAndSetBookmarks(publicKey!)} 
+                        className="text-xs text-indigo-600 hover:text-indigo-800"
+                        title="Retry loading bookmarks"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                      </button>
+                    )}
+                    {isBookmarksLoading && (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex-grow overflow-auto -mx-4 px-4">
+                  <BookmarkList 
+                    bookmarks={bookmarks} 
+                    isLoading={isBookmarksLoading} 
+                    error={bookmarksError}
+                    onDeleteBookmark={handleDeleteBookmark}
+                  />
+                </div>
               </div>
             </div>
           </div>
