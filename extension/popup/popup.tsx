@@ -27,7 +27,6 @@ const Popup: React.FC = () => {
 
   useEffect(() => {
     const checkAuthAndInitRelays = async () => {
-      console.log('[Popup] Checking auth status...');
       setIsAuthLoading(true);
       setInitializationError(null);
       setBookmarksError(null);
@@ -38,12 +37,8 @@ const Popup: React.FC = () => {
         setPublicKey(keySet.publicKey);
         setSecretKey(keySet.secretKey);
         if (keySet.publicKey) {
-          console.log(`[Popup] User ${keySet.publicKey} is logged in. Initializing relays...`);
           await relayService.initializeForUser(keySet.publicKey);
-          console.log(`[Popup] Relay initialization attempt finished for ${keySet.publicKey}.`);
           fetchAndSetBookmarks(keySet.publicKey);
-        } else {
-          console.log('[Popup] No user logged in.');
         }
       } catch (error) {
         console.error("[Popup] Error during initial auth check or relay init:", error);
@@ -62,13 +57,11 @@ const Popup: React.FC = () => {
 
   const fetchAndSetBookmarks = async (pk: string) => {
     if (!pk) return;
-    console.log(`[Popup] Fetching bookmarks for ${pk}...`);
     setIsBookmarksLoading(true);
     setBookmarksError(null);
     try {
       const fetchedBookmarks = await bookmarkService.fetchBookmarks(pk);
       setBookmarks(fetchedBookmarks);
-      console.log(`[Popup] Fetched ${fetchedBookmarks.length} bookmarks.`);
     } catch (error) {
       console.error(`[Popup] Error fetching bookmarks for ${pk}:`, error);
       setBookmarksError(error instanceof Error ? error.message : "Failed to fetch bookmarks");
@@ -79,8 +72,6 @@ const Popup: React.FC = () => {
   };
 
   const handleLoginSuccess = async (pk: string, secretKey: string) => {
-    console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
-    // setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     setPublicKey(pk);
@@ -88,7 +79,6 @@ const Popup: React.FC = () => {
     setBookmarks([]);
     try {
       await relayService.initializeForUser(pk);
-      console.log(`[Popup] Relay initialization attempt finished for ${pk}.`);
       fetchAndSetBookmarks(pk);
     } catch (error) {
       console.error(`[Popup] Error initializing relays after login for ${pk}:`, error);
@@ -99,18 +89,15 @@ const Popup: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    console.log('[Popup] Logging out...');
     setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     try {
-      console.log('[Popup] Cleaning up relay connections...');
       relayService.cleanup();
       await authService.logout();
       setPublicKey(null);
       setSecretKey(null);
       setBookmarks([]);
-      console.log('[Popup] Logout successful.');
     } catch (error) {
       console.error("[Popup] Error during logout or relay cleanup:", error);
       setPublicKey(null);
@@ -121,7 +108,6 @@ const Popup: React.FC = () => {
   };
 
   const handleDeleteBookmark = async (bookmarkId: string) => {
-    console.log('[Popup] handleDeleteBookmark called with:', bookmarkId);
     if (!publicKey || !secretKey) {
       console.warn('[Popup] Cannot delete bookmark: no public key or secret key');
       return;
@@ -135,7 +121,6 @@ const Popup: React.FC = () => {
     
     try {
       const usableRelays = relayService.getConnectedRelays();
-      console.log(`[Popup] Currently have ${usableRelays.length} usable relay connections`);
       
       if (usableRelays.length === 0) {
         try {
@@ -147,7 +132,6 @@ const Popup: React.FC = () => {
       
       // Delete the bookmark
       await bookmarkService.deleteBookmark(bookmarkId, publicKey, secretKey);
-      console.log(`[Popup] Successfully deleted bookmark ${bookmarkId}`);
       
       // Refresh bookmarks list to ensure consistency with server state
       // Use a small delay to allow relays to process the update

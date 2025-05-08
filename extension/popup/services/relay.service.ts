@@ -51,11 +51,8 @@ export class RelayService {
   ];
 
   private constructor() {
-    console.log('[RelayService] Constructor called');
     try {
       // pool is already initialized as a class property
-      console.log('[RelayService] SimplePool created successfully');
-      console.log('[RelayService] Configured fallback relays:', this.fallbackRelays);
     } catch (error) {
       console.error('[RelayService] Error in RelayService constructor:', error);
     }
@@ -72,9 +69,7 @@ export class RelayService {
    * Fetches user's relay list from kind:10002 events (NIP-65)
    */
   public async fetchUserRelays(pubkey: string): Promise<RelayListItem[]> {
-    console.log(`[RelayService] fetchUserRelays called for pubkey: ${pubkey}`);
     const discoveryRelays = this.fallbackRelays;
-    console.log(`[RelayService] Using discovery relays: ${discoveryRelays.join(', ')}`);
     
     return new Promise((resolve) => {
       const filter = {
@@ -82,13 +77,11 @@ export class RelayService {
         authors: [pubkey],
         limit: 1
       };
-      console.log(`[RelayService] Subscribing to discovery relays for filter:`, filter);
       
       let eventReceived = false;
       const sub = this.pool.subscribe(discoveryRelays, filter, {
         onevent: (event) => {
           eventReceived = true;
-          console.log(`[RelayService] Received kind:10002 event for relays:`, event);
           try {
             // NIP-65: Parse 'r' tags for relay information
             const relayList: RelayListItem[] = event.tags
@@ -103,29 +96,23 @@ export class RelayService {
               })
               .filter(item => item.url.startsWith('wss://')); // Basic validation
             
-            console.log(`[RelayService] Parsed relay list from NIP-65 event:`, relayList);
             sub.close(); // Close subscription once we have the event
             resolve(relayList);
           } catch (e) {
-            console.error('[RelayService] Failed to parse relay list from event tags:', e);
             sub.close(); 
             resolve([]); // Resolve with empty list on parsing error
           }
         },
         onclose: (reason) => {
-          console.log(`[RelayService] Subscription to discovery relays closed. Reason: ${reason}`);
           if (!eventReceived) {
-             console.log('[RelayService] Subscription closed without receiving event, resolving empty.');
              resolve([]);
           }
         }
       });
 
       const timeoutDuration = 5000; // 5 seconds for discovery
-      console.log(`[RelayService] Setting timeout for relay discovery: ${timeoutDuration}ms`);
       setTimeout(() => {
         if (!eventReceived) {
-            console.log('[RelayService] Relay discovery timed out.');
             sub.close();
         }
       }, timeoutDuration);
@@ -157,20 +144,17 @@ export class RelayService {
 
     // Publish to all connected relays
     await this.pool.publish(connectedRelays, signedEvent);
-    console.log('[RelayService] Published NIP-65 relay list:', signedEvent);
   }
 
   /**
    * Initializes relay connections for a user
    */
   public async initializeForUser(pubkey: string): Promise<void> {
-    console.log(`[RelayService] Initializing for user: ${pubkey}`);
     
     // First try to get relays from NIP-65 event
     const relayList = await this.fetchUserRelays(pubkey);
     
     if (relayList.length > 0) {
-      console.log(`[RelayService] Found NIP-65 relay list with ${relayList.length} relays`);
       // Clear existing relays and add the ones from NIP-65
       this.targetRelays.clear();
       relayList.forEach(relay => this.targetRelays.add(relay.url));
@@ -178,7 +162,6 @@ export class RelayService {
       // Connect to all relays from the NIP-65 list
       await this.connectToRelays(Array.from(this.targetRelays));
     } else {
-      console.log('[RelayService] No NIP-65 relay list found, using fallback relays');
       // If no NIP-65 relays found, use fallback relays
       await this.connectToRelays(this.fallbackRelays);
     }
@@ -189,7 +172,6 @@ export class RelayService {
     if (current?.status === status && current?.error === error) {
       return;
     }
-    console.log(`Updating status for ${url}: ${status} ${error ? `(${error})` : ''}`);
     this.relayStatuses.set(url, { url, status, error });
     this.notifyListeners();
 
@@ -207,14 +189,10 @@ export class RelayService {
 
     // Always try to reconnect if it's a target relay
     if (this.targetRelays.has(url)) {
-      console.log(`[RelayService] Scheduling reconnection for ${url}`);
       const timeout = setTimeout(async () => {
-        console.log(`[RelayService] Attempting reconnection to ${url}`);
         try {
           await this.connectToRelays([url]);
         } catch (error) {
-          console.error(`[RelayService] Reconnection attempt to ${url} failed:`, error);
-          // Schedule another reconnect even on failure
           this.scheduleReconnect(url);
         }
       }, this.RECONNECT_DELAY);
@@ -240,21 +218,15 @@ export class RelayService {
   }
 
   public async connectToRelays(relayUrls: string[]): Promise<void> {
-    console.log(`[RelayService] ENTERING connectToRelays with URLs: ${JSON.stringify(relayUrls)}`);
-
     if (!Array.isArray(relayUrls)) {
-        const errorMsg = `[RelayService] connectToRelays called with invalid argument (expected array): ${relayUrls}`;
-        console.error(errorMsg);
-        throw new Error(errorMsg);
+        throw new Error(`[RelayService] connectToRelays called with invalid argument (expected array): ${relayUrls}`);
     }
 
     const release = await this.connectionMutex.acquire();
     try {
-      console.log(`[RelayService] Connecting to relays: ${relayUrls.join(', ')}`);
       const promises = relayUrls.map(async (url) => {
         const currentStatus = this.relayStatuses.get(url)?.status;
         if (currentStatus === 'connected' || currentStatus === 'connecting') {
-          console.log(`[RelayService] Skipping connection attempt for ${url} (already ${currentStatus})`);
           return;
         }
 
@@ -263,22 +235,14 @@ export class RelayService {
         this.updateRelayStatus(url, 'connecting');
         
         try {
-          console.log(`[RelayService] Attempting pool.ensureRelay(${url})`);
-          
-          // Reset reconnect attempts when starting a new connection
-          this.reconnectAttempts.set(url, 0);
-          
           await this.pool.ensureRelay(url, {
             connectionTimeout: this.CONNECTION_TIMEOUT 
           });
           
-          console.log(`[RelayService] ensureRelay(${url}) succeeded.`);
           this.updateRelayStatus(url, 'connected');
           this.reconnectAttempts.delete(url); // Clear attempts on successful connection
           
         } catch (error) {
-          console.error(`[RelayService] Failed to connect to relay ${url}:`, error);
-          
           const attempts = (this.reconnectAttempts.get(url) || 0) + 1;
           this.reconnectAttempts.set(url, attempts);
           
@@ -288,15 +252,12 @@ export class RelayService {
         }
       });
 
-      console.log("[RelayService] Waiting for all connection promises...");
       const results = await Promise.allSettled(promises);
-      console.log("[RelayService] All connection promises settled.");
 
       results.forEach((result, index) => {
         const url = relayUrls[index];
         if (result.status === 'fulfilled') {
           if (this.relayStatuses.get(url)?.status === 'connected') {
-            console.log(`[RelayService] Connection attempt for ${url} successful.`);
           } else {
             console.warn(`[RelayService] ensureRelay promise for ${url} fulfilled, but final status is: ${this.relayStatuses.get(url)?.status}`);
           }
@@ -306,17 +267,13 @@ export class RelayService {
       });
 
       const successfulConnections = this.getConnectedRelays().length;
-      console.log(`[RelayService] Final connected count: ${successfulConnections} out of ${relayUrls.length}`);
       
       if (successfulConnections === 0 && relayUrls.length > 0) {
-        console.error("[RelayService] Failed to connect to ANY target relays after attempts.");
         throw new Error("Failed to connect to any relays");
       }
     } catch (error) {
-      console.error("[RelayService] Error in connectToRelays outer block:", error);
       throw error;
     } finally {
-      console.log("[RelayService] Releasing connection mutex.");
       this.notifyListeners();
       release();
     }
@@ -326,7 +283,6 @@ export class RelayService {
     const release = await this.connectionMutex.acquire();
     try {
       if (!this.targetRelays.has(url)) {
-          console.log(`Relay ${url} is not a target, skipping disconnect.`);
           if (this.relayStatuses.get(url)?.status !== 'disconnected') {
             this.updateRelayStatus(url, 'disconnected');
           }
@@ -349,10 +305,8 @@ export class RelayService {
         subsToClose.forEach(id => this.unsubscribe(id));
 
         this.pool.close([url]);
-        console.log(`Closed connection to ${url} via SimplePool.`);
         this.updateRelayStatus(url, 'disconnected');
       } catch (error) {
-         console.error(`Error closing relay ${url} via SimplePool:`, error);
          this.updateRelayStatus(url, 'disconnected', error instanceof Error ? error.message : 'Close operation failed');
       }
 
@@ -364,10 +318,8 @@ export class RelayService {
 
   async disconnectAllRelays(): Promise<void> {
      const urlsToDisconnect = Array.from(this.targetRelays);
-     console.log('Disconnecting from all target relays:', urlsToDisconnect);
      const promises = urlsToDisconnect.map(url => this.disconnectFromRelay(url));
      await Promise.allSettled(promises);
-     console.log('Finished disconnecting all relays.');
   }
 
   public subscribe(filters: Filter[], callback: (event: Event) => void): Subscription {

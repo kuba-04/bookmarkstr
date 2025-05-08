@@ -44,7 +44,6 @@ export class StorageService {
     };
     
     await chrome.storage.local.set({ [this.CACHED_RELAYS_KEY]: cachedData });
-    console.log(`[StorageService] Cached ${relays.length} relays for user ${pubkey}`);
   }
 
   /**
@@ -56,20 +55,16 @@ export class StorageService {
       const cachedData = result[this.CACHED_RELAYS_KEY] as CachedRelays | undefined;
       
       if (!cachedData || cachedData.pubkey !== pubkey) {
-        console.log(`[StorageService] No cached relays found for user ${pubkey}`);
         return null;
       }
       
       // Check if cache is expired
       if (Date.now() - cachedData.timestamp > this.CACHE_EXPIRATION) {
-        console.log(`[StorageService] Cached relays for user ${pubkey} are expired`);
         return null;
       }
       
-      console.log(`[StorageService] Retrieved ${cachedData.relays.length} cached relays for user ${pubkey}`);
       return cachedData.relays;
     } catch (error) {
-      console.error(`[StorageService] Error retrieving cached relays:`, error);
       return null;
     }
   }
@@ -85,7 +80,6 @@ export class StorageService {
     };
     
     await chrome.storage.local.set({ [this.CACHED_BOOKMARKS_KEY]: cachedData });
-    console.log(`[StorageService] Cached ${bookmarks.length} bookmarks for user ${pubkey}`);
   }
 
   /**
@@ -97,20 +91,16 @@ export class StorageService {
       const cachedData = result[this.CACHED_BOOKMARKS_KEY] as CachedBookmarks | undefined;
       
       if (!cachedData || cachedData.pubkey !== pubkey) {
-        console.log(`[StorageService] No cached bookmarks found for user ${pubkey}`);
         return null;
       }
       
       // Check if cache is expired
       if (Date.now() - cachedData.timestamp > this.CACHE_EXPIRATION) {
-        console.log(`[StorageService] Cached bookmarks for user ${pubkey} are expired`);
         return null;
       }
       
-      console.log(`[StorageService] Retrieved ${cachedData.bookmarks.length} cached bookmarks for user ${pubkey}`);
       return cachedData.bookmarks;
     } catch (error) {
-      console.error(`[StorageService] Error retrieving cached bookmarks:`, error);
       return null;
     }
   }
@@ -128,12 +118,10 @@ export class StorageService {
       
       if (cachedRelays && cachedRelays.pubkey === pubkey) {
         await chrome.storage.local.remove([this.CACHED_RELAYS_KEY]);
-        console.log(`[StorageService] Cleared cached relays for user ${pubkey}`);
       }
       
       if (cachedBookmarks && cachedBookmarks.pubkey === pubkey) {
         await chrome.storage.local.remove([this.CACHED_BOOKMARKS_KEY]);
-        console.log(`[StorageService] Cleared cached bookmarks for user ${pubkey}`);
       }
     } catch (error) {
       console.error(`[StorageService] Error clearing user cache:`, error);
