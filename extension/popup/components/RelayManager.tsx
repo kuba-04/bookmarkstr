@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { RelayService, RelayStatus } from '../services/relay.service';
 import styles from '../styles/glassmorphism.module.css';
 
+// NIP-07 extension type declarations
+declare global {
+  interface Window {
+    nostr: {
+      getPublicKey: () => Promise<string>;
+      getSecretKey: () => Promise<string>;
+      signEvent: (event: any) => Promise<any>;
+      getRelays: () => Promise<{ [url: string]: { read: boolean; write: boolean; } }>;
+    };
+  }
+}
+
 export const RelayManager: React.FC = () => {
   const [relayStatuses, setRelayStatuses] = useState<RelayStatus[]>([]);
   const [newRelayUrl, setNewRelayUrl] = useState('');
@@ -40,8 +52,13 @@ export const RelayManager: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await relayService.disconnectFromRelay(urlToAdd); // First disconnect if exists
-      await relayService.initializeForUser('dummy'); // Use a method that calls connectToRelays internally
+      // First connect to the relay
+      await relayService.connectToRelays([urlToAdd]);
+      
+      // Then publish the updated relay list
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
+      
       setNewRelayUrl(''); // Clear input on success
     } catch (err) {
       console.error("Error adding relay:", err);
@@ -55,12 +72,16 @@ export const RelayManager: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-        await relayService.disconnectFromRelay(url);
+      await relayService.disconnectFromRelay(url);
+      
+      // Update the published relay list after disconnecting
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
     } catch (err) {
-        console.error("Error disconnecting relay:", err);
-        setError(err instanceof Error ? err.message : 'Failed to disconnect relay.');
+      console.error("Error disconnecting relay:", err);
+      setError(err instanceof Error ? err.message : 'Failed to disconnect relay.');
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -68,12 +89,16 @@ export const RelayManager: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-        await relayService.initializeForUser('dummy'); // Use a method that calls connectToRelays internally
+      await relayService.connectToRelays([url]);
+      
+      // Update the published relay list after connecting
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
     } catch (err) {
-        console.error("Error connecting relay:", err);
-        setError(err instanceof Error ? err.message : 'Failed to connect relay.');
+      console.error("Error connecting relay:", err);
+      setError(err instanceof Error ? err.message : 'Failed to connect relay.');
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 

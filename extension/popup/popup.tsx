@@ -80,7 +80,7 @@ const Popup: React.FC = () => {
 
   const handleLoginSuccess = async (pk: string, secretKey: string) => {
     console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
-    setIsAuthLoading(true);
+    // setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     setPublicKey(pk);

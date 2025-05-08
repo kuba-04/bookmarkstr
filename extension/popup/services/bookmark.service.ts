@@ -8,7 +8,10 @@ import { bytesToHex } from '@noble/hashes/utils';
 declare global {
   interface Window {
     nostr: {
-      signEvent: (event: any) => Promise<NostrEvent>;
+      getPublicKey: () => Promise<string>;
+      getSecretKey: () => Promise<string>;
+      signEvent: (event: any) => Promise<any>;
+      getRelays: () => Promise<{ [url: string]: { read: boolean; write: boolean; } }>;
     };
   }
 }
@@ -137,43 +140,19 @@ export class BookmarkService {
     // If no connected relays, try to connect to fallback relays
     let relaysToUse = connectedRelayUrls.length > 0 ? connectedRelayUrls : this.fallbackRelays;
     
-    // Ensure we have working connections before proceeding
-    relaysToUse = await this.ensureRelayConnections(relaysToUse);
-    
     if (relaysToUse.length === 0) {
       console.warn("[BookmarkService] Could not connect to any relays. Using mock data for testing.");
-      // Return mock data as we did before
-      const mockBookmarks: ProcessedBookmark[] = [
-        {
-          id: 'https://example.com/1',
-          type: 'website',
-          title: 'Example Website 1',
-          url: 'https://example.com/1',
-          createdAt: Date.now() / 1000,
-          eventId: 'mock-event-1'
-        },
-        {
-          id: 'https://example.com/2',
-          type: 'website',
-          title: 'Example Website 2',
-          url: 'https://example.com/2',
-          createdAt: Date.now() / 1000 - 3600, // 1 hour ago
-          eventId: 'mock-event-2'
-        }
-      ];
-      
-      return mockBookmarks;
     }
 
-    // Prepare filter for fetching bookmarks - kind:10003 is a replaceable event per NIP-01
-    const filter: Filter = {
-      authors: [publicKey],
-      kinds: [10003],
-      // Set a higher limit to increase chance of getting the most recent event
-      limit: 10
-    };
-
     try {
+      // Prepare filter for fetching bookmarks - kind:10003 is a replaceable event per NIP-01
+      const filter: Filter = {
+        authors: [publicKey],
+        kinds: [10003],
+        // Set a higher limit to increase chance of getting the most recent event
+        limit: 5
+      };
+
       console.log(`[BookmarkService] Fetching latest bookmark list (kind:10003) with filter:`, filter);
       console.log(`[BookmarkService] Using relays:`, relaysToUse);
       
@@ -184,7 +163,7 @@ export class BookmarkService {
       const bookmarkEvents = await pool.querySync(
         relaysToUse, 
         filter,
-        { maxWait: 10000 } // 10 second timeout
+        { maxWait: 1500 } // 10 second timeout
       );
       
       console.log(`[BookmarkService] Received ${bookmarkEvents.length} kind:10003 events`);
@@ -195,87 +174,16 @@ export class BookmarkService {
       // Try without the since filter if we don't get any events
       if (bookmarkEvents.length === 0) {
         console.log(`[BookmarkService] No recent events found, trying without 'since' filter`);
-        
-        // Modified filter without the since parameter
-        const fallbackFilter: Filter = {
-          authors: [publicKey],
-          kinds: [10003],
-          limit: 10,
-        };
-        
-        // Try again with the simplified filter
-        const fallbackEvents = await pool.querySync(
-          relaysToUse, 
-          fallbackFilter,
-          { maxWait: 10000 }
-        );
-        
-        console.log(`[BookmarkService] Received ${fallbackEvents.length} kind:10003 events with fallback query`);
-        eventsToProcess = fallbackEvents;
+        return [];
       }
       
       if (eventsToProcess.length > 0) {
         // Sort by createdAt, newest first
         const sortedEvents = [...eventsToProcess].sort((a, b) => b.created_at - a.created_at);
         
-        // Log events to help debug replaceable event handling
-        sortedEvents.forEach((event, index) => {
-          console.log(`[BookmarkService] Event ${index}: id=${event.id}, created_at=${event.created_at} (${new Date(event.created_at * 1000).toISOString()})`);
-          console.log(`[BookmarkService] Event ${index} has ${event.tags.length} tags`);
-        });
-        
         // Use the most recent event (highest created_at timestamp)
         let bookmarkListEvent = sortedEvents[0];
         console.log(`[BookmarkService] Using most recent replaceable event: ${bookmarkListEvent.id} created at ${new Date(bookmarkListEvent.created_at * 1000).toISOString()}`);
-        
-        // Check if we need to forcefully refresh our subscription
-        // This helps ensure we're getting the most up-to-date event after a deletion
-        if (relaysToUse.length > 0 && bookmarkListEvent.tags.length === 0 && sortedEvents.length > 1) {
-          console.log(`[BookmarkService] Most recent event has 0 tags but older events exist. This may indicate a caching issue.`);
-          
-          // Try to force a relay refresh and check again
-          try {
-            console.log(`[BookmarkService] Attempting to force-refresh relay connections...`);
-            
-            // Reconnect to relays using our helper
-            const refreshedRelays = await this.ensureRelayConnections(relaysToUse);
-            
-            if (refreshedRelays.length > 0) {
-              const pool = this.relayService.getPool();
-              
-              // Try fetching again after reconnection
-              const refreshedEvents = await pool.querySync(
-                refreshedRelays,
-                filter,
-                { maxWait: 8000 }
-              );
-              
-              if (refreshedEvents.length > 0) {
-                // Re-sort by timestamp
-                const refreshSortedEvents = [...refreshedEvents].sort((a, b) => b.created_at - a.created_at);
-                
-                // Log all events for comparison
-                console.log(`[BookmarkService] After refresh, found ${refreshSortedEvents.length} events:`);
-                refreshSortedEvents.forEach((event, index) => {
-                  console.log(`[BookmarkService] Refreshed Event ${index}: id=${event.id}, created_at=${event.created_at}, tags=${event.tags.length}`);
-                });
-                
-                // Compare the first events of both queries
-                if (refreshSortedEvents[0].id !== bookmarkListEvent.id) {
-                  console.log(`[BookmarkService] Found a different most recent event after refresh: ${refreshSortedEvents[0].id}`);
-                  // Use the refreshed event if it's different and has more tags (or same tags but newer)
-                  if (refreshSortedEvents[0].tags.length >= bookmarkListEvent.tags.length) {
-                    console.log(`[BookmarkService] Using refreshed event with ${refreshSortedEvents[0].tags.length} tags`);
-                    bookmarkListEvent = refreshSortedEvents[0];
-                  }
-                }
-              }
-            }
-          } catch (error) {
-            console.warn(`[BookmarkService] Error during refresh attempt:`, error);
-            // Continue with original event
-          }
-        }
         
         // Parse the tags to get bookmarks
         const bookmarks = this.parseBookmarkEvent(bookmarkListEvent as BookmarkListEvent);
@@ -305,7 +213,6 @@ export class BookmarkService {
       }
       
       console.log(`[BookmarkService] No kind:10003 events found for pubkey ${publicKey}.`);
-      
       return [];
     } catch (error) {
       console.error("[BookmarkService] Error fetching bookmarks:", error);

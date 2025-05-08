@@ -26415,9 +26415,13 @@ var RelayService = class _RelayService {
     this.subscriptions = /* @__PURE__ */ new Map();
     this.reconnectTimeouts = /* @__PURE__ */ new Map();
     this.CONNECTION_TIMEOUT = 3e4;
-    // Increased to 30 seconds
+    // Increased to 45 seconds
     this.RECONNECT_DELAY = 5e3;
     // 5 seconds
+    this.MAX_RECONNECT_ATTEMPTS = 3;
+    // Maximum number of reconnection attempts
+    this.reconnectAttempts = /* @__PURE__ */ new Map();
+    // Track reconnection attempts
     // Fallback relays in case we can't fetch user's relays or for initial discovery
     this.fallbackRelays = [
       "wss://relay.damus.io",
@@ -26442,7 +26446,7 @@ var RelayService = class _RelayService {
     return _RelayService.instance;
   }
   /**
-   * Fetches user's relay list from kind:3 events (or kind:10002)
+   * Fetches user's relay list from kind:10002 events (NIP-65)
    */
   async fetchUserRelays(pubkey) {
     console.log(`[RelayService] fetchUserRelays called for pubkey: ${pubkey}`);
@@ -26450,8 +26454,8 @@ var RelayService = class _RelayService {
     console.log(`[RelayService] Using discovery relays: ${discoveryRelays.join(", ")}`);
     return new Promise((resolve) => {
       const filter = {
-        kinds: [3],
-        // Using Kind 3 as per original code, might need change to 10002 based on NIP-65
+        kinds: [10002],
+        // NIP-65 specifies kind:10002
         authors: [pubkey],
         limit: 1
       };
@@ -26460,23 +26464,21 @@ var RelayService = class _RelayService {
       const sub = this.pool.subscribe(discoveryRelays, filter, {
         onevent: (event) => {
           eventReceived = true;
-          console.log(`[RelayService] Received kind:3 event for relays:`, event);
+          console.log(`[RelayService] Received kind:10002 event for relays:`, event);
           try {
-            const relays = JSON.parse(event.content);
-            if (typeof relays !== "object" || relays === null) {
-              throw new Error("Parsed content is not an object");
-            }
-            const relayList = Object.entries(relays).map(([url, settings]) => ({
-              url,
-              // Default to true if read/write properties are missing or not explicitly false
-              read: settings?.read !== false,
-              write: settings?.write !== false
-            })).filter((item) => item.url.startsWith("wss://"));
-            console.log(`[RelayService] Parsed relay list from event:`, relayList);
+            const relayList = event.tags.filter((tag) => tag[0] === "r").map((tag) => {
+              const [_, url, marker] = tag;
+              return {
+                url,
+                read: marker ? marker === "read" : true,
+                write: marker ? marker === "write" : true
+              };
+            }).filter((item) => item.url.startsWith("wss://"));
+            console.log(`[RelayService] Parsed relay list from NIP-65 event:`, relayList);
             sub.close();
             resolve(relayList);
           } catch (e) {
-            console.error("[RelayService] Failed to parse relay list from event content:", e, "Event content:", event.content);
+            console.error("[RelayService] Failed to parse relay list from event tags:", e);
             sub.close();
             resolve([]);
           }
@@ -26488,7 +26490,6 @@ var RelayService = class _RelayService {
             resolve([]);
           }
         }
-        // Add EOSE handling? Might not be necessary if limit: 1 works reliably.
       });
       const timeoutDuration = 5e3;
       console.log(`[RelayService] Setting timeout for relay discovery: ${timeoutDuration}ms`);
@@ -26501,65 +26502,40 @@ var RelayService = class _RelayService {
     });
   }
   /**
+   * Publishes a NIP-65 relay list event
+   */
+  async publishRelayList(pubkey) {
+    const relayList = Array.from(this.targetRelays).map((url) => ["r", url]);
+    const unsignedEvent = {
+      kind: 10002,
+      created_at: Math.floor(Date.now() / 1e3),
+      tags: relayList,
+      content: "",
+      // NIP-65 specifies empty content
+      pubkey
+    };
+    const signedEvent = await window.nostr.signEvent(unsignedEvent);
+    const connectedRelays = this.getConnectedRelays();
+    if (connectedRelays.length === 0) {
+      throw new Error("No connected relays available for publishing");
+    }
+    await this.pool.publish(connectedRelays, signedEvent);
+    console.log("[RelayService] Published NIP-65 relay list:", signedEvent);
+  }
+  /**
    * Initializes relay connections for a user
    */
   async initializeForUser(pubkey) {
-    console.log(`[RelayService] Initializing relays for user: ${pubkey}`);
-    let relayList = [];
-    let relaysToConnect = [];
-    try {
-      relayList = await this.fetchUserRelays(pubkey);
-      console.log(`[RelayService] Fetched relay list result:`, relayList);
-      if (relayList && relayList.length > 0) {
-        console.log("[RelayService] Using relays found in user profile.");
-        relaysToConnect = relayList.map((r) => r.url);
-      } else {
-        console.log("[RelayService] No relays found in profile or fetch failed/timed out. Using fallback relays.");
-        relaysToConnect = this.fallbackRelays;
-      }
-      console.log(`[RelayService] Relays determined for connection: ${relaysToConnect.join(", ")}`);
-      if (relaysToConnect.length === 0) {
-        console.error("[RelayService] No relays to connect to (neither user nor fallback worked).");
-        throw new Error("No relays available to connect.");
-      }
-      await this.connectToRelays(relaysToConnect);
-      console.log("[RelayService] Initial connection attempt finished. Checking connection status...");
-      const maxWaitTime = 15e3;
-      const startTime = Date.now();
-      while (Date.now() - startTime < maxWaitTime) {
-        const connectedRelays = this.getConnectedRelays();
-        if (connectedRelays.length > 0) {
-          console.log(`[RelayService] Successfully connected to initial relays: ${connectedRelays.join(", ")}`);
-          return;
-        }
-        console.log(`[RelayService] Waiting for connection... (${(Date.now() - startTime) / 1e3}s / ${maxWaitTime / 1e3}s)`);
-        await new Promise((resolve) => setTimeout(resolve, 1e3));
-      }
-      console.error("[RelayService] Timed out waiting for any relay connection after initial attempt.");
-      throw new Error("Timed out waiting for relay connections");
-    } catch (error) {
-      console.error(`[RelayService] Error during initializeForUser for ${pubkey}:`, error);
-      const triedFallbacks = relaysToConnect.every((url) => this.fallbackRelays.includes(url));
-      if (!triedFallbacks && this.getConnectedRelays().length === 0) {
-        console.warn("[RelayService] Initial connection failed, attempting connection to fallback relays as a last resort.");
-        try {
-          await this.connectToRelays(this.fallbackRelays);
-          const connectedFallbacks = this.getConnectedRelays();
-          if (connectedFallbacks.length > 0) {
-            console.log(`[RelayService] Successfully connected to fallback relays: ${connectedFallbacks.join(", ")}`);
-            return;
-          } else {
-            console.error("[RelayService] Failed to connect even to fallback relays.");
-            throw new Error("Failed to connect to initial relays and fallback relays.");
-          }
-        } catch (fallbackError) {
-          console.error("[RelayService] Error connecting to fallback relays:", fallbackError);
-          throw new Error("Failed to connect to initial relays. Error during fallback connection attempt.");
-        }
-      } else if (this.getConnectedRelays().length === 0) {
-        console.error("[RelayService] Initialization failed. No relays connected.");
-        throw new Error("Failed to connect to initial relays. No relays configured or connected.");
-      }
+    console.log(`[RelayService] Initializing for user: ${pubkey}`);
+    const relayList = await this.fetchUserRelays(pubkey);
+    if (relayList.length > 0) {
+      console.log(`[RelayService] Found NIP-65 relay list with ${relayList.length} relays`);
+      this.targetRelays.clear();
+      relayList.forEach((relay) => this.targetRelays.add(relay.url));
+      await this.connectToRelays(Array.from(this.targetRelays));
+    } else {
+      console.log("[RelayService] No NIP-65 relay list found, using fallback relays");
+      await this.connectToRelays(this.fallbackRelays);
     }
   }
   updateRelayStatus(url, status, error) {
@@ -26579,18 +26555,19 @@ var RelayService = class _RelayService {
     if (existingTimeout) {
       clearTimeout(existingTimeout);
     }
-    const timeout = setTimeout(async () => {
-      console.log(`Attempting to reconnect to ${url}`);
-      try {
-        await this.connectToRelays([url]);
-      } catch (error) {
-        console.error(`Reconnection attempt to ${url} failed:`, error);
-        if (this.targetRelays.has(url)) {
+    if (this.targetRelays.has(url)) {
+      console.log(`[RelayService] Scheduling reconnection for ${url}`);
+      const timeout = setTimeout(async () => {
+        console.log(`[RelayService] Attempting reconnection to ${url}`);
+        try {
+          await this.connectToRelays([url]);
+        } catch (error) {
+          console.error(`[RelayService] Reconnection attempt to ${url} failed:`, error);
           this.scheduleReconnect(url);
         }
-      }
-    }, this.RECONNECT_DELAY);
-    this.reconnectTimeouts.set(url, timeout);
+      }, this.RECONNECT_DELAY);
+      this.reconnectTimeouts.set(url, timeout);
+    }
   }
   notifyListeners() {
     this.listeners.forEach((listener) => listener(this.getRelayStatuses()));
@@ -26625,15 +26602,19 @@ var RelayService = class _RelayService {
         this.updateRelayStatus(url, "connecting");
         try {
           console.log(`[RelayService] Attempting pool.ensureRelay(${url})`);
+          this.reconnectAttempts.set(url, 0);
           await this.pool.ensureRelay(url, {
             connectionTimeout: this.CONNECTION_TIMEOUT
           });
           console.log(`[RelayService] ensureRelay(${url}) succeeded.`);
           this.updateRelayStatus(url, "connected");
+          this.reconnectAttempts.delete(url);
         } catch (error) {
           console.error(`[RelayService] Failed to connect to relay ${url}:`, error);
-          this.updateRelayStatus(url, "error", error instanceof Error ? error.message : "Connection failed");
-          this.targetRelays.delete(url);
+          const attempts = (this.reconnectAttempts.get(url) || 0) + 1;
+          this.reconnectAttempts.set(url, attempts);
+          this.updateRelayStatus(url, "error", `Connection failed (attempt ${attempts}/${this.MAX_RECONNECT_ATTEMPTS})`);
+          this.scheduleReconnect(url);
         }
       });
       console.log("[RelayService] Waiting for all connection promises...");
@@ -26649,9 +26630,6 @@ var RelayService = class _RelayService {
           }
         } else {
           console.error(`[RelayService] Connection attempt for ${url} rejected:`, result.reason);
-          if (this.relayStatuses.get(url)?.status !== "error") {
-            this.updateRelayStatus(url, "error", result.reason instanceof Error ? result.reason.message : String(result.reason));
-          }
         }
       });
       const successfulConnections = this.getConnectedRelays().length;
@@ -26788,8 +26766,9 @@ var RelayManager = () => {
     }
     setIsLoading(true);
     try {
-      await relayService.disconnectFromRelay(urlToAdd);
-      await relayService.initializeForUser("dummy");
+      await relayService.connectToRelays([urlToAdd]);
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
       setNewRelayUrl("");
     } catch (err) {
       console.error("Error adding relay:", err);
@@ -26803,6 +26782,8 @@ var RelayManager = () => {
     setError(null);
     try {
       await relayService.disconnectFromRelay(url);
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
     } catch (err) {
       console.error("Error disconnecting relay:", err);
       setError(err instanceof Error ? err.message : "Failed to disconnect relay.");
@@ -26814,7 +26795,9 @@ var RelayManager = () => {
     setIsLoading(true);
     setError(null);
     try {
-      await relayService.initializeForUser("dummy");
+      await relayService.connectToRelays([url]);
+      const pubkey = await window.nostr.getPublicKey();
+      await relayService.publishRelayList(pubkey);
     } catch (err) {
       console.error("Error connecting relay:", err);
       setError(err instanceof Error ? err.message : "Failed to connect relay.");
@@ -26996,102 +26979,35 @@ var BookmarkService = class {
     const connectedRelayUrls = this.relayService.getConnectedRelays();
     console.log(`[BookmarkService] Currently connected relays: ${JSON.stringify(connectedRelayUrls)}`);
     let relaysToUse = connectedRelayUrls.length > 0 ? connectedRelayUrls : this.fallbackRelays;
-    relaysToUse = await this.ensureRelayConnections(relaysToUse);
     if (relaysToUse.length === 0) {
       console.warn("[BookmarkService] Could not connect to any relays. Using mock data for testing.");
-      const mockBookmarks = [
-        {
-          id: "https://example.com/1",
-          type: "website",
-          title: "Example Website 1",
-          url: "https://example.com/1",
-          createdAt: Date.now() / 1e3,
-          eventId: "mock-event-1"
-        },
-        {
-          id: "https://example.com/2",
-          type: "website",
-          title: "Example Website 2",
-          url: "https://example.com/2",
-          createdAt: Date.now() / 1e3 - 3600,
-          // 1 hour ago
-          eventId: "mock-event-2"
-        }
-      ];
-      return mockBookmarks;
     }
-    const filter = {
-      authors: [publicKey],
-      kinds: [10003],
-      // Set a higher limit to increase chance of getting the most recent event
-      limit: 10
-    };
     try {
+      const filter = {
+        authors: [publicKey],
+        kinds: [10003],
+        // Set a higher limit to increase chance of getting the most recent event
+        limit: 5
+      };
       console.log(`[BookmarkService] Fetching latest bookmark list (kind:10003) with filter:`, filter);
       console.log(`[BookmarkService] Using relays:`, relaysToUse);
       const pool = this.relayService.getPool();
       const bookmarkEvents = await pool.querySync(
         relaysToUse,
         filter,
-        { maxWait: 1e4 }
+        { maxWait: 1500 }
         // 10 second timeout
       );
       console.log(`[BookmarkService] Received ${bookmarkEvents.length} kind:10003 events`);
       let eventsToProcess = bookmarkEvents;
       if (bookmarkEvents.length === 0) {
         console.log(`[BookmarkService] No recent events found, trying without 'since' filter`);
-        const fallbackFilter = {
-          authors: [publicKey],
-          kinds: [10003],
-          limit: 10
-        };
-        const fallbackEvents = await pool.querySync(
-          relaysToUse,
-          fallbackFilter,
-          { maxWait: 1e4 }
-        );
-        console.log(`[BookmarkService] Received ${fallbackEvents.length} kind:10003 events with fallback query`);
-        eventsToProcess = fallbackEvents;
+        return [];
       }
       if (eventsToProcess.length > 0) {
         const sortedEvents = [...eventsToProcess].sort((a, b) => b.created_at - a.created_at);
-        sortedEvents.forEach((event, index) => {
-          console.log(`[BookmarkService] Event ${index}: id=${event.id}, created_at=${event.created_at} (${new Date(event.created_at * 1e3).toISOString()})`);
-          console.log(`[BookmarkService] Event ${index} has ${event.tags.length} tags`);
-        });
         let bookmarkListEvent = sortedEvents[0];
         console.log(`[BookmarkService] Using most recent replaceable event: ${bookmarkListEvent.id} created at ${new Date(bookmarkListEvent.created_at * 1e3).toISOString()}`);
-        if (relaysToUse.length > 0 && bookmarkListEvent.tags.length === 0 && sortedEvents.length > 1) {
-          console.log(`[BookmarkService] Most recent event has 0 tags but older events exist. This may indicate a caching issue.`);
-          try {
-            console.log(`[BookmarkService] Attempting to force-refresh relay connections...`);
-            const refreshedRelays = await this.ensureRelayConnections(relaysToUse);
-            if (refreshedRelays.length > 0) {
-              const pool2 = this.relayService.getPool();
-              const refreshedEvents = await pool2.querySync(
-                refreshedRelays,
-                filter,
-                { maxWait: 8e3 }
-              );
-              if (refreshedEvents.length > 0) {
-                const refreshSortedEvents = [...refreshedEvents].sort((a, b) => b.created_at - a.created_at);
-                console.log(`[BookmarkService] After refresh, found ${refreshSortedEvents.length} events:`);
-                refreshSortedEvents.forEach((event, index) => {
-                  console.log(`[BookmarkService] Refreshed Event ${index}: id=${event.id}, created_at=${event.created_at}, tags=${event.tags.length}`);
-                });
-                if (refreshSortedEvents[0].id !== bookmarkListEvent.id) {
-                  console.log(`[BookmarkService] Found a different most recent event after refresh: ${refreshSortedEvents[0].id}`);
-                  if (refreshSortedEvents[0].tags.length >= bookmarkListEvent.tags.length) {
-                    console.log(`[BookmarkService] Using refreshed event with ${refreshSortedEvents[0].tags.length} tags`);
-                    bookmarkListEvent = refreshSortedEvents[0];
-                  }
-                }
-              }
-            }
-          } catch (error) {
-            console.warn(`[BookmarkService] Error during refresh attempt:`, error);
-          }
-        }
         const bookmarks = this.parseBookmarkEvent(bookmarkListEvent);
         const updatedBookmarks = await Promise.all(
           bookmarks.map(async (bookmark) => {
@@ -27644,7 +27560,7 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
       case "note": {
         const content = bookmark2.content;
         const imageUrls = content ? findImageUrls(content) : [];
-        const textContent = content || `Note ID: ${bookmark2.eventId}`;
+        const textContent = content || "";
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
         return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(textContent))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement(
           "button",
@@ -27788,7 +27704,6 @@ var Popup = () => {
   };
   const handleLoginSuccess = async (pk, secretKey2) => {
     console.log(`[Popup] Login successful for ${pk}. Initializing relays...`);
-    setIsAuthLoading(true);
     setInitializationError(null);
     setBookmarksError(null);
     setPublicKey(pk);

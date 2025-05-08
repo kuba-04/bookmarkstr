@@ -194,7 +194,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
         // Note content handling
         const content = bookmark.content;
         const imageUrls = content ? findImageUrls(content) : [];
-        const textContent = content || `Note ID: ${bookmark.eventId}`;
+        const textContent = content || "";
         
         // Extract all URLs for comparison with image URLs
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
