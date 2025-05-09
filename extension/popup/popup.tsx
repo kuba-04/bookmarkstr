@@ -10,6 +10,7 @@ import { BookmarkService } from './services/bookmark.service';
 import { ProcessedBookmark } from '../common/types';
 import BookmarkList from './components/BookmarkList';
 import styles from './styles/glassmorphism.module.css';
+import { nip19 } from 'nostr-tools';
 
 const Popup: React.FC = () => {
   const [publicKey, setPublicKey] = useState<string | null>(null);
@@ -169,7 +170,7 @@ const Popup: React.FC = () => {
 
   if (isAuthLoading) {
     return (
-      <div className="min-w-[400px] min-h-[500px] p-4 flex justify-center items-center">
+      <div className="w-[320px] min-h-[500px] p-4 flex justify-center items-center">
         <div className="flex flex-col items-center space-y-2">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
           <p className="text-gray-700">Connecting to relays...</p>
@@ -180,7 +181,7 @@ const Popup: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-w-[400px] min-h-[500px] flex flex-col">
+      <div className="w-[320px] min-h-[500px] flex flex-col">
         <header className={`px-4 py-3 ${styles.glass} mb-4 shadow-lg`}>
           <h1 className="text-2xl font-bold text-gray-800 text-center">Bookmarkstr</h1>
         </header>
@@ -190,10 +191,10 @@ const Popup: React.FC = () => {
         {publicKey ? (
           <div className="flex-grow flex flex-col p-4 space-y-4">
             <div className={`rounded-lg ${styles.glass} p-4`}>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-700">Logged in as:</p>
-                  <p className="text-xs font-mono break-all text-gray-600">{publicKey}</p>
+                  <p className="text-xs font-mono break-all text-gray-600">{publicKey ? nip19.npubEncode(publicKey) : ''}</p>
                 </div>
                 <button
                   onClick={handleLogout}
@@ -218,19 +219,18 @@ const Popup: React.FC = () => {
               </div>
             </div>
             
-            <div className={`rounded-lg ${styles.glass} p-4`}>
+            <div className={`rounded-lg ${styles.glass} p-2`}>
               <div className="flex items-center justify-between">
                 <button 
                   onClick={() => setShowRelayManager(!showRelayManager)}
-                  className="flex items-center text-lg font-medium text-gray-800 focus:outline-none"
+                  className="flex items-center text-xs font-medium text-gray-800 focus:outline-none"
                 >
                   <span>Relay Connections</span>
-                  {" "}
-                  <span className={styles.badge}>
+                  <span className="ml-1 text-[10px] bg-green-50/50 text-green-600 px-1 py-0.5 rounded">
                     {relayService.getRelayStatuses().filter(status => status.status === 'connected').length} connected
                   </span>
                   <svg 
-                    className={`ml-2 w-5 h-5 transition-transform ${showRelayManager ? 'transform rotate-180' : ''}`} 
+                    className={`ml-1 w-3 h-3 transition-transform ${showRelayManager ? 'transform rotate-180' : ''}`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24" 
@@ -242,7 +242,7 @@ const Popup: React.FC = () => {
               </div>
               
               {showRelayManager && (
-                <div className="mt-4">
+                <div className="mt-2">
                   <RelayManager />
                 </div>
               )}
