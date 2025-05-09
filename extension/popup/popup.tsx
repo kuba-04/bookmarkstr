@@ -10,6 +10,7 @@ import { BookmarkService } from './services/bookmark.service';
 import { ProcessedBookmark } from '../common/types';
 import BookmarkList from './components/BookmarkList';
 import styles from './styles/glassmorphism.module.css';
+import { nip19 } from 'nostr-tools';
 
 const Popup: React.FC = () => {
   const [publicKey, setPublicKey] = useState<string | null>(null);
@@ -193,7 +194,7 @@ const Popup: React.FC = () => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-700">Logged in as:</p>
-                  <p className="text-xs font-mono break-all text-gray-600">{publicKey}</p>
+                  <p className="text-xs font-mono break-all text-gray-600">{publicKey ? nip19.npubEncode(publicKey) : ''}</p>
                 </div>
                 <button
                   onClick={handleLogout}
