@@ -8,3 +8,5 @@ node_modules
 /extension/output/*.html
 /extension/output/*.css
 /extension/output/*.json
+
+.local
