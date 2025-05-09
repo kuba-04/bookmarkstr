@@ -116,82 +116,84 @@ export const RelayManager: React.FC = () => {
   const connectedCount = relayStatuses.filter(relay => relay.status === 'connected').length;
 
   return (
-    <div className={`mt-6 p-4 ${styles.glass} rounded-lg`}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className={styles.title}>
-          Relay Connections
-          <span className={styles.badge}>
-            {" "} { connectedCount} connected
-          </span>
-        </h3>
-      </div>
+    <div className={`mt-2 ${styles.glass} rounded-lg text-xs`}>
+      <div className="p-2 flex flex-col">
+        <div className="flex items-center gap-1 text-[11px]">
+          <span className="opacity-70">Relays</span>
+          <span className="opacity-70">{connectedCount}</span>
+          <button className="ml-auto opacity-50 hover:opacity-100">
+            <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
 
-      <form onSubmit={handleAddRelay} className="flex gap-2 mb-4">
-        <input
-          type="text"
-          value={newRelayUrl}
-          onChange={(e) => setNewRelayUrl(e.target.value)}
-          className={`px-3 py-2 rounded-md ${styles.glassInput} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-          placeholder="wss://your.relay.com"
-          disabled={isLoading}
-        />
-        <button
-          type="submit"
-          className={`px-4 py-2 rounded-md ${styles.glassButton} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-            isLoading ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-          disabled={isLoading}
-        >
-          Add & Connect
-        </button>
-      </form>
-
-      {error && <p className="text-red-500 text-sm mb-2">Error: {error}</p>}
-
-      {isLoading && <p className="text-sm text-gray-500 mb-2">Processing...</p>}
-
-      <div className="space-y-2">
-        {relayStatuses.length === 0 && !isLoading && (
-            <p className="text-sm text-gray-500">No relays configured or connected.</p>
-        )}
-        {relayStatuses.map(({ url, status, error: relayError }) => (
-          <div 
-            key={url} 
-            className={`flex items-center justify-between p-3 ${styles.glassCard} rounded-md`}
+        <form onSubmit={handleAddRelay} className="flex gap-1 mb-2">
+          <input
+            type="text"
+            value={newRelayUrl}
+            onChange={(e) => setNewRelayUrl(e.target.value)}
+            className={`px-1.5 py-1 text-xs rounded-md ${styles.glassInput} focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent flex-1 min-w-0`}
+            placeholder="wss://your.relay.com"
+            disabled={isLoading}
+          />
+          <button
+            type="submit"
+            className={`px-1.5 py-1 text-xs rounded-md ${styles.glassButton} focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500 whitespace-nowrap flex-shrink-0 ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isLoading}
           >
-            <div className="flex-grow mr-2 overflow-hidden flex items-center">
-                <div className={`${styles.statusDot} ${status === 'connected' ? styles.connected : styles.disconnected} mr-3`} />
-                <span className="text-sm font-medium truncate">{url}</span>
-                {relayError && <span className="block text-xs text-red-500 truncate ml-2">({relayError})</span>}
+            Add
+          </button>
+        </form>
+
+        {error && <p className="text-red-500 text-xs mb-1">Error: {error}</p>}
+        {isLoading && <p className="text-xs text-gray-500 mb-1">Processing...</p>}
+
+        <div className="space-y-0.5">
+          {relayStatuses.length === 0 && !isLoading && (
+              <p className="text-xs text-gray-500">No relays configured.</p>
+          )}
+          {relayStatuses.map(({ url, status, error: relayError }) => (
+            <div 
+              key={url} 
+              className={`flex items-center justify-between py-1 px-1.5 ${styles.glassCard} rounded-md`}
+            >
+              <div className="flex-grow mr-1 overflow-hidden flex items-center min-w-0">
+                  <div className={`${styles.statusDot} ${status === 'connected' ? styles.connected : styles.disconnected} mr-1.5 flex-shrink-0 w-1.5 h-1.5`} />
+                  <span className="text-xs font-medium truncate flex-1 min-w-0">{url}</span>
+                  {relayError && <span className="text-xs text-red-500 truncate ml-1 flex-shrink-0">({relayError})</span>}
+              </div>
+              <div className="flex items-center gap-1 flex-shrink-0 ml-1">
+                {(status === 'connected' || status === 'connecting' || status === 'error') && (
+                  <button
+                    onClick={() => handleDisconnectRelay(url)}
+                    className={`px-1.5 py-0.5 text-xs font-medium rounded-md text-red-600 ${styles.glassDisconnect} ${
+                       isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                     }`}
+                    disabled={isLoading}
+                    title={url}
+                  >
+                    Disconnect
+                  </button>
+                )}
+                {status === 'disconnected' && (
+                   <button
+                    onClick={() => handleConnectRelay(url)}
+                    className={`px-1.5 py-0.5 text-xs font-medium rounded-md border border-green-500 text-green-600 hover:bg-green-50 ${
+                      isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                    disabled={isLoading}
+                    title={url}
+                  >
+                    Connect
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              {(status === 'connected' || status === 'connecting' || status === 'error') && (
-                <button
-                  onClick={() => handleDisconnectRelay(url)}
-                  className={`px-3 py-1 text-sm font-medium rounded-md text-red-600 ${styles.glassDisconnect} ${
-                     isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                   }`}
-                  disabled={isLoading}
-                  title={`Disconnect from ${url}`}
-                >
-                  Disconnect
-                </button>
-              )}
-              {status === 'disconnected' && (
-                 <button
-                  onClick={() => handleConnectRelay(url)}
-                  className={`px-3 py-1 text-sm font-medium rounded-md border border-green-500 text-green-600 hover:bg-green-50 ${
-                    isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  disabled={isLoading}
-                  title={`Connect to ${url}`}
-                >
-                  Connect
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

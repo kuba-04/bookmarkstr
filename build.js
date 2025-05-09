@@ -7,40 +7,54 @@ const { execSync } = require('child_process');
 const { spawn } = require('child_process');
 
 const isProd = process.argv.includes('prod');
-const isFirefox = process.argv.includes('firefox');
 
 // Setup output directories
 const outputDir = 'extension/output';
 const chromeDir = 'extension/chrome';
 const firefoxDir = 'extension/firefox';
-const targetDir = isFirefox ? firefoxDir : chromeDir;
 
 // Make sure the output directory exists
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Copy manifest from browser-specific directory
-function copyManifest() {
+// Copy manifests for both browsers
+function copyManifests() {
+  // Copy Chrome manifest
   fs.copyFileSync(
-    path.join(targetDir, 'manifest.json'), 
-    path.join(outputDir, 'manifest.json')
+    path.join(chromeDir, 'manifest.json'),
+    path.join(chromeDir, 'manifest.build.json')
+  );
+  
+  // Copy Firefox manifest
+  fs.copyFileSync(
+    path.join(firefoxDir, 'manifest.json'),
+    path.join(firefoxDir, 'manifest.build.json')
   );
 }
 
-// Copy static files
+// Copy static files to both browser directories
 function copyFiles() {
-  // Copy popup.html
-  fs.copyFileSync('extension/popup.html', path.join(outputDir, 'popup.html'));
+  const browsers = [chromeDir, firefoxDir];
   
-  // Copy nostr-provider.js
-  fs.copyFileSync('extension/nostr-provider.js', path.join(outputDir, 'nostr-provider.js'));
+  browsers.forEach(browserDir => {
+    // Copy popup.html
+    fs.copyFileSync('extension/popup.html', path.join(browserDir, 'popup.html'));
+    
+    // Copy nostr-provider.js
+    fs.copyFileSync('extension/nostr-provider.js', path.join(browserDir, 'nostr-provider.js'));
+  });
 }
 
 // Build CSS
-function buildCss(outPath) {
+function buildCss() {
   try {
-    execSync(`pnpm exec tailwindcss -i ./extension/popup/popup.css -o ${outPath}${isProd ? ' --minify' : ''}`);
+    // Build to output dir
+    execSync(`pnpm exec tailwindcss -i ./extension/popup/popup.css -o ${path.join(outputDir, 'popup.css')}${isProd ? ' --minify' : ''}`);
+    
+    // Copy to both browser directories
+    fs.copyFileSync(path.join(outputDir, 'popup.css'), path.join(chromeDir, 'popup.css'));
+    fs.copyFileSync(path.join(outputDir, 'popup.css'), path.join(firefoxDir, 'popup.css'));
   } catch (error) {
     console.error('Error building CSS:', error);
   }
@@ -70,18 +84,20 @@ async function buildJs() {
   }
 }
 
-// Copy files to browser-specific directory for development
-function copyToBrowserDir() {
-  if (isProd) return; // Only needed for development
-
-  // Copy built JS files
-  fs.copyFileSync(path.join(outputDir, 'background.js'), path.join(targetDir, 'background.build.js'));
-  fs.copyFileSync(path.join(outputDir, 'content-script.js'), path.join(targetDir, 'content-script.build.js'));
-  fs.copyFileSync(path.join(outputDir, 'popup.js'), path.join(targetDir, 'popup.js'));
+// Copy files to browser directories
+function copyToBrowserDirs() {
+  const browsers = [chromeDir, firefoxDir];
   
-  // Copy static files
-  fs.copyFileSync('extension/popup.html', path.join(targetDir, 'popup.html'));
-  fs.copyFileSync('extension/nostr-provider.js', path.join(targetDir, 'nostr-provider.js'));
+  browsers.forEach(browserDir => {
+    // Copy built JS files
+    fs.copyFileSync(path.join(outputDir, 'background.js'), path.join(browserDir, 'background.build.js'));
+    fs.copyFileSync(path.join(outputDir, 'content-script.js'), path.join(browserDir, 'content-script.build.js'));
+    fs.copyFileSync(path.join(outputDir, 'popup.js'), path.join(browserDir, 'popup.js'));
+    
+    // Copy static files
+    fs.copyFileSync('extension/popup.html', path.join(browserDir, 'popup.html'));
+    fs.copyFileSync('extension/nostr-provider.js', path.join(browserDir, 'nostr-provider.js'));
+  });
 }
 
 // Watch for changes and rebuild
@@ -111,14 +127,11 @@ function watchChanges() {
       // Build JS
       await buildJs();
       
-      // Build CSS to output dir
-      buildCss(path.join(outputDir, 'popup.css'));
+      // Build CSS
+      buildCss();
       
-      // Build CSS directly to target browser dir
-      buildCss(path.join(targetDir, 'popup.css'));
-      
-      // Copy files
-      copyToBrowserDir();
+      // Copy files to both browser directories
+      copyToBrowserDirs();
       
     } catch (err) {
       console.error('Error during rebuild:', err);
@@ -144,9 +157,7 @@ function watchChanges() {
       if (filename.endsWith('.tsx') || filename.endsWith('.ts')) {
         processSourceChange();
       } else if (filename.endsWith('.css')) {
-        // Just build CSS files, don't rebuild JS
-        buildCss(path.join(outputDir, 'popup.css'));
-        buildCss(path.join(targetDir, 'popup.css'));
+        buildCss();
       }
     });
   });
@@ -157,39 +168,37 @@ function watchChanges() {
     
     if (filename === 'popup.html' || filename === 'nostr-provider.js') {
       copyFiles();
-      copyToBrowserDir();
+      copyToBrowserDirs();
     }
   });
   
   // Watch manifest files
-  fs.watch(targetDir, { recursive: false }, (eventType, filename) => {
-    if (filename === 'manifest.json') {
-      copyManifest();
-    }
+  const browsers = [chromeDir, firefoxDir];
+  browsers.forEach(browserDir => {
+    fs.watch(browserDir, { recursive: false }, (eventType, filename) => {
+      if (filename === 'manifest.json') {
+        copyManifests();
+      }
+    });
   });
 }
 
 // Main build function
 async function build() {
-  // Copy manifest
-  copyManifest();
+  // Copy manifests
+  copyManifests();
   
   // Copy static files
   copyFiles();
   
   // Build CSS
-  buildCss(path.join(outputDir, 'popup.css'));
-  
-  // In dev mode, also build CSS to browser dir
-  if (!isProd) {
-    buildCss(path.join(targetDir, 'popup.css'));
-  }
+  buildCss();
   
   // Build JavaScript
   await buildJs();
   
-  // Copy to browser-specific directory for development
-  copyToBrowserDir();
+  // Copy to browser directories
+  copyToBrowserDirs();
   
   // Watch for changes in development mode
   if (!isProd) {
