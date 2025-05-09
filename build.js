@@ -43,6 +43,9 @@ function copyFiles() {
     
     // Copy nostr-provider.js
     fs.copyFileSync('extension/nostr-provider.js', path.join(browserDir, 'nostr-provider.js'));
+
+    // Copy icon
+    fs.copyFileSync('extension/Bookmarkstr.png', path.join(browserDir, 'Bookmarkstr.png'));
   });
 }
 

@@ -3,12 +3,16 @@
   "description": "A Nostr-based bookmarks viewer extension",
   "version": "1.0.0",
   "manifest_version": 3,
+  "icons": {
+    "128": "Bookmarkstr.png"
+  },
   "background": {
     "service_worker": "background.build.js"
   },
   "action": {
     "default_title": "Bookmarkstr",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": "Bookmarkstr.png"
   },
   "content_scripts": [
     {
