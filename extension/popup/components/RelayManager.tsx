@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RelayService, RelayStatus } from '../services/relay.service';
+import { AuthService } from '../services/auth.service';
 import styles from '../styles/glassmorphism.module.css';
 
 // NIP-07 extension type declarations
@@ -20,6 +21,7 @@ export const RelayManager: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const relayService = RelayService.getInstance();
+  const authService = AuthService.getInstance();
 
   useEffect(() => {
     // Subscribe to status updates
@@ -56,8 +58,11 @@ export const RelayManager: React.FC = () => {
       await relayService.connectToRelays([urlToAdd]);
       
       // Then publish the updated relay list
-      const pubkey = await window.nostr.getPublicKey();
-      await relayService.publishRelayList(pubkey);
+      const { publicKey, secretKey } = await authService.getLoggedInUser();
+      if (!publicKey || !secretKey) {
+        throw new Error('User not logged in');
+      }
+      await relayService.publishRelayList(publicKey, secretKey);
       
       setNewRelayUrl(''); // Clear input on success
     } catch (err) {
@@ -75,8 +80,11 @@ export const RelayManager: React.FC = () => {
       await relayService.disconnectFromRelay(url);
       
       // Update the published relay list after disconnecting
-      const pubkey = await window.nostr.getPublicKey();
-      await relayService.publishRelayList(pubkey);
+      const { publicKey, secretKey } = await authService.getLoggedInUser();
+      if (!publicKey || !secretKey) {
+        throw new Error('User not logged in');
+      }
+      await relayService.publishRelayList(publicKey, secretKey);
     } catch (err) {
       console.error("Error disconnecting relay:", err);
       setError(err instanceof Error ? err.message : 'Failed to disconnect relay.');
@@ -92,8 +100,11 @@ export const RelayManager: React.FC = () => {
       await relayService.connectToRelays([url]);
       
       // Update the published relay list after connecting
-      const pubkey = await window.nostr.getPublicKey();
-      await relayService.publishRelayList(pubkey);
+      const { publicKey, secretKey } = await authService.getLoggedInUser();
+      if (!publicKey || !secretKey) {
+        throw new Error('User not logged in');
+      }
+      await relayService.publishRelayList(publicKey, secretKey);
     } catch (err) {
       console.error("Error connecting relay:", err);
       setError(err instanceof Error ? err.message : 'Failed to connect relay.');

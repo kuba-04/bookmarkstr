@@ -1,6 +1,8 @@
 import { SimplePool, Event, Filter, getEventHash, finalizeEvent, type UnsignedEvent } from 'nostr-tools';
 import { hexToBytes } from '@noble/hashes/utils';
 import { Mutex } from 'async-mutex';
+import { nip19 } from 'nostr-tools';
+import { bytesToHex } from '@noble/hashes/utils';
 
 export interface RelayStatus {
   url: string;
@@ -122,10 +124,11 @@ export class RelayService {
   /**
    * Publishes a NIP-65 relay list event
    */
-  public async publishRelayList(pubkey: string): Promise<void> {
+  public async publishRelayList(pubkey: string, secretKey: string): Promise<void> {
     const relayList = Array.from(this.targetRelays).map(url => ['r', url]);
     
-    const unsignedEvent = {
+    // Create a proper kind:10002 replaceable event according to NIP-65
+    const event: any = {
       kind: 10002,
       created_at: Math.floor(Date.now() / 1000),
       tags: relayList,
@@ -133,17 +136,34 @@ export class RelayService {
       pubkey: pubkey
     };
 
-    // Sign the event using the NIP-07 extension
-    const signedEvent = await window.nostr.signEvent(unsignedEvent);
+    try {
+      // Convert nsec format to hex if needed
+      let hexSecretKey = secretKey;
+      if (secretKey.startsWith('nsec')) {
+        const { type, data } = nip19.decode(secretKey);
+        if (type !== 'nsec') {
+          throw new Error('Invalid nsec private key format');
+        }
+        hexSecretKey = bytesToHex(data);
+      }
+      
+      // Convert the hex string secretKey to Uint8Array
+      const secretKeyBytes = hexToBytes(hexSecretKey);
+      
+      const signedEvent = finalizeEvent(event, secretKeyBytes);
+      
+      // Get all connected relays for publishing
+      const connectedRelays = this.getConnectedRelays();
+      if (connectedRelays.length === 0) {
+        throw new Error('No connected relays available for publishing');
+      }
 
-    // Get all connected relays for publishing
-    const connectedRelays = this.getConnectedRelays();
-    if (connectedRelays.length === 0) {
-      throw new Error('No connected relays available for publishing');
+      // Publish to all connected relays
+      await this.pool.publish(connectedRelays, signedEvent);
+    } catch (error) {
+      console.error('[RelayService] Error during relay list publishing:', error);
+      throw error;
     }
-
-    // Publish to all connected relays
-    await this.pool.publish(connectedRelays, signedEvent);
   }
 
   /**

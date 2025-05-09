@@ -26491,9 +26491,9 @@ var RelayService = class _RelayService {
   /**
    * Publishes a NIP-65 relay list event
    */
-  async publishRelayList(pubkey) {
+  async publishRelayList(pubkey, secretKey) {
     const relayList = Array.from(this.targetRelays).map((url) => ["r", url]);
-    const unsignedEvent = {
+    const event = {
       kind: 10002,
       created_at: Math.floor(Date.now() / 1e3),
       tags: relayList,
@@ -26501,12 +26501,26 @@ var RelayService = class _RelayService {
       // NIP-65 specifies empty content
       pubkey
     };
-    const signedEvent = await window.nostr.signEvent(unsignedEvent);
-    const connectedRelays = this.getConnectedRelays();
-    if (connectedRelays.length === 0) {
-      throw new Error("No connected relays available for publishing");
+    try {
+      let hexSecretKey = secretKey;
+      if (secretKey.startsWith("nsec")) {
+        const { type, data } = nip19_exports.decode(secretKey);
+        if (type !== "nsec") {
+          throw new Error("Invalid nsec private key format");
+        }
+        hexSecretKey = bytesToHex3(data);
+      }
+      const secretKeyBytes = hexToBytes3(hexSecretKey);
+      const signedEvent = finalizeEvent(event, secretKeyBytes);
+      const connectedRelays = this.getConnectedRelays();
+      if (connectedRelays.length === 0) {
+        throw new Error("No connected relays available for publishing");
+      }
+      await this.pool.publish(connectedRelays, signedEvent);
+    } catch (error) {
+      console.error("[RelayService] Error during relay list publishing:", error);
+      throw error;
     }
-    await this.pool.publish(connectedRelays, signedEvent);
   }
   /**
    * Initializes relay connections for a user
@@ -26703,6 +26717,7 @@ var RelayManager = () => {
   const [isLoading, setIsLoading] = (0, import_react2.useState)(false);
   const [error, setError] = (0, import_react2.useState)(null);
   const relayService = RelayService.getInstance();
+  const authService = AuthService.getInstance();
   (0, import_react2.useEffect)(() => {
     const unsubscribe = relayService.subscribeToStatusUpdates(setRelayStatuses);
     setRelayStatuses(relayService.getRelayStatuses());
@@ -26725,8 +26740,11 @@ var RelayManager = () => {
     setIsLoading(true);
     try {
       await relayService.connectToRelays([urlToAdd]);
-      const pubkey = await window.nostr.getPublicKey();
-      await relayService.publishRelayList(pubkey);
+      const { publicKey, secretKey } = await authService.getLoggedInUser();
+      if (!publicKey || !secretKey) {
+        throw new Error("User not logged in");
+      }
+      await relayService.publishRelayList(publicKey, secretKey);
       setNewRelayUrl("");
     } catch (err) {
       console.error("Error adding relay:", err);
@@ -26740,8 +26758,11 @@ var RelayManager = () => {
     setError(null);
     try {
       await relayService.disconnectFromRelay(url);
-      const pubkey = await window.nostr.getPublicKey();
-      await relayService.publishRelayList(pubkey);
+      const { publicKey, secretKey } = await authService.getLoggedInUser();
+      if (!publicKey || !secretKey) {
+        throw new Error("User not logged in");
+      }
+      await relayService.publishRelayList(publicKey, secretKey);
     } catch (err) {
       console.error("Error disconnecting relay:", err);
       setError(err instanceof Error ? err.message : "Failed to disconnect relay.");
@@ -26754,8 +26775,11 @@ var RelayManager = () => {
     setError(null);
     try {
       await relayService.connectToRelays([url]);
-      const pubkey = await window.nostr.getPublicKey();
-      await relayService.publishRelayList(pubkey);
+      const { publicKey, secretKey } = await authService.getLoggedInUser();
+      if (!publicKey || !secretKey) {
+        throw new Error("User not logged in");
+      }
+      await relayService.publishRelayList(publicKey, secretKey);
     } catch (err) {
       console.error("Error connecting relay:", err);
       setError(err instanceof Error ? err.message : "Failed to connect relay.");
