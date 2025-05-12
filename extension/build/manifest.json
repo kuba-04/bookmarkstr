@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "description": "A Nostr-based bookmarks viewer extension",
   "permissions": [
-    "storage",
-    "activeTab"
+    "storage"
   ],
   "action": {
     "default_popup": "popup.html"
