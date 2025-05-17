@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ProcessedBookmark } from '../../common/types';
 import styles from '../styles/glassmorphism.module.css';
 
@@ -99,6 +99,14 @@ const imageStyle = {
 };
 
 const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Function to truncate text to a specific number of characters
+  const truncateText = (text: string, maxLength: number = 300) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength).trim() + '...';
+  };
+
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -191,20 +199,28 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
       }
       
       case 'note': {
-        // Note content handling
         const content = bookmark.content;
         const imageUrls = content ? findImageUrls(content) : [];
         const textContent = content || "";
-        
-        // Extract all URLs for comparison with image URLs
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
+        const shouldTruncate = textContent.length > 300;
         
         return (
           <div className={`flex flex-col items-start w-full space-y-3 ${styles.bookmarkItem}`}>
             <div className="w-full mb-1 flex justify-between items-start">
               <div className="flex-1 mr-2">
-                <div className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
-                  {makeUrlsClickable(textContent)}
+                <div className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full overflow-hidden" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+                  {makeUrlsClickable(isExpanded ? textContent : truncateText(textContent))}
+                  {shouldTruncate && (
+                    <div className="block mt-2">
+                      <button
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="text-indigo-600 hover:text-indigo-700 font-medium focus:outline-none hover:underline"
+                      >
+                        {isExpanded ? 'Show less' : 'Show more'}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col space-y-2">

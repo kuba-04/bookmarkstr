@@ -1,12 +1,12 @@
 {
   "name": "Bookmarkstr",
   "description": "A Nostr-based bookmarks viewer extension",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 2,
   "browser_specific_settings": {
     "gecko": {
-      "id": "bookmarkstr@example.com",
-      "strict_min_version": "57.0"
+      "id": "bookmarkstr@bookmarkstr.store",
+      "strict_min_version": "58.0"
     }
   },
   "icons": {
@@ -33,5 +33,5 @@
     "unlimitedStorage"
   ],
   "web_accessible_resources": ["nostr-provider.js"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "content_security_policy": "default-src 'self'; connect-src 'self' wss://*; script-src 'self'; object-src 'none'"
 } 

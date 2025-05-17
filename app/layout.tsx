@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata = {
   title: 'Bookmarkstr',
-  description: 'A modern bookmark manager',
+  description: 'A nostr bookmark manager',
 };
 
 export default function RootLayout({
