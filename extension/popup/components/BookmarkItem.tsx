@@ -212,12 +212,14 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
                 <div className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full overflow-hidden" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                   {makeUrlsClickable(isExpanded ? textContent : truncateText(textContent))}
                   {shouldTruncate && (
-                    <button
-                      onClick={() => setIsExpanded(!isExpanded)}
-                      className=" mt-4 text-indigo-600 hover:text-indigo-700 font-medium ml-1 focus:outline-none hover:underline"
-                    >
-                      {isExpanded ? 'Show less' : 'Show more'}
-                    </button>
+                    <div className="block mt-2">
+                      <button
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="text-indigo-600 hover:text-indigo-700 font-medium focus:outline-none hover:underline"
+                      >
+                        {isExpanded ? 'Show less' : 'Show more'}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

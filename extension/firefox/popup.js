@@ -27418,14 +27418,14 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
         const textContent = content || "";
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
         const shouldTruncate = textContent.length > 300;
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full overflow-hidden", style: { overflowWrap: "break-word", wordBreak: "break-word" } }, makeUrlsClickable(isExpanded ? textContent : truncateText(textContent)), shouldTruncate && /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full overflow-hidden", style: { overflowWrap: "break-word", wordBreak: "break-word" } }, makeUrlsClickable(isExpanded ? textContent : truncateText(textContent)), shouldTruncate && /* @__PURE__ */ import_react4.default.createElement("div", { className: "block mt-2" }, /* @__PURE__ */ import_react4.default.createElement(
           "button",
           {
             onClick: () => setIsExpanded(!isExpanded),
-            className: " mt-4 text-indigo-600 hover:text-indigo-700 font-medium ml-1 focus:outline-none hover:underline"
+            className: "text-indigo-600 hover:text-indigo-700 font-medium focus:outline-none hover:underline"
           },
           isExpanded ? "Show less" : "Show more"
-        ))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement(
+        )))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex flex-col space-y-2" }, /* @__PURE__ */ import_react4.default.createElement(
           "button",
           {
             onClick: (e) => handleOpenInPrimal(e, bookmark2.eventId),
