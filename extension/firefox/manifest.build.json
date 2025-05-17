@@ -33,5 +33,5 @@
     "unlimitedStorage"
   ],
   "web_accessible_resources": ["nostr-provider.js"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "content_security_policy": "default-src 'self'; connect-src 'self' wss://*; script-src 'self'; object-src 'none'"
 } 
