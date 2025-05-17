@@ -209,7 +209,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({ bookmark, onDelete }) => {
           <div className={`flex flex-col items-start w-full space-y-3 ${styles.bookmarkItem}`}>
             <div className="w-full mb-1 flex justify-between items-start">
               <div className="flex-1 mr-2">
-                <div className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full">
+                <div className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full overflow-hidden" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                   {makeUrlsClickable(isExpanded ? textContent : truncateText(textContent))}
                   {shouldTruncate && (
                     <button

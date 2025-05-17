@@ -27418,7 +27418,7 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
         const textContent = content || "";
         const allUrlMatches = textContent.match(/(https?:\/\/\S+)/gi) || [];
         const shouldTruncate = textContent.length > 300;
-        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full" }, makeUrlsClickable(isExpanded ? textContent : truncateText(textContent)), shouldTruncate && /* @__PURE__ */ import_react4.default.createElement(
+        return /* @__PURE__ */ import_react4.default.createElement("div", { className: `flex flex-col items-start w-full space-y-3 ${glassmorphism_default.bookmarkItem}` }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "w-full mb-1 flex justify-between items-start" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "flex-1 mr-2" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed w-full overflow-hidden", style: { overflowWrap: "break-word", wordBreak: "break-word" } }, makeUrlsClickable(isExpanded ? textContent : truncateText(textContent)), shouldTruncate && /* @__PURE__ */ import_react4.default.createElement(
           "button",
           {
             onClick: () => setIsExpanded(!isExpanded),
