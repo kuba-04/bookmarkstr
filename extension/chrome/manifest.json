@@ -1,7 +1,7 @@
 {
   "name": "Bookmarkstr",
   "description": "A Nostr-based bookmarks viewer extension",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 3,
   "icons": {
     "128": "Bookmarkstr.png"
