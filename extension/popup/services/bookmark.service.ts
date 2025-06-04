@@ -37,9 +37,9 @@ export class BookmarkService {
   /**
    * Attempts to fetch a single note from multiple public relays as a fallback.
    * @param eventId The ID of the note to fetch
-   * @returns The note content if found, or null if not found
+   * @returns The note content and timestamp if found, or null if not found
    */
-  public async fetchNoteFallback(eventId: string): Promise<string | null> {
+  public async fetchNoteFallback(eventId: string): Promise<{ content: string; created_at: number } | null> {
     const pool = this.relayService.getPool();
     
     // Try the user's connected relays first, then fall back to public relays
@@ -58,13 +58,19 @@ export class BookmarkService {
       const event = await pool.get(relaysToTry, filter);
       
       if (event) {
-        return event.content;
+        return {
+          content: event.content,
+          created_at: event.created_at
+        };
       } else {
         // If no event found in connected relays, try the fallback relays
         if (JSON.stringify(relaysToTry) !== JSON.stringify(this.fallbackRelays)) {
           const fallbackEvent = await pool.get(this.fallbackRelays, filter);
           if (fallbackEvent) {
-            return fallbackEvent.content;
+            return {
+              content: fallbackEvent.content,
+              created_at: fallbackEvent.created_at
+            };
           }
         }
         
@@ -168,11 +174,12 @@ export class BookmarkService {
         bookmarks.map(async (bookmark) => {
           if (bookmark.type === 'note') {
             try {
-              const noteContent = await this.fetchNoteFallback(bookmark.eventId);
-              if (noteContent) {
+              const noteData = await this.fetchNoteFallback(bookmark.eventId);
+              if (noteData) {
                 return {
                   ...bookmark,
-                  content: noteContent
+                  content: noteData.content,
+                  createdAt: noteData.created_at // Use the original note's timestamp
                 };
               }
             } catch (e) {
@@ -233,18 +240,23 @@ export class BookmarkService {
         if (sub) {
           sub.close();
           sub = null;
-          const noteContentMap = new Map<string, string>();
+          const noteContentMap = new Map<string, { content: string; created_at: number }>();
           noteEvents.forEach((event: Event) => {
             if (!noteContentMap.has(event.id)) {
-              noteContentMap.set(event.id, event.content);
+              noteContentMap.set(event.id, { 
+                content: event.content,
+                created_at: event.created_at
+              });
             }
           });
 
           const updatedBookmarks = bookmarks.map(bookmark => {
             if (bookmark.type === 'note' && noteContentMap.has(bookmark.eventId)) {
+              const noteData = noteContentMap.get(bookmark.eventId)!;
               return {
                 ...bookmark,
-                content: noteContentMap.get(bookmark.eventId),
+                content: noteData.content,
+                createdAt: noteData.created_at // Use the original note's timestamp
               };
             }
             return bookmark;
@@ -293,13 +305,8 @@ export class BookmarkService {
    */
   private parseBookmarkEvent(event: BookmarkListEvent): ProcessedBookmark[] {
     const bookmarks: ProcessedBookmark[] = [];
-    const eventCreatedAt = event.created_at; // Use event timestamp as fallback
     
-    event.tags.forEach((tag: string[], index: number) => {
-      // Use index to provide a pseudo-timestamp for sorting if needed, 
-      // newer bookmarks should be earlier in the array (at the top)
-      const createdAt = eventCreatedAt - index * 60; // 1 minute apart
-
+    event.tags.forEach((tag: string[]) => {
       try {
         // Check if this is a 'r' tag (URL bookmark)
         if (tag[0] === 'r' && tag.length >= 2) {
@@ -314,7 +321,7 @@ export class BookmarkService {
               title,
               url,
               eventId: event.id,
-              createdAt
+              createdAt: event.created_at
             });
           }
         }
@@ -331,7 +338,7 @@ export class BookmarkService {
             title: noteTitle,
             eventId,
             relayHint,
-            createdAt
+            createdAt: event.created_at
           });
         }
       } catch (error) {
@@ -341,7 +348,6 @@ export class BookmarkService {
 
     // Sort by createdAt, newest first
     const sortedBookmarks = bookmarks.sort((a, b) => {
-      // All bookmarks now use createdAt, no need to handle old format
       return b.createdAt - a.createdAt;
     });
     

@@ -26918,7 +26918,7 @@ var BookmarkService = class {
   /**
    * Attempts to fetch a single note from multiple public relays as a fallback.
    * @param eventId The ID of the note to fetch
-   * @returns The note content if found, or null if not found
+   * @returns The note content and timestamp if found, or null if not found
    */
   async fetchNoteFallback(eventId) {
     const pool = this.relayService.getPool();
@@ -26933,12 +26933,18 @@ var BookmarkService = class {
       };
       const event = await pool.get(relaysToTry, filter);
       if (event) {
-        return event.content;
+        return {
+          content: event.content,
+          created_at: event.created_at
+        };
       } else {
         if (JSON.stringify(relaysToTry) !== JSON.stringify(this.fallbackRelays)) {
           const fallbackEvent = await pool.get(this.fallbackRelays, filter);
           if (fallbackEvent) {
-            return fallbackEvent.content;
+            return {
+              content: fallbackEvent.content,
+              created_at: fallbackEvent.created_at
+            };
           }
         }
         return null;
@@ -27013,11 +27019,13 @@ var BookmarkService = class {
         bookmarks.map(async (bookmark) => {
           if (bookmark.type === "note") {
             try {
-              const noteContent = await this.fetchNoteFallback(bookmark.eventId);
-              if (noteContent) {
+              const noteData = await this.fetchNoteFallback(bookmark.eventId);
+              if (noteData) {
                 return {
                   ...bookmark,
-                  content: noteContent
+                  content: noteData.content,
+                  createdAt: noteData.created_at
+                  // Use the original note's timestamp
                 };
               }
             } catch (e) {
@@ -27070,14 +27078,20 @@ var BookmarkService = class {
           const noteContentMap = /* @__PURE__ */ new Map();
           noteEvents.forEach((event) => {
             if (!noteContentMap.has(event.id)) {
-              noteContentMap.set(event.id, event.content);
+              noteContentMap.set(event.id, {
+                content: event.content,
+                created_at: event.created_at
+              });
             }
           });
           const updatedBookmarks = bookmarks.map((bookmark) => {
             if (bookmark.type === "note" && noteContentMap.has(bookmark.eventId)) {
+              const noteData = noteContentMap.get(bookmark.eventId);
               return {
                 ...bookmark,
-                content: noteContentMap.get(bookmark.eventId)
+                content: noteData.content,
+                createdAt: noteData.created_at
+                // Use the original note's timestamp
               };
             }
             return bookmark;
@@ -27123,9 +27137,7 @@ var BookmarkService = class {
    */
   parseBookmarkEvent(event) {
     const bookmarks = [];
-    const eventCreatedAt = event.created_at;
-    event.tags.forEach((tag, index) => {
-      const createdAt = eventCreatedAt - index * 60;
+    event.tags.forEach((tag) => {
       try {
         if (tag[0] === "r" && tag.length >= 2) {
           const url = tag[1];
@@ -27138,7 +27150,7 @@ var BookmarkService = class {
               title,
               url,
               eventId: event.id,
-              createdAt
+              createdAt: event.created_at
             });
           }
         } else if (tag[0] === "e" && tag.length >= 2) {
@@ -27152,7 +27164,7 @@ var BookmarkService = class {
             title: noteTitle,
             eventId,
             relayHint,
-            createdAt
+            createdAt: event.created_at
           });
         }
       } catch (error) {
@@ -27474,7 +27486,8 @@ var BookmarkItem = ({ bookmark, onDelete }) => {
 var BookmarkItem_default = BookmarkItem;
 
 // extension/popup/components/BookmarkList.tsx
-var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
+var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark, onRefresh }) => {
+  const [sortOldestFirst, setSortOldestFirst] = (0, import_react5.useState)(false);
   if (isLoading) {
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-700" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-3" }), /* @__PURE__ */ import_react5.default.createElement("p", null, "Loading bookmarks..."));
   }
@@ -27484,7 +27497,27 @@ var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
   if (bookmarks.length === 0) {
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex flex-col items-center justify-center py-8 text-gray-700" }, /* @__PURE__ */ import_react5.default.createElement("svg", { className: "w-12 h-12 text-gray-400 mb-3", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react5.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" })), /* @__PURE__ */ import_react5.default.createElement("p", null, "No bookmarks found"), /* @__PURE__ */ import_react5.default.createElement("p", { className: "text-sm text-gray-500 mt-1" }, "Bookmarks you save will appear here"));
   }
-  return /* @__PURE__ */ import_react5.default.createElement("ul", { className: "divide-y divide-gray-200" }, bookmarks.map((bookmark) => {
+  const sortedBookmarks = [...bookmarks].sort((a, b) => {
+    const dateA = a.createdAt;
+    const dateB = b.createdAt;
+    return sortOldestFirst ? dateA - dateB : dateB - dateA;
+  });
+  return /* @__PURE__ */ import_react5.default.createElement("div", { className: "min-w-0" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex items-center justify-between mb-2" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "flex items-center space-x-2" }, /* @__PURE__ */ import_react5.default.createElement(
+    "button",
+    {
+      onClick: () => setSortOldestFirst(!sortOldestFirst),
+      className: "px-2.5 py-1 text-xs font-medium text-indigo-600 border border-indigo-600 rounded hover:bg-indigo-50 transition-colors"
+    },
+    sortOldestFirst ? "Latest" : "Oldest"
+  ), /* @__PURE__ */ import_react5.default.createElement(
+    "button",
+    {
+      onClick: onRefresh,
+      className: "px-2.5 py-1 text-xs font-medium text-indigo-600 border border-indigo-600 rounded hover:bg-indigo-50 transition-colors",
+      title: "Refresh bookmarks"
+    },
+    /* @__PURE__ */ import_react5.default.createElement("svg", { className: "w-3.5 h-3.5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react5.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" }))
+  ))), /* @__PURE__ */ import_react5.default.createElement("ul", { className: "divide-y divide-gray-200" }, sortedBookmarks.map((bookmark) => {
     console.log("Rendering bookmark:", bookmark.id);
     const deleteHandler = onDeleteBookmark ? () => {
       console.log("Delete handler called for bookmark:", bookmark.id);
@@ -27500,7 +27533,7 @@ var BookmarkList2 = ({ bookmarks, isLoading, error, onDeleteBookmark }) => {
         onDelete: deleteHandler
       }
     ));
-  }));
+  })));
 };
 var BookmarkList_default = BookmarkList2;
 
@@ -27679,21 +27712,14 @@ var Popup = () => {
       },
       /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 9l-7 7-7-7" })
     )
-  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement("div", { className: "mt-2" }, /* @__PURE__ */ import_react6.default.createElement(RelayManager, null))), /* @__PURE__ */ import_react6.default.createElement("div", { className: `flex-grow rounded-lg ${glassmorphism_default.glass} p-4 overflow-hidden flex flex-col` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex items-center space-x-2" }, !isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement(
-    "button",
-    {
-      onClick: () => fetchAndSetBookmarks(publicKey),
-      className: "text-xs text-indigo-600 hover:text-indigo-800",
-      title: "Retry loading bookmarks"
-    },
-    /* @__PURE__ */ import_react6.default.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react6.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" }))
-  ), isBookmarksLoading && /* @__PURE__ */ import_react6.default.createElement("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600" }))), /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
+  )), showRelayManager && /* @__PURE__ */ import_react6.default.createElement("div", { className: "mt-2" }, /* @__PURE__ */ import_react6.default.createElement(RelayManager, null))), /* @__PURE__ */ import_react6.default.createElement("div", { className: `flex-grow rounded-lg ${glassmorphism_default.glass} p-4 overflow-hidden flex flex-col` }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex flex-col" }, /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow overflow-auto -mx-4 px-4" }, /* @__PURE__ */ import_react6.default.createElement(
     BookmarkList_default,
     {
       bookmarks,
       isLoading: isBookmarksLoading,
       error: bookmarksError,
-      onDeleteBookmark: handleDeleteBookmark
+      onDeleteBookmark: handleDeleteBookmark,
+      onRefresh: () => fetchAndSetBookmarks(publicKey)
     }
   ))))) : /* @__PURE__ */ import_react6.default.createElement("div", { className: "flex-grow p-4" }, /* @__PURE__ */ import_react6.default.createElement(Login, { onLoginSuccess: handleLoginSuccess }))));
 };

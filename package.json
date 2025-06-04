@@ -1,5 +1,7 @@
 {
 	"license": "MIT",
+	"name": "bookmarkstr",
+	"version": "1.2.0",
 	"dependencies": {
 		"@noble/hashes": "^1.8.0",
 		"@radix-ui/react-checkbox": "^1.2.3",
